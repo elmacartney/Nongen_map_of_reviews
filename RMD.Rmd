@@ -514,3 +514,89 @@ Publication_info %>% count(year) %>% ggplot(aes(x = year, y = n)) +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+## Adressing objective 3
+
+3)	Conduct bibliometric analyses of co-author networks and common terminology use across and within disciplines. 
+
+The following visualisations allow us to view bibliometric patterns from data exported directly from scopus. We are able to view common keyword use, author networks, affiliations, and citation patterns. 
+
+## Addressing objective 4
+
+4)	Conduct a critical appraisal of the SR literature to assess the rigour, transparency, and risk of bias. 
+
+The following visualisations allow us to see the average scores across each CEESAT questions as well as how each individual SR scored for each CEESAT questions. This will allow us to assess the quality and Risk of Bias of the SR literature. 
+
+**Note:** CEESAT questions and scoring criteria can be found in Appendix_S3 on the open Science Framework https://osf.io/detvk/.
+
+### Blinding paper ID and wrangling data into long format
+
+Paper ID was blinded for the pilot but will not be blinded for the full study
+
+```{r}
+#blinding authors
+Assessment$id <- paste("ID", c(1:length(Assessment$id)), sep = "")
+#shortening column names
+names(Assessment) <- gsub("CEESAT_", "", names(Assessment), fixed = TRUE)
+#selecting only the columns with scores
+#selecting only the columns with scores
+Assessment_reduced <- select(Assessment, c("id", !ends_with("_comment")))
+#wrangling data into long format
+ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key=TRUE)
+```
+
+### CEESAT score summary across SRs
+This plot shows the average CEESAT score per question. 
+CEESAT questions and scoring criteria can be found in Appendix_S3 on the open Science Framework https://osf.io/detvk/.
+
+``` {r}
+#calculating the % of scores within each questions 
+count_ceesat_score <- ceesat_long %>% count(score, by = question) 
+percent_ceesat_score <- count_ceesat_score %>% mutate(percent = (n/sum(n))*100)
+percent_ceesat_score <- percent_ceesat_score %>%
+  rename(
+    question = by
+  )
+percent_ceesat_score$question <- as.factor(percent_ceesat_score$question)
+percent_ceesat_score$question <- factor(percent_ceesat_score$question, levels(percent_ceesat_score$question)[length(percent_ceesat_score$question):1]) #reverse the order of questions
+percent_ceesat_score$score <- as.factor(percent_ceesat_score$score)
+percent_ceesat_score$score <- factor(percent_ceesat_score$score, levels(percent_ceesat_score$score)[c(2,3,1,4)]) #set the order of levels for assessment scores:
+summaryplot <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
+  geom_col(mapping = aes(x = question, y = percent, fill = score), width = 0.7,
+           position = "fill", color = "black") +
+  coord_flip(ylim = c(0, 1)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_fill_manual(values = c("yellow","green", "orange","red")) +
+  theme(legend.position = "bottom", panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank()) + 
+  ylab("Percent") + xlab("CEESAT question") +
+  guides(fill=guide_legend(title="Score:")) 
+summaryplot
+```
+
+### Individual CEESAT Scores 
+This plot shows the CEESAT score per SR.
+CEESAT questions and scoring criteria can be found in Appendix_S3 on the open Science Framework https://osf.io/detvk/.
+
+``` {r}
+scoresplot <- ggplot(data = ceesat_long, aes(y = id, x = question)) +
+  geom_tile(color="black", fill="white", size = 0.8) +
+  geom_point(aes(color = as.factor(score)), size = 5) +
+  scale_x_discrete(position = "top") +
+  guides(color = guide_legend(reverse = TRUE)) +
+  scale_color_manual(values = c("orange","yellow","green","red" ), name = "Score:") + 
+  theme_minimal() + 
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "bottom",
+        legend.background = element_rect(linetype = "solid", colour = "grey"),
+        legend.key.size = unit(0.75, "cm"),
+        legend.text = element_text(size = 12),
+        axis.text.y = element_text(size = 10, color = "black"),
+        axis.text.x = element_text(angle = 45, hjust=0),
+        plot.margin = unit(c(1,1,1,0), "cm")
+  ) +
+  ylab("Study ID") + 
+  xlab("CEESAT question") 
+scoresplot
+```
