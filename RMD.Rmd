@@ -49,7 +49,7 @@ library(igraph)
 xldata <- "./Data_extraction_postcrosschecking.xlsx"
 
 #bibliometric data
-#TODO
+bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
 ```
 
 
@@ -515,11 +515,49 @@ Publication_info %>% count(year) %>% ggplot(aes(x = year, y = n)) +
 
 ```
 
-## Adressing objective 3
+## Adressing objective 3 {.tabset}
 
 3)	Conduct bibliometric analyses of co-author networks and common terminology use across and within disciplines. 
 
 The following visualisations allow us to view bibliometric patterns from data exported directly from scopus. We are able to view common keyword use, author networks, affiliations, and citation patterns. 
+
+### Author, country, and citation summary plots
+
+``` {r, message = FALSE, warning = FALSE, results = 'hide'}
+results1 <- biblioAnalysis(bib) #run basic standard descriptive analysis of the dataset (data frame)
+summary(results1, k = 7, pause = F, width = 130) #produces a sequence of standard summary tables displayed in the console
+plot(results1, k = 7, pause = F)
+```
+
+### Keyword matrix plot
+
+``` {r, message = FALSE, warning = FALSE}
+NetMatrix_keywords <- biblioNetwork(bib, analysis = "co-occurrences", network = "keywords", sep = ";")
+NetMatrix_keywords_plot <- networkPlot(NetMatrix_keywords, normalize="association", n = 10, Title = "Keyword co-occurrences", type = "fruchterman", size.cex = TRUE, size = 30, remove.multiple = F, edgesize = 10, labelsize = 3, label.cex = TRUE,edges.min = 2, cluster = "edge_betweenness")
+```
+
+### Thematic map
+
+``` {r, message = FALSE, warning = FALSE}
+map_thematic <- thematicMap(bib, field = "ID", n = 1000, minfreq = 5, stemming = FALSE, size = 0.5, n.labels = 1, repel = TRUE)
+plot(map_thematic$map)
+```
+
+### Author collaboration network
+
+``` {r, message = FALSE, warning = FALSE}
+NetMatrix_authors <- biblioNetwork(bib, analysis = "collaboration",  network = "authors", sep = ";")
+NetMatrix_authors_plot <- networkPlot(NetMatrix_authors,  n = 20, Title = "Author collaboration", type = "auto", size = 15, size.cex = TRUE, edgesize = 10, labelsize = 1) 
+```
+
+### Country collaboration network
+
+```{r, message = FALSE, warning = FALSE}
+bib_sco2 <- metaTagExtraction(bib, Field = "AU_CO", sep = ";") #we need to extract countries from the affiliations first
+#bib_sco2$AU_CO[1:10]
+NetMatrix_country <- biblioNetwork(bib_sco2, analysis = "collaboration", network = "countries", sep = ";")
+NetMatrix_country_plot <-  networkPlot(NetMatrix_country, n = 50, Title = "Country collaboration", type = "auto", size=TRUE, remove.multiple=FALSE, labelsize=1.5)
+```
 
 ## Addressing objective 4
 
