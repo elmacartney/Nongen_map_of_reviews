@@ -3,7 +3,7 @@ title: "Nongenetic inhertance map of systematic reviews"
 author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
 output: 
     
-    rmdformats::html_clean:
+    rmdformats::readthedown:
       code_folding: hide
       code_download: true
       toc_depth: 4
@@ -96,6 +96,7 @@ ggplot(percent_discipline, aes(x = discipline_code, y = percent)) +
   theme(legend.position = "none", axis.title.x = element_text(size = 10))
 
 ```
+
 ### Inter- vs trans-generational effects within and between disciplines
 
 ```{r}
@@ -119,6 +120,7 @@ ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) +
   guides(fill=guide_legend(title="Discipline:"))
 
 ```
+
 #### Table showing the controlled vacabularly used and a description of what the controlled vocabulary means. 
 
 Note that the description often equals controlled vocab but this is not always the case for more complicated elements.
@@ -187,6 +189,7 @@ terminology_code_unique <- Terminology_code_info %>%
   )
 unique(terminology_code_unique)
 ```
+
 ### Types of non-genetic transmission within and between disciplines
 I.e., are the non-genetic effects conferred through the matriline or patriline etc.
 
@@ -211,6 +214,7 @@ ggplot(percent_transmission, aes(x = transmission_code, y = percent)) +
   guides(fill=guide_legend(title="Discipline:"))
 
 ```
+
 #### Table showing the controlled vacabularly used and a description of what the controlled vocabulary means. 
 
 Note that the description often equals controlled vocab but this is not always the case for more complicated elements.
@@ -222,6 +226,7 @@ Transmission_info_unique <- Transmission_code_info %>%
 unique(Transmission_info_unique) 
 
 ```
+
 ### F0 environmental manipulations within and between disciplines
 
 ```{r}
@@ -245,6 +250,7 @@ ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) +
   guides(fill=guide_legend(title="Discipline:"))
 
 ```
+
 #### Table showing the controlled vacabularly used and a description of what the controlled vocabulary means. 
 
 Note that the description often equals controlled vocab but this is not always the case for more complicated elements.
@@ -255,6 +261,7 @@ F0_env_info_unique <- F0_env_code_info %>%
   )
 unique(F0_env_info_unique)
 ```
+
 ### Environmental effect direction within and between disciplines
 I.e., are the effects of environment predicted to have negative, positive, or neutral effects on offspring phenotype
 
@@ -361,6 +368,7 @@ Descendant_trait_info_unique<-Descendant_trait_code_info %>%
   )
 unique(Descendant_trait_info_unique) 
 ```
+
 ### Descendant sex within and between disciplines
 
 ```{r}
@@ -395,6 +403,7 @@ Descendant_sex_info_unique<- Descendant_sex_code_info%>%
   )
 unique(Descendant_sex_info_unique)
 ```
+
 ### Descendant age within and between disciplines
 **Note:** We excluded SRs that solely focused on fetal traits in descendants. However, some broader SRs included primary studies that mearured fetal traits. This was therefore coeded in our data. 
 
@@ -430,6 +439,7 @@ Descendant_age_info_unique<- Descendant_age_code_info %>%
   )
 unique(Descendant_age_info_unique) 
 ```
+
 ### Higher taxononmic groups within and between disciplines 
 
 ``` {r}
