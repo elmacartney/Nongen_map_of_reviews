@@ -11,6 +11,8 @@ editor_options:
   chunk_output_type: console
 ---
     
+    #TODO do a species figure
+    
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
 message = FALSE,
