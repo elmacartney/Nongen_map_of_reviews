@@ -115,13 +115,15 @@ Publication_info_discipline <- merge(Publication_info, Review_info)
 
 Fig3b <- Publication_info_discipline %>% 
   count(year, discipline_code) %>%
-  ggplot(aes(x = year, y = n, fill = discipline_code)) +
-  xlim(2010, 2021.5) +
-  ylim(0, 15) +
-  geom_area()+
+  ggplot(aes(x = year, y = n)) +
+  geom_col(aes(, fill = discipline_code), width = 0.7) +
+  xlim(2009, 2021.5) +
+  ylim(0, 14.5) +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = n)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
   labs(x = "Year", y = "Article count", fill = "Discipline")
+
 
 Fig3b
 
@@ -136,7 +138,7 @@ Fig3 <- Fig3a +  Fig3b + plot_annotation(tag_levels = "A")
 Fig3 
 ```
 
-## Fig. 4 - Inter vs Trans gen effects including mode of transmission and term use {.tabset}
+## Figure 4 - Inter vs Trans gen effects including mode of transmission and term use {.tabset}
 
 ### Fig. 4A - Inter vs Trans
 
@@ -153,13 +155,13 @@ percent_inter_vs_trans <-percent_inter_vs_trans %>%
   )
 
 Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) + 
-  geom_col(aes(fill = discipline_code), width = 0.7) + 
-  theme_light() +
+  geom_col(aes(fill = discipline_code), width = 0.7) +
   coord_flip() + 
   scale_y_continuous(name = "Percent") +
+  ylim(0,80)+
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
-  scale_fill_brewer(palette = "Accent")
+  scale_fill_brewer(palette = "Accent") +
   labs(x = "Inter- vs trans-inheritnace", fill = "Discipline")
 
 Fig4a
@@ -168,7 +170,34 @@ Fig4a
 
 ```
 
-### Fig 4B - Inter-vs trans by transmission mode
+### Fig.4B - Transmission mode 
+
+```{r}
+
+Merged_transmission_info <- merge(Transmission_info, Review_info)
+
+count_transmission <- Merged_transmission_info %>%  count(transmission_code, by = discipline_code) %>% arrange(desc(n))
+percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
+percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
+percent_transmission <-percent_transmission %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4b <- ggplot(percent_transmission, aes(x = transmission_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Transmission mode", fill = "Discipline")
+
+Fig4b
+
+```
+
+### Fig. 4C - Inter-vs trans- by transmission mode
 
 ``` {r}
 
@@ -184,9 +213,8 @@ percent_inter_vs_trans_transmission <-percent_inter_vs_trans_transmission %>%
     transmission_code = by
   )
 
-Fig4b <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
+Fig4c <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
   geom_col(aes(fill = transmission_code), width = 0.7) + 
-  theme_light() +
   coord_flip() + 
   scale_y_continuous(name = "Percent") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
@@ -194,7 +222,42 @@ Fig4b <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code
   scale_fill_brewer(palette = "Accent") +
   labs(x = "Inter- vs trans-inheritnace", fill = "Transmission mode")
 
-Fig4b
+Fig4c
 
 #TODO should we remove all of the unclear datapoints?
+```
+
+### Fig. 4D - Match vs mismatch inter- vs trans- definition
+
+``` {r}
+count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
+percent_terminology <- count_terminology %>% mutate(percent = (n/sum(n))*100)
+percent_terminology$percent<-round(percent_terminology$percent, digits = 0)
+
+percent_terminology<- percent_terminology %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4d <- ggplot(percent_terminology, aes(x = terminology_code, y = percent)) + 
+  coord_flip() +  
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+   theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Terminology matches definition in Fig. 1", fill = "Discipline")
+
+Fig4d
+
+#TODO why are bars not descending order
+```
+
+### Fig. 4 - panel
+
+``` {r}
+Fig4 <- (Fig4a +  Fig4b)/(Fig4c + Fig4d) + plot_annotation(tag_levels = "A")
+
+Fig4 
+
+# TODO remove legend - have Fig. 3 with colours for each discipline
 ```
