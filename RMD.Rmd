@@ -154,7 +154,7 @@ percent_descendant_generat <- percent_descendant_generat %>%
   )
 
 ggplot(percent_descendant_generat, aes(x = descendant_generat_code, y = percent)) + 
-  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  geom_col(aes(fill = transmission_code), width = 0.7) + 
   theme_light() +
   coord_flip() + 
   scale_y_continuous(name = "Percent") +

@@ -78,18 +78,20 @@ list2env(list_all, .GlobalEnv)
 
 # Within and between discipline research patterns 
 
-## Figure 1 - Disciplines and year published {.tabset}
+Fig.1 1 is the diagram showing the difference between inter- and trans-generational effects and Fig. 2 is the ROSES diagram which were not created on R. 
 
-### Fig. 1A - SR with Disciplines
+## Figure 3 - Disciplines and year published {.tabset}
+
+### Fig. 3A - SR with Disciplines
 
 ``` {r}
 
 count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
-percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = FALSE)])
+percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
-Fig1a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+Fig3a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
   geom_col(aes(fill = ""), width = 0.7) + 
   geom_text(aes(label = percent), hjust = -0.2) +
   theme_light() +
@@ -100,33 +102,99 @@ Fig1a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) +
   theme_classic() +
   theme(legend.position = "none", axis.title.x = element_text(size = 10))
 
-Fig1a
+Fig3a
+
+#TODO could make each bar colour the colours used to code each discipline in the other figures
 ```
 
-### Fig. 1B - Year published
+### Fig. 3B - Year published
 
 ``` {r}
 
 Publication_info_discipline <- merge(Publication_info, Review_info)
 
-Fig1b <- Publication_info_discipline %>% 
+Fig3b <- Publication_info_discipline %>% 
   count(year, discipline_code) %>%
   ggplot(aes(x = year, y = n, fill = discipline_code)) +
   xlim(2010, 2021.5) +
   ylim(0, 15) +
   geom_area()+
   theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
   labs(x = "Year", y = "Article count", fill = "Discipline")
 
-Fig1b
+Fig3b
 
 ```
 
 
-### Fig. 1 - panel
+### Fig. 3 - panel
 
 ``` {r}
-Fig1 <- Fig1a +  Fig1b + plot_annotation(tag_levels = "A")
-Fig1 
+Fig3 <- Fig3a +  Fig3b + plot_annotation(tag_levels = "A")
 
+Fig3 
+```
+
+## Fig. 4 - Inter vs Trans gen effects including mode of transmission and term use {.tabset}
+
+### Fig. 4A - Inter vs Trans
+
+``` {r}
+Merged_inter_vs_trans <- merge(Inter_vs_trans_info, Review_info)
+
+count_inter_vs_trans <- Merged_inter_vs_trans %>% count(inter_vs_trans_code, by = discipline_code ) %>% arrange(desc(n))
+percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
+percent_inter_vs_trans$percent <- round(percent_inter_vs_trans$percent, digits = 0)
+
+percent_inter_vs_trans <-percent_inter_vs_trans %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  theme_light() +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent")
+  labs(x = "Inter- vs trans-inheritnace", fill = "Discipline")
+
+Fig4a
+
+#TODO cant figure out how to add text on top of bar of total percent
+
+```
+
+### Fig 4B - Inter-vs trans by transmission mode
+
+``` {r}
+
+Inter_vs_trans_transmision <- merge(Merged_inter_vs_trans, Transmission_info)
+
+
+count_inter_vs_trans_transmission <- Inter_vs_trans_transmision %>% count(inter_vs_trans_code, by = transmission_code) %>% arrange(desc(n))
+percent_inter_vs_trans_transmission <- count_inter_vs_trans_transmission %>% mutate(percent = (n/sum(n))*100)
+percent_inter_vs_trans_transmission$percent <- round(percent_inter_vs_trans_transmission$percent, digits = 0)
+
+percent_inter_vs_trans_transmission <-percent_inter_vs_trans_transmission %>%
+  rename(
+    transmission_code = by
+  )
+
+Fig4b <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
+  geom_col(aes(fill = transmission_code), width = 0.7) + 
+  theme_light() +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Inter- vs trans-inheritnace", fill = "Transmission mode")
+
+Fig4b
+
+#TODO should we remove all of the unclear datapoints?
 ```
