@@ -1,0 +1,132 @@
+---
+title: "Main text figures"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+output: 
+    
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---
+
+    
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = TRUE, 
+tidy = TRUE, 
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(plyr)
+library(here)
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(forcats)
+library(ggplot2)
+library(hrbrthemes) #for ggplot2
+library(bibliometrix)
+library(igraph)
+library(cowplot)
+```
+### Data loading
+
+``` {r, results = 'hide'}
+#manually extracted data
+xldata <- "./Data_extraction_postcrosschecking.xlsx"
+# xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
+
+# #bibliometric data
+# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+```
+
+
+### Data organisation
+Splitting list of tabs into separate dataframes
+
+``` {r, results = 'hide'}
+
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Within and between discipline research patterns 
+
+## Figure 1 - Disciplines and year published {.tabset}
+
+### Fig. 1A - SR with Disciplines
+
+``` {r}
+
+count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
+percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
+percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
+percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = FALSE)])
+
+Fig1a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+  geom_col(aes(fill = ""), width = 0.7) + 
+  geom_text(aes(label = percent), hjust = -0.2) +
+  theme_light() +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  xlab("Discipline") + 
+  scale_fill_manual(values = c("#919191")) +
+  theme_classic() +
+  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+
+Fig1a
+```
+
+### Fig. 1B - Year published
+
+``` {r}
+
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+Fig1b <- Publication_info_discipline %>% 
+  count(year, discipline_code) %>%
+  ggplot(aes(x = year, y = n, fill = discipline_code)) +
+  xlim(2010, 2021.5) +
+  ylim(0, 15) +
+  geom_area()+
+  theme_classic() +
+  labs(x = "Year", y = "Article count", fill = "Discipline")
+
+Fig1b
+
+```
+
+
+### Fig. 1 - panel
+
+``` {r}
+Fig1 <- Fig1a +  Fig1b + plot_annotation(tag_levels = "A")
+Fig1 
+
+```

@@ -42,6 +42,7 @@ library(ggplot2)
 library(hrbrthemes) #for ggplot2
 library(bibliometrix)
 library(igraph)
+library(here)
 
 ```
 ### Data loading
@@ -49,9 +50,11 @@ library(igraph)
 ``` {r, results = 'hide'}
 #manually extracted data
 xldata <- "./Data_extraction_postcrosschecking.xlsx"
+# xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
 
-#bibliometric data
-bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+# #bibliometric data
+# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 
@@ -86,10 +89,12 @@ list2env(list_all, .GlobalEnv)
 
 count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
+percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
 percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = FALSE)])
 
 ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
   geom_col(aes(fill = ""), width = 0.7) + 
+  geom_text(aes(label = percent), hjust = -0.2) +
   theme_light() +
   coord_flip() + 
   scale_y_continuous(name = "Percent") +
