@@ -2,7 +2,6 @@
 title: "Main text figures"
 author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
 output: 
-    
     rmdformats::readthedown:
       code_folding: hide
       code_download: true
@@ -24,6 +23,7 @@ echo = TRUE
 rm(list = ls())
 ```
 
+### Seutup and data organisation
 
 ```{r setup, results = 'hide'}
 
@@ -42,9 +42,9 @@ library(ggplot2)
 library(hrbrthemes) #for ggplot2
 library(bibliometrix)
 library(igraph)
-library(cowplot)
+library(patchwork)
+library(RColorBrewer)
 ```
-### Data loading
 
 ``` {r, results = 'hide'}
 #manually extracted data
@@ -57,11 +57,8 @@ bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibte
 ```
 
 
-### Data organisation
-Splitting list of tabs into separate dataframes
-
 ``` {r, results = 'hide'}
-
+#Splitting list of tabs into separate dataframes
 excel_sheets(path = xldata)
 tab_names <- excel_sheets(path = xldata)
 
@@ -78,33 +75,36 @@ list2env(list_all, .GlobalEnv)
 
 # Within and between discipline research patterns 
 
-Fig.1 1 is the diagram showing the difference between inter- and trans-generational effects and Fig. 2 is the ROSES diagram which were not created on R. 
+Fig.1 is the diagram showing the difference between inter- and trans-generational effects and Fig. 2 is the ROSES diagram which were not created on R. 
 
 ## Figure 3 - Disciplines and year published {.tabset}
 
 ### Fig. 3A - SR with Disciplines
 
-``` {r}
+Still todo is to write desciptions of each figure
+
+``` {r, results = 'hide'}
 
 count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
 percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
+brewer.pal(6, "Accent") # matching colours of disciplines from brewer used in other figs
+my.cols <- (c("#BEAED4","#FFFF99" ,"#386CB0","#7FC97F","#FDC086","#F0027F")) #- ggplot seems to be randomly rearranging these in the plot
+
 Fig3a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
-  geom_col(aes(fill = ""), width = 0.7) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
   geom_text(aes(label = percent), hjust = -0.2) +
-  theme_light() +
   coord_flip() + 
   scale_y_continuous(name = "Percent") +
   xlab("Discipline") + 
-  scale_fill_manual(values = c("#919191")) +
+  scale_fill_manual(values=my.cols) +
   theme_classic() +
-  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+  theme(legend.position = "none")
 
 Fig3a
 
-#TODO could make each bar colour the colours used to code each discipline in the other figures
 ```
 
 ### Fig. 3B - Year published
@@ -122,7 +122,9 @@ Fig3b <- Publication_info_discipline %>%
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = n)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
-  labs(x = "Year", y = "Article count", fill = "Discipline")
+  labs(x = "Year", y = "Article count", fill = "Discipline")+
+  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+
 
 
 Fig3b
@@ -130,7 +132,7 @@ Fig3b
 ```
 
 
-### Fig. 3 - panel
+### Fig. 3 - Panel
 
 ``` {r}
 Fig3 <- Fig3a +  Fig3b + plot_annotation(tag_levels = "A")
@@ -162,7 +164,8 @@ Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
-  labs(x = "Inter- vs trans-inheritnace", fill = "Discipline")
+  labs(x = "Inter- vs trans-inheritnace", fill = "Discipline")+
+  theme(legend.position = "none")
 
 Fig4a
 
@@ -191,43 +194,14 @@ Fig4b <- ggplot(percent_transmission, aes(x = transmission_code, y = percent)) +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
-  labs(x = "Transmission mode", fill = "Discipline")
+  labs(x = "Transmission mode", fill = "Discipline") +
+  theme(legend.position = "none")
 
 Fig4b
 
 ```
 
-### Fig. 4C - Inter-vs trans- by transmission mode
-
-``` {r}
-
-Inter_vs_trans_transmision <- merge(Merged_inter_vs_trans, Transmission_info)
-
-
-count_inter_vs_trans_transmission <- Inter_vs_trans_transmision %>% count(inter_vs_trans_code, by = transmission_code) %>% arrange(desc(n))
-percent_inter_vs_trans_transmission <- count_inter_vs_trans_transmission %>% mutate(percent = (n/sum(n))*100)
-percent_inter_vs_trans_transmission$percent <- round(percent_inter_vs_trans_transmission$percent, digits = 0)
-
-percent_inter_vs_trans_transmission <-percent_inter_vs_trans_transmission %>%
-  rename(
-    transmission_code = by
-  )
-
-Fig4c <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
-  geom_col(aes(fill = transmission_code), width = 0.7) + 
-  coord_flip() + 
-  scale_y_continuous(name = "Percent") +
-  geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
-  theme_classic() +
-  scale_fill_brewer(palette = "Accent") +
-  labs(x = "Inter- vs trans-inheritnace", fill = "Transmission mode")
-
-Fig4c
-
-#TODO should we remove all of the unclear datapoints?
-```
-
-### Fig. 4D - Match vs mismatch inter- vs trans- definition
+### Fig. 4C - Match vs mismatch inter- vs trans- definition
 
 ``` {r}
 count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
@@ -239,25 +213,90 @@ percent_terminology<- percent_terminology %>%
     discipline_code = by
   )
 
-Fig4d <- ggplot(percent_terminology, aes(x = terminology_code, y = percent)) + 
-  coord_flip() +  
+Fig4c <- ggplot(percent_terminology, aes(x = reorder(terminology_code, -percent), y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
   scale_y_continuous(name = "Percent") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
-   theme_classic() +
+  theme_classic() +
   scale_fill_brewer(palette = "Accent") +
-  labs(x = "Terminology matches definition in Fig. 1", fill = "Discipline")
+  labs(x = "Terminology use matches Fig. 1", fill = "Discipline")+
+  theme(legend.position = "none")
 
-Fig4d
 
-#TODO why are bars not descending order
+Fig4c
 ```
 
-### Fig. 4 - panel
+### Fig. 4 - Panel
 
 ``` {r}
-Fig4 <- (Fig4a +  Fig4b)/(Fig4c + Fig4d) + plot_annotation(tag_levels = "A")
+Fig4 <- (Fig4a / Fig4b /Fig4c) + plot_annotation(tag_levels = "A")
 
 Fig4 
 
-# TODO remove legend - have Fig. 3 with colours for each discipline
+# TODO how to get total percents at the top of each bar as well as within each bar?
 ```
+
+
+
+``` {r}
+
+##Supplementary figure
+
+#Inter_vs_trans_transmision <- merge(Merged_inter_vs_trans, Transmission_info)
+# 
+# 
+# count_inter_vs_trans_transmission <- Inter_vs_trans_transmision %>% count(inter_vs_trans_code, by = transmission_code) %>% arrange(desc(n))
+# percent_inter_vs_trans_transmission <- count_inter_vs_trans_transmission %>% mutate(percent = (n/sum(n))*100)
+# percent_inter_vs_trans_transmission$percent <- round(percent_inter_vs_trans_transmission$percent, digits = 0)
+# 
+# percent_inter_vs_trans_transmission <-percent_inter_vs_trans_transmission %>%
+#   rename(
+#     transmission_code = by
+#   )
+# 
+# Fig5 <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
+#   geom_col(aes(fill = transmission_code), width = 0.7) + 
+#   coord_flip() + 
+#   scale_y_continuous(name = "Percent") +
+#   geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
+#   theme_classic() +
+#   scale_fill_brewer(palette = "Accent") +
+#   labs(x = "Inter- vs trans-inheritnace", fill = "Transmission mode")+
+#   theme(legend.position = "none")
+# 
+# Fig5
+# 
+# #TODO should we remove all of the unclear datapoints?
+```
+
+
+
+```{r}
+#supplementary figure
+
+### Descendant generations within and between disciplines
+# 
+# merged_descendant_generat <- merge(Descendant_generat_info, Review_info)
+# 
+# count_descendant_generat <- merged_descendant_generat %>% count(descendant_generat_code, by = discipline_code) %>% arrange(desc(n))
+# percent_descendant_generat <- count_descendant_generat %>% mutate(percent = (n/sum(n))*100)
+# 
+# percent_descendant_generat <- percent_descendant_generat %>% 
+#   rename (
+#     discipline_code = by
+#   )
+# 
+# ggplot(percent_descendant_generat, aes(x = descendant_generat_code, y = percent)) + 
+#   geom_col(aes(fill = transmission_code), width = 0.7) + 
+#   theme_light() +
+#   coord_flip() + 
+#   scale_y_continuous(name = "Percent") +
+#   theme(legend.position = "bottom", axis.title.x = element_text(size = 10), axis.title.y = element_blank()) + 
+#   guides(fill=guide_legend(title="Discipline"))
+
+```
+
+## Figure 5 - Ancestor exposures {.tabset}
+
+

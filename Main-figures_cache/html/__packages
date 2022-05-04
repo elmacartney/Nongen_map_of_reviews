@@ -15,3 +15,5 @@ hrbrthemes
 bibliometrix
 igraph
 cowplot
+patchwork
+RColorBrewer

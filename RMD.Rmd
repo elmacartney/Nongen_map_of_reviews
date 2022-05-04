@@ -159,7 +159,7 @@ ggplot(percent_descendant_generat, aes(x = descendant_generat_code, y = percent)
   coord_flip() + 
   scale_y_continuous(name = "Percent") +
   theme(legend.position = "bottom", axis.title.x = element_text(size = 10), axis.title.y = element_blank()) + 
-  guides(fill=guide_legend(title="Discipline:"))
+  guides(fill=guide_legend(title="Discipline"))
 
 ```
 
