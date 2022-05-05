@@ -44,6 +44,10 @@ library(bibliometrix)
 library(igraph)
 library(patchwork)
 library(RColorBrewer)
+library(rotl) #for getting OTTIDs from OTL
+library(phytools) #for plotting trees
+library(timetree) #can create trees with branch lengths
+library(ape)
 ```
 
 ``` {r, results = 'hide'}
@@ -91,13 +95,13 @@ percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
 percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
 brewer.pal(6, "Accent") # matching colours of disciplines from brewer used in other figs
-my.cols <- (c("#BEAED4","#FFFF99" ,"#386CB0","#7FC97F","#FDC086","#F0027F")) #- ggplot seems to be randomly rearranging these in the plot
+my.cols <- (c("#BEAED4","#FFFF99" ,"#386CB0","#7FC97F","#FDC086","#F0027F"))
 
 Fig3a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) + 
   geom_text(aes(label = percent), hjust = -0.2) +
   coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   xlab("Discipline") + 
   scale_fill_manual(values=my.cols) +
   theme_classic() +
@@ -159,7 +163,7 @@ percent_inter_vs_trans <-percent_inter_vs_trans %>%
 Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) +
   coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   ylim(0,80)+
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
@@ -190,7 +194,7 @@ percent_transmission <-percent_transmission %>%
 Fig4b <- ggplot(percent_transmission, aes(x = transmission_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) +
   coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
@@ -216,7 +220,7 @@ percent_terminology<- percent_terminology %>%
 Fig4c <- ggplot(percent_terminology, aes(x = reorder(terminology_code, -percent), y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) + 
   coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
@@ -258,7 +262,7 @@ Fig4
 # Fig5 <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
 #   geom_col(aes(fill = transmission_code), width = 0.7) + 
 #   coord_flip() + 
-#   scale_y_continuous(name = "Percent") +
+#   scale_y_continuous(name = "Percent (%)") +
 #   geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
 #   theme_classic() +
 #   scale_fill_brewer(palette = "Accent") +
@@ -291,7 +295,7 @@ Fig4
 #   geom_col(aes(fill = transmission_code), width = 0.7) + 
 #   theme_light() +
 #   coord_flip() + 
-#   scale_y_continuous(name = "Percent") +
+#   scale_y_continuous(name = "Percent (%)") +
 #   theme(legend.position = "bottom", axis.title.x = element_text(size = 10), axis.title.y = element_blank()) + 
 #   guides(fill=guide_legend(title="Discipline"))
 
@@ -318,7 +322,7 @@ percent_exposure_timing <-percent_exposure_timing %>%
 Fig5a<- ggplot(percent_exposure_timing, aes(x = exposure_timing_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) + 
    coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
@@ -329,37 +333,7 @@ Fig5a<- ggplot(percent_exposure_timing, aes(x = exposure_timing_code, y = percen
 Fig5a
 ```
 
-
-### Fig. 5B - Type of environmental exposure
-
-```{r}
-
-merged_F0_env <- merge(F0_env_info, Review_info)
-count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
-percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
-percent_F0_env$percent<-round(percent_F0_env$percent, digits = 0)
-
- 
-percent_F0_env <-percent_F0_env %>%
-  rename(
-    discipline_code = by
-  )
-
-Fig5b <- ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) + 
-  geom_col(aes(fill = discipline_code), width = 0.7) + 
-  coord_flip() + 
-  scale_y_continuous(name = "Percent") +
-  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
-  theme_classic() +
-  scale_fill_brewer(palette = "Accent") +
-  labs(x = "Type of environmental exposure", fill = "Discipline") + 
-  theme(legend.position = "none")
-  
-
-Fig5b
-```
-
-### Fig. 5C - Descendant generation within F0 timing
+### Fig. 5B - Descendant generation within F0 timing
 
 ```{r}
 # merged_exposure_timing_generat <- merge(Exposure_timing_info, Descendant_generat_info)
@@ -376,7 +350,7 @@ Fig5b
 # Fig5c<- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
 #   geom_col(aes(fill = descendant_generat_code), width = 0.7) + 
 #    coord_flip() + 
-#   scale_y_continuous(name = "Percent") +
+#   scale_y_continuous(name = "Percent (%)") +
 #   geom_text(position = position_stack(vjust = 0.5), aes(fill = descendant_generat_code, label = percent)) +
 #   theme_classic() +
 #   scale_fill_brewer(palette = "Greys", direction = -1) +
@@ -396,23 +370,84 @@ percent_exposure_timing_generat <- percent_exposure_timing_generat %>%
            )
 
 
-Fig5c <- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
+Fig5b <- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
   geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
    coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Greys", direction = -1) +
   labs(x = "Timing of F0 (ancestral) exposure", fill = "Inter- vs Trans-generational")
 
-Fig5c
+Fig5b
 
 ```
+
+
+### Fig. 5C - Type of environmental exposure
+
+```{r}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
+percent_F0_env$percent<-round(percent_F0_env$percent, digits = 0)
+
+ 
+percent_F0_env <-percent_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5c <- ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Type of environmental exposure", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+
+Fig5c
+```
+
+### Fig. 5D - Environmental effect direction
+
+```{r}
+
+merged_env_eff <- merge(Env_eff_diection_info, Review_info)
+
+count_env_eff <- merged_env_eff %>% count(env_eff_direction_code, by = discipline_code) %>% arrange(desc(n))
+percent_env_eff <- count_env_eff %>% mutate(percent = (n/sum(n))*100)
+percent_env_eff$percent<-round(percent_env_eff$percent, digits = 0)
+
+
+percent_env_eff <-percent_env_eff %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5d <- ggplot(percent_env_eff, aes(x = env_eff_direction_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+    coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Environmental effect direction", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+Fig5d
+
+```
+
 
 ### Fig. 5 - Panel
 
 ```{r}
-Fig5 <- ((Fig5a + Fig5b) / (Fig5c)) + plot_annotation(tag_levels = "A")
+Fig5 <- ((Fig5a + Fig5b) / (Fig5c + Fig5d)) + plot_annotation(tag_levels = "A")
 
 Fig5
 ```
@@ -436,7 +471,7 @@ percent_descendant_trait <- percent_descendant_trait %>%
 Fig6a<- ggplot(percent_descendant_trait, aes(x = descendant_trait_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) + 
   coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
@@ -463,7 +498,7 @@ percent_descendant_sex <- percent_descendant_sex %>%
 Fig6b <- ggplot(percent_descendant_sex, aes(x = descendant_sex_code, y = percent)) + 
   geom_col(aes(fill = discipline_code), width = 0.7) + 
    coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Accent") +
@@ -491,15 +526,13 @@ percent_trait_intervstrans <- percent_trait_intervstrans %>%
 Fig6c <- ggplot(percent_trait_intervstrans, aes(x = descendant_trait_code, y = percent)) + 
   geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
    coord_flip() + 
-  scale_y_continuous(name = "Percent") +
+  scale_y_continuous(name = "Percent (%)") +
   geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
   theme_classic() +
   scale_fill_brewer(palette = "Greys", direction = -1) +
   labs(x = "Descendant traits", fill = "Inter- vs Trans-generational")
 
 Fig6c
-
-
 
 ```
 
@@ -509,4 +542,33 @@ Fig6c
 Fig6 <- ((Fig6a + Fig6b)/(Fig6c)) + plot_annotation(tag_levels = "A")
 
 Fig6
+```
+
+## Species tree
+It can't assign OTT to a majority of species
+
+```{r}
+# 
+# Species_info$species_name<-as.character(Species_info$species_name)
+# 
+# #checking for species name synonyms
+# synons <- tnrs_match_names(unique(Species_info$species_name),  context_name = "Insects")
+# 
+# synonyms(synons) ## gives list of all synonyms
+# synons$ott_id ##gives unique ID number the corresponds to species names in rotl
+# synons #tells you how many matches there are
+# 
+# #making tree
+# length(synons$ott_id)
+# 
+# my.tree <- tol_induced_subtree(ott_ids = synons$ott_id, label_format= "name")
+# 
+# plot(my.tree, show.tip.label = T, cex = 0.8, no.margin = TRUE) #it's clearly assigning the incorrect taxa names
+# 
+# intersect(as.character(my.tree$tip.label), Species_info$species_name) ## checking which names are matching 
+# 
+# setdiff(Species_info$species_name, as.character(my.tree$tip.label)) ## checking which names are not matching 
+# 
+# in_tree <- is_in_tree(ott_id(synons)) #checking which species are being left off tree
+# in_tree #tells me which names are not in the tree
 ```
