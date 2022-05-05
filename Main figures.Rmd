@@ -299,4 +299,214 @@ Fig4
 
 ## Figure 5 - Ancestor exposures {.tabset}
 
+### Fig. 5A - Timing of exposure
+**Note:** We excluded SRs that solely focused on environmental exposures that occured when the F0 generation was a fetus (i.e., pre-natal). However,  some SRs  included primary studies where the F0 generation was exposed pre-natally. This was therefore coded in our data.
 
+```{r}
+
+merged_exposure_timing <- merge(Exposure_timing_info, Review_info)
+
+count_exposure_timing <- merged_exposure_timing %>% count(exposure_timing_code, by = discipline_code) %>% arrange(desc(n))
+percent_exposure_timing <- count_exposure_timing %>% mutate(percent = (n/sum(n))*100)
+percent_exposure_timing$percent<-round(percent_exposure_timing$percent, digits = 0)
+
+percent_exposure_timing <-percent_exposure_timing %>%
+  rename (
+    discipline_code = by
+  )
+
+Fig5a<- ggplot(percent_exposure_timing, aes(x = exposure_timing_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Timing of F0 (ancestor) exposure", fill = "Discipline")+
+  theme(legend.position = "none")
+
+
+Fig5a
+```
+
+
+### Fig. 5B - Type of environmental exposure
+
+```{r}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
+percent_F0_env$percent<-round(percent_F0_env$percent, digits = 0)
+
+ 
+percent_F0_env <-percent_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5b <- ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Type of environmental exposure", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+
+Fig5b
+```
+
+### Fig. 5C - Descendant generation within F0 timing
+
+```{r}
+# merged_exposure_timing_generat <- merge(Exposure_timing_info, Descendant_generat_info)
+# 
+# count_exposure_timing_generat <- merged_exposure_timing_generat %>% count(exposure_timing_code, by = descendant_generat_code) %>% arrange(desc(n))
+# percent_exposure_timing_generat <- count_exposure_timing_generat %>% mutate(percent = (n/sum(n))*100)
+# percent_exposure_timing_generat$percent<-round(percent_exposure_timing_generat$percent, digits = 0)
+# 
+# percent_exposure_timing_generat <-percent_exposure_timing_generat %>%
+#   rename (
+#     descendant_generat_code = by
+#   )
+# 
+# Fig5c<- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
+#   geom_col(aes(fill = descendant_generat_code), width = 0.7) + 
+#    coord_flip() + 
+#   scale_y_continuous(name = "Percent") +
+#   geom_text(position = position_stack(vjust = 0.5), aes(fill = descendant_generat_code, label = percent)) +
+#   theme_classic() +
+#   scale_fill_brewer(palette = "Greys", direction = -1) +
+#   labs(x = "Timing of F0 (ancestor) exposure", fill = "Descendant generation")
+# 
+# Fig5c
+
+
+merged_exposure_timing_generat <- merge(Exposure_timing_info, Inter_vs_trans_info)
+count_trait_intervstrans <- merged_exposure_timing_generat %>% count(exposure_timing_code, by = inter_vs_trans_code) %>% arrange(desc(n))
+percent_exposure_timing_generat <- count_trait_intervstrans  %>% mutate(percent = (n/sum(n))*100)
+percent_exposure_timing_generat$percent<-round(percent_exposure_timing_generat$percent, digits = 0)
+
+percent_exposure_timing_generat <- percent_exposure_timing_generat %>%
+  rename(
+    inter_vs_trans_code = by
+           )
+
+
+Fig5c <- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
+  geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Greys", direction = -1) +
+  labs(x = "Timing of F0 (ancestral) exposure", fill = "Inter- vs Trans-generational")
+
+Fig5c
+
+```
+
+### Fig. 5 - Panel
+
+```{r}
+Fig5 <- ((Fig5a + Fig5b) / (Fig5c)) + plot_annotation(tag_levels = "A")
+
+Fig5
+```
+
+## Figure 6 - Descendant information {.tabset}
+
+### Fig. 6A - Decendant traits
+
+```{r}
+
+merged_descendant_trait <- merge(Descendant_trait_info, Review_info)
+count_descendant_trait <- merged_descendant_trait %>% count(descendant_trait_code, by = discipline_code) %>% arrange(desc(n))
+percent_descendant_trait <- count_descendant_trait %>% mutate(percent = (n/sum(n))*100)
+percent_descendant_trait$percent<-round(percent_descendant_trait$percent, digits = 0)
+
+percent_descendant_trait <- percent_descendant_trait %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig6a<- ggplot(percent_descendant_trait, aes(x = descendant_trait_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Descendant traits", fill = "Discipline")+ 
+  theme(legend.position = "none")
+
+Fig6a
+```
+
+### Fig. 6B - Descendant sex
+
+```{r}
+
+merged_descendant_sex <- merge(Descendant_sex_info, Review_info)
+count_descendant_sex <- merged_descendant_sex %>% count(descendant_sex_code, by = discipline_code) %>% arrange(desc(n))
+percent_descendant_sex <- count_descendant_sex  %>% mutate(percent = (n/sum(n))*100)
+percent_descendant_sex$percent<-round(percent_descendant_sex$percent, digits = 0)
+
+percent_descendant_sex <- percent_descendant_sex %>%
+  rename(
+    discipline_code = by
+           )
+
+Fig6b <- ggplot(percent_descendant_sex, aes(x = descendant_sex_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Descendant sex", fill = "Discipline")+ 
+  theme(legend.position = "none")
+
+Fig6b
+
+```
+
+### Fig. 6C - Descendant trait grouped by inter- vs trans- 
+
+```{r}
+merged_trait_intervstrans <- merge(Descendant_trait_info, Inter_vs_trans_info)
+count_trait_intervstrans <- merged_trait_intervstrans %>% count(descendant_trait_code, by = inter_vs_trans_code) %>% arrange(desc(n))
+percent_trait_intervstrans <- count_trait_intervstrans  %>% mutate(percent = (n/sum(n))*100)
+percent_trait_intervstrans$percent<-round(percent_trait_intervstrans$percent, digits = 0)
+
+percent_trait_intervstrans <- percent_trait_intervstrans %>%
+  rename(
+    inter_vs_trans_code = by
+           )
+
+
+Fig6c <- ggplot(percent_trait_intervstrans, aes(x = descendant_trait_code, y = percent)) + 
+  geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Greys", direction = -1) +
+  labs(x = "Descendant traits", fill = "Inter- vs Trans-generational")
+
+Fig6c
+
+
+
+```
+
+### Fig. 6 - Panel
+
+```{r}
+Fig6 <- ((Fig6a + Fig6b)/(Fig6c)) + plot_annotation(tag_levels = "A")
+
+Fig6
+```
