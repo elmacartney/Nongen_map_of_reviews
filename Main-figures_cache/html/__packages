@@ -17,3 +17,6 @@ igraph
 cowplot
 patchwork
 RColorBrewer
+wordcloud2
+migest
+circlize

@@ -44,10 +44,13 @@ library(bibliometrix)
 library(igraph)
 library(patchwork)
 library(RColorBrewer)
-library(rotl) #for getting OTTIDs from OTL
-library(phytools) #for plotting trees
-library(timetree) #can create trees with branch lengths
-library(ape)
+library(wordcloud2)
+library(migest)
+library(circlize)
+# library(rotl) #for getting OTTIDs from OTL
+# library(phytools) #for plotting trees
+# library(timetree) #can create trees with branch lengths
+# library(ape)
 ```
 
 ``` {r, results = 'hide'}
@@ -84,8 +87,6 @@ Fig.1 is the diagram showing the difference between inter- and trans-generationa
 ## Figure 3 - Disciplines and year published {.tabset}
 
 ### Fig. 3A - SR with Disciplines
-
-Still todo is to write desciptions of each figure
 
 ``` {r, results = 'hide'}
 
@@ -173,8 +174,6 @@ Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent
 
 Fig4a
 
-#TODO cant figure out how to add text on top of bar of total percent
-
 ```
 
 ### Fig.4B - Transmission mode 
@@ -238,7 +237,6 @@ Fig4 <- (Fig4a / Fig4b /Fig4c) + plot_annotation(tag_levels = "A")
 
 Fig4 
 
-# TODO how to get total percents at the top of each bar as well as within each bar?
 ```
 
 
@@ -546,6 +544,49 @@ Fig6 <- ((Fig6a + Fig6b)/(Fig6c)) + plot_annotation(tag_levels = "A")
 Fig6
 ```
 
+
+# Bibliometric analysis
+
+## Figure 7 - Keyword matrix
+
+``` {r, message = FALSE, warning = FALSE, results = 'hide'}
+bib2 <- biblioAnalysis(bib, sep = ";")
+S <- summary(object = bib2, k = 50, pause = FALSE)
+```
+``` {r, message = FALSE, warning = FALSE}
+keywords <- S$MostRelKeywords
+words<-keywords[,1]
+freq<-as.numeric(keywords[,2])
+prob<-freq/sum(freq)
+
+Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
+
+Fig7
+```
+
+## Figure 8 - Country collaboration
+
+```{r, results = 'hide'}
+bib3 <- metaTagExtraction(bib, Field = "AU_CO", sep = ";") 
+NetMatrix <- biblioNetwork(bib3, analysis = "collaboration", 
+                           network = "countries", sep = ";")
+results <- biblioAnalysis(bib3, sep = ";")
+S2 <- summary(object = results, k=20 ,pause = FALSE) 
+MostProdCountries <- S2$MostProdCountries
+MostProdCountries$Articles <- as.numeric(MostProdCountries$Articles)
+countries <- MostProdCountries[1:8,'Country']
+countries <- trimws(countries)
+net_matrix <- as.matrix(NetMatrix)
+small_matrix <-net_matrix[countries, countries]
+diag(small_matrix) <- 0 #get rid of collaboration with same country
+
+
+circos.clear()
+Fig8 <- chordDiagramFromMatrix(small_matrix)
+
+Fig8
+```
+
 <!-- ## Species tree -->
 <!-- It can't assign OTT to a majority of species -->
 
@@ -594,9 +635,9 @@ ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key
 ```
 
 
-## Fig. X {.tabset}
+## Figure 9 - CEESAT outcomes {.tabset}
 
-### Fig. XA - Average scores across SRs
+### Fig. 9A - Average scores across SRs
 
 ```{r}
 #calculating the % of scores within each questions 
@@ -611,7 +652,7 @@ percent_ceesat_score$question <- factor(percent_ceesat_score$question, levels(pe
 percent_ceesat_score$score <- as.factor(percent_ceesat_score$score)
 percent_ceesat_score$score <- factor(percent_ceesat_score$score, levels(percent_ceesat_score$score)[c(2,3,1,4)]) #set the order of levels for assessment scores:
 
-FigXa <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
+Fig9a <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
   geom_col(mapping = aes(x = question, y = percent, fill = score), width = 0.7,
            position = "fill", color = "black") +
   coord_flip(ylim = c(0, 1)) +
@@ -620,14 +661,14 @@ FigXa <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
   theme(legend.position = "none", panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank()) + 
   ylab("Percent (%)") + xlab("CEESAT Question")
 
-FigXa
+Fig9a
 ``` 
 
-### Fig. XB - Individual scores
+### Fig. 9B - Individual scores
 
 ``` {r}
 
-FigXb <- ggplot(data = ceesat_long, aes(y = id, x = question)) +
+Fig9b <- ggplot(data = ceesat_long, aes(y = id, x = question)) +
   geom_tile(color="black", fill="white", size = 0.5) +
   geom_point(aes(color = as.factor(score)), size = 3) +
   scale_x_discrete(position = "top") +
@@ -645,13 +686,13 @@ FigXb <- ggplot(data = ceesat_long, aes(y = id, x = question)) +
   ylab("Study ID") + 
   xlab("CEESAT question") 
 
-FigXb
+Fig9b
 ```
 
 ### Fig. X - Panel
 
 ```{r}
-FigX <- (FigXa + FigXb) + plot_annotation(tag_levels = "A")
+Fig9 <- (Fig9a + Fig9b) + plot_annotation(tag_levels = "A")
 
-FigX
+Fig9
 ```
