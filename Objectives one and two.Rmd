@@ -1,0 +1,81 @@
+---
+title: "Main text figures: Objectives one and two"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+output: 
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---
+
+    
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = TRUE, 
+tidy = TRUE, 
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+### Seutup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(plyr)
+library(here)
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(forcats)
+library(ggplot2)
+library(hrbrthemes) #for ggplot2
+library(bibliometrix)
+library(igraph)
+library(patchwork)
+library(RColorBrewer)
+library(wordcloud2)
+library(migest)
+library(circlize)
+# library(rotl) #for getting OTTIDs from OTL
+# library(phytools) #for plotting trees
+# library(timetree) #can create trees with branch lengths
+# library(ape)
+```
+
+``` {r, results = 'hide'}
+#manually extracted data
+xldata <- "./Data_extraction_postcrosschecking.xlsx"
+# xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
+
+# #bibliometric data
+# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+```
+
+
+``` {r, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```

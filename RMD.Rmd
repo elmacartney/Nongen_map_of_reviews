@@ -534,6 +534,7 @@ The following visualisations allow us to view bibliometric patterns from data ex
 results1 <- biblioAnalysis(bib) #run basic standard descriptive analysis of the dataset (data frame)
 summary(results1, k = 7, pause = F, width = 130) #produces a sequence of standard summary tables displayed in the console
 plot(results1, k = 7, pause = F)
+
 ```
 
 ### Keyword matrix plot
