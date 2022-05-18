@@ -79,3 +79,141 @@ names(list_all) <- tab_names
 #get dataframes out of list
 list2env(list_all, .GlobalEnv)
 ```
+# Objective One - Between discipline patterns 
+
+## Figure 3 - Broad patterns {.tabset}
+
+### Fig 3A - Time trend
+
+``` {r}
+
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+Fig3a <- Publication_info_discipline %>% 
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(aes(), width = 0.7) +
+  xlim(2009, 2021.5) +
+  ylim(0, 14.5) +
+  geom_text(aes(label = n),vjust = -0.2) +
+  theme_classic() +
+  labs(x = "Year", y = "Article count")+
+  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+
+
+
+Fig3a
+
+```
+
+### Fig. 3B - Disciplines
+
+``` {r, results = 'hide'}
+
+count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
+percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
+percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
+percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
+
+# brewer.pal(6, "Accent") # matching colours of disciplines from brewer used in other figs
+# my.cols <- (c("#BEAED4","#FFFF99" ,"#386CB0","#7FC97F","#FDC086","#F0027F"))
+
+Fig3b <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+  geom_col(aes(), width = 0.7) + 
+  geom_text(aes(label = percent), vjust = -0.2) +
+  scale_y_continuous(name = "Percent (%)") +
+  xlab("Discipline") + 
+  # scale_fill_manual(values=my.cols) +
+  theme_classic() 
+
+Fig3b
+
+#TODO may change colour scheme
+
+```
+
+### Fig. 3C - Species
+Losia to do
+
+### Fig. 3 - Panel
+
+``` {r}
+Fig3 <- Fig3a / Fig3b + plot_annotation(tag_levels = "A")
+
+Fig3 
+```
+
+## Figure 4 - Research patterns {.tabset}
+
+### Fig. 4A - Inter- vs trans- inheritance
+
+
+``` {r}
+
+count_inter_vs_trans <- count(Inter_vs_trans_info, inter_vs_trans_code)
+percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
+
+percent_inter_vs_trans$percent <- round(percent_inter_vs_trans$percent, digits = 0)
+
+Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) +
+  geom_col(aes(), width = 0.7) +
+  labs(y = "Percent (%)") +
+  ylim(0,100)+
+  geom_text(aes(label = percent), vjust = -0.2) +
+  theme_classic() +
+  labs(x = "Inter- vs trans-inheritnace")
+
+Fig4a
+```
+
+### Fig. 4B - Transmission mode 
+
+```{r}
+
+count_transmission <- count(Transmission_info, transmission_code)
+percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
+
+percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
+
+Fig4b <- ggplot(percent_transmission, aes(x = transmission_code, y = percent)) + 
+  geom_col(aes(), width = 0.7) +
+  labs(y = "Percent (%)") +
+  ylim(0,100) +
+  geom_text(aes(label = percent), vjust = -0.2)+
+  theme_classic() +
+  labs(x = "Transmission mode")
+
+Fig4b
+
+```
+
+### Fig. 4C - Terminology match vs mismatch
+```{r}
+
+Fig4c <- ggplot(percent_terminology, aes(x = reorder(terminology_code, -percent), y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill =   discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Terminology use matches Fig. 1", fill = "Discipline")+
+  theme(legend.position = "none")
+
+
+Fig4c
+
+```
+
+### Fig. 4D - Type of F0 exposure
+
+### Fig. 4E - Timing of F0 exposure
+
+### Fig. 4F - Descendant trait
+
+### Fig. 4G - Descendant sex
+
+### Fig. 4H - Environmental effect direction 
+
+### Fig. 4 - Panel 
+Make panel of 4/4 
