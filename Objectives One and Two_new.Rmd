@@ -209,6 +209,28 @@ Fig4c
 
 ### Fig. 4D - Type of F0 exposure
 
+```{r}
+
+count_F0_env <- count(F0_env_info, F0_env_code)
+percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
+
+percent_F0_env$percent <- round(percent_F0_env$percent, digits = 0)
+
+Fig5d <- ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Type of environmental exposure", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+
+Fig5d
+```
+
+
 ### Fig. 4E - Timing of F0 exposure
 
 ### Fig. 4F - Descendant trait

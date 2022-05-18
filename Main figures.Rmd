@@ -154,6 +154,7 @@ Merged_inter_vs_trans <- merge(Inter_vs_trans_info, Review_info)
 
 count_inter_vs_trans <- Merged_inter_vs_trans %>% count(inter_vs_trans_code, by = discipline_code ) %>% arrange(desc(n))
 percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
+
 percent_inter_vs_trans$percent <- round(percent_inter_vs_trans$percent, digits = 0)
 
 percent_inter_vs_trans <-percent_inter_vs_trans %>%
