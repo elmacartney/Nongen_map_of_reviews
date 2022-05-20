@@ -1,0 +1,238 @@
+---
+title: "speciest_tree"
+author: "ML"
+date: "19/05/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(tidyverse)
+library(here)
+library(rotl)
+library(ape)
+```
+
+## R Markdown
+
+#things still to fix everywhere:
+"Rutowska et al_2020" should be "Rutkowska et al_2020"
+
+```{r load data}
+
+# load manually extracted data
+xldata <- "./Data_extraction_postcrosschecking.xlsx"
+# xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
+
+# split list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+# create a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+# assign tab names to each dataframe
+names(list_all) <- tab_names
+
+# get dataframes out of list
+list2env(list_all, .GlobalEnv)
+
+```
+
+
+```{r make tree}
+
+#str(Species_info)
+length(unique(Species_info$species_name)) #354
+unique(Species_info$species_name) #needs cleaning
+#table(Species_info$species_name)
+
+Species_info$species_name <- gsub("_"," ", Species_info$species_name) #get rid of the underscores
+
+# Make a table of how many words each name has:
+table((lengths(gregexpr("\\W+", Species_info$species_name)) + 1)) #20 records with >2 words species names (subspecies etc.)
+ 
+#taxa <- tnrs_match_names(unique(Species_info$species_name)) #fails due to non-recognizable names
+
+# Fix obviously incompatible names (subspecies, name variants):
+Species_info$species_name[Species_info$species_name == "Pinus elliottii Engelm"] <- "Pinus elliottii"
+Species_info$species_name[Species_info$species_name == "sockeye salmon"] <- "Oncorhynchus nerka"
+Species_info$species_name[Species_info$species_name == "Pinus caribaea var. hondurensis"] <- "Pinus caribaea"
+Species_info$species_name[Species_info$species_name == "Triticum turgidum L. ssp. durum"] <- "Triticum turgidum"
+Species_info$species_name[Species_info$species_name == "Brassica rapa spp. chinensis"] <- "Brassica rapa"
+Species_info$species_name[Species_info$species_name == "Populus nigra cv. Italica"] <- "Populus nigra"
+Species_info$species_name[Species_info$species_name == "Chlamydotis undulata undulata"] <- "Chlamydotis undulata"
+Species_info$species_name[Species_info$species_name == "Apis mellifera capensis"] <- "Apis mellifera"
+Species_info$species_name[Species_info$species_name == "Capra aegagrus hircus"] <- "Capra hircus"
+Species_info$species_name[Species_info$species_name == "Sus scrofa domesticus"] <- "Sus scrofa"
+Species_info$species_name[Species_info$species_name == "Sus domesticus"] <- "Sus scrofa"
+Species_info$species_name[Species_info$species_name == "Equus ferus caballus"] <- "Equus ferus"
+Species_info$species_name[Species_info$species_name == "Coturnix coturnix japonica"] <- "Coturnix japonica"
+Species_info$species_name[Species_info$species_name == "Biomphalaria Pfeifferi"] <- "Biomphalaria pfeifferi" 
+Species_info$species_name[Species_info$species_name == "Chlorocebus aethiops sabaeus"] <- "Chlorocebus sabaeus"
+Species_info$species_name[Species_info$species_name == "Mytillus trossulus"] <- "Mytilus trossulus"
+Species_info$species_name[Species_info$species_name == "Gallus gallus domesticus"] <- "Gallus gallus"
+Species_info$species_name[Species_info$species_name == "Rattus norregicus"] <- "Rattus norvegicus"
+Species_info$species_name[Species_info$species_name == "Cyprinus caprio"] <- "Cyprinus carpio"
+Species_info$species_name[Species_info$species_name == "Parus caeruleus"] <- "Cyanistes caeruleus"
+Species_info$species_name[Species_info$species_name == "Acanthochromis polycanthus"] <- "Acanthochromis polyacanthus"
+Species_info$species_name[Species_info$species_name == "Amphibolurus muricatus "] <- "Amphibolurus muricatus"
+Species_info$species_name[Species_info$species_name == "Poecilopsis gracilis"] <- "Poeciliopsis catemaco"
+Species_info$species_name[Species_info$species_name == "Campanulastrum americanum"] <- "Campanula americana"
+Species_info$species_name[Species_info$species_name == "Carpodacus mexicanus"] <- "Haemorhous mexicanus"
+Species_info$species_name[Species_info$species_name == "Caryedon palaestinicus"] <- "Caryedon serratus"
+Species_info$species_name[Species_info$species_name == "Galinsoga ciliata"] <- "Galinsoga quadriradiata"
+Species_info$species_name[Species_info$species_name == "Hydroides diramphus"] <- "Hydroides dirampha"
+Species_info$species_name[Species_info$species_name == "Lymantria dispa"] <- "Lymantria dispar"
+Species_info$species_name[Species_info$species_name == "Mimulus guttatus"] <- "Erythranthe guttata"
+Species_info$species_name[Species_info$species_name == "Lymantria dispa"] <- "Lymantria dispar"
+Species_info$species_name[Species_info$species_name == "Musa acuminate"] <- "Musa acuminata"
+Species_info$species_name[Species_info$species_name == "Oryza indica"] <- "Oryza sativa"
+Species_info$species_name[Species_info$species_name == "Physella acuta"] <- "Physa acuta"
+Species_info$species_name[Species_info$species_name == "Pinus caribaea"] <- "Pinus cubensis" #reverse later
+Species_info$species_name[Species_info$species_name == "Racesina luteola"] <- "Cerasina luteola" #reverse later
+Species_info$species_name[Species_info$species_name == "Chrysanthemum nankingense"] <- "Chrysanthemum boreale" #reverse later
+Species_info$species_name[Species_info$species_name == "Cyprinodon variegatus"] <- "Cyprinodon" #reverse later
+
+#Mus domesticus <- Mus musculus
+Species_info$species_name[Species_info$species_name == "Mus domesticus"] <- "Mus musculus"
+#Mus domesticus <- Mus musculus
+Species_info$species_name[Species_info$species_name == "dysdercus fasciatus"] <- "Dysdercus fasciatus"
+#"Mus musculus; Rattus norvegicus" -> split into two records
+Species_info$species_name[Species_info$species_name == "Mus musculus; Rattus norvegicus"] <- "Mus musculus"
+Species_info <- rbind(Species_info, setNames(data.frame("Rutowska et al_2020", "Rattus norvegicus", NA), names(Species_info)))
+#NA -> drop rows with "NA" as species name
+Species_info <- Species_info[Species_info$species_name != "NA", ]
+
+table(Species_info$species_name, useNA = "always") #no NA
+length(unique(Species_info$species_name)) #344
+
+taxa <- tnrs_match_names(unique(Species_info$species_name)) #runs fine
+#names(taxa)
+#synonyms(taxa) ##list of all synonyms
+#taxa$unique_name - main TOL names
+table(taxa$approximate_match) ##11 approximate matches
+table(taxa$flags) # flags 8 names with problems (hidden, hybrid, incertae_sedis_inherited, infraspecific, infraspecific) - will need fixing
+
+mytree <- tol_induced_subtree(ott_ids = taxa$ott_id, label_format= "name") #this will fail with: Error: HTTP failure: 400
+#[/v3/tree_of_life/induced_subtree] Error: node_id 'ott768010' was not found!list(ott1014334 = "pruned_ott_id", ott3899190 = "pruned_ott_id", ott3904118 = "pruned_ott_id", ott4279984 = "pruned_ott_id", ott5147008 = "pruned_ott_id", ott768010 = "pruned_ott_id")
+ 
+taxa[taxa[["ott_id"]] == "768010", ] #Peringia ulvae - "unplaced_inherited"
+Species_info$species_name[Species_info$species_name == "Peringia ulvae"] <- "Peringia"
+#taxa[taxa[["ott_id"]] == "987626", ] # Peringia - still "unplaced", replace with related "Hydrobia acuta":
+Species_info$species_name[Species_info$species_name == "Peringia"] <- "Hydrobia acuta"
+
+taxa[taxa[["ott_id"]] == "1014334", ] #Euoniticellus intermedius - "incertae_sedis_inherited"
+Species_info$species_name[Species_info$species_name == "Euoniticellus intermedius"] <- "Euoniticellus"
+taxa[taxa[["ott_id"]] == "328990", ] # Euoniticellus - still "incertae_sedis", replace with "Anoplodrepanus""
+Species_info$species_name[Species_info$species_name == "Euoniticellus"] <- "Anoplodrepanus reconditus"
+
+taxa[taxa[["ott_id"]] == "3899190", ] #Chrysanthemum x morifolium - "hybrid"
+Species_info$species_name[Species_info$species_name == "Chrysanthemum morifolium"] <- "Chrysanthemum indicum"
+
+taxa[taxa[["ott_id"]] == "3904118", ] #Fragaria x ananassa - "hybrid" (Fragaria chiloensis x Fragaria virginiana) 
+Species_info$species_name[Species_info$species_name == "Fragaria ananassa"] <- "Fragaria chiloensis"
+
+taxa[taxa[["ott_id"]] == "4279984", ] #Poecilopsis gracilis - "hidden, sibling_higher"
+#"Poecilopsis gracilis" -> Poecilopsis (genus-rank name) fix:
+Species_info$species_name[Species_info$species_name == "Poecilopsis gracilis"] <- "Poecilopsis catemaco"
+#taxa[taxa[["ott_id"]] == "4279975", ] # Poecilopsis - "barren, merged", replace with ""
+#Species_info$species_name[Species_info$species_name == "Poecilopsis"] <- "Neoheterandria"
+
+taxa[taxa[["ott_id"]] == "5147008", ] #Populus x beijingensis  - "hybrid": P. beijingensis (P. nigra var. italica × P. cathayana)
+Species_info$species_name[Species_info$species_name == "Populus beijingensis"] <- "Populus cathayana"
+
+#"Ludwigia hexapetala" gets recognised as a subspecies Ludwigia_grandiflora_subsp._hexapetala
+Species_info$species_name[Species_info$species_name == "Ludwigia hexapetala"] <- "Ludwigia grandiflora"
+
+
+## re-run raxa matching and tree retrieval:
+taxa <- tnrs_match_names(unique(Species_info$species_name)) #runs fine
+table(taxa$approximate_match) #12 approximate matches
+table(taxa$flags) # flags 2 names with problems (incertae_sedis_inherited) - will need fixing
+mytree <- tol_induced_subtree(ott_ids = taxa$ott_id, label_format= "name") #this now works fine
+
+#plot(mytree, show.tip.label = T, cex = 0.8, no.margin = TRUE)
+#mytree$tip.label
+
+## Tree tip labels need some cleaning:
+mytree$tip.label <- gsub("\\(.*", "", mytree$tip.label) #remove comments
+mytree$tip.label <- gsub("_"," ", mytree$tip.label) #get rid of the underscores
+mytree$tip.label <- trimws(mytree$tip.label) #getting rid of the trailing whitespace
+
+## Reverse substitutions of species names in the tree tip labels:
+mytree$tip.label[mytree$tip.label == "Hydrobia acuta"] <- "Peringia ulvae"
+mytree$tip.label[mytree$tip.label == "Anoplodrepanus reconditus"] <- "Euoniticellus intermedius"
+mytree$tip.label[mytree$tip.label == "Chrysanthemum indicum"] <- "Chrysanthemum morifolium"
+mytree$tip.label[mytree$tip.label == "Fragaria chiloensis"] <- "Fragaria ananassa" 
+mytree$tip.label[mytree$tip.label == "Poecilopsis catemaco"] <- "Poecilopsis gracilis"
+mytree$tip.label[mytree$tip.label == "Populus cathayana"] <- "Populus beijingensis"
+mytree$tip.label[mytree$tip.label == "Ludwigia grandiflora"] <- "Ludwigia hexapetala"
+mytree$tip.label[mytree$tip.label == "Pinus cubensis"] <- "Pinus caribaea" 
+mytree$tip.label[mytree$tip.label == "Cerasina luteola"] <- "Racesina luteola"
+mytree$tip.label[mytree$tip.label == "Chrysanthemum boreale"] <- "Chrysanthemum nankingense"
+mytree$tip.label[mytree$tip.label == "Cyprinodon"] <- "Cyprinodon variegatus"
+
+## Other substitutions of species names made in the tree tip labels:
+mytree$tip.label[mytree$tip.label == "Taraxacum adiantifrons"] <- "Taraxacum hemicyclum"
+mytree$tip.label[mytree$tip.label == "Trichogramma bezdencovii"] <- "Trichogramma telengai"
+mytree$tip.label[mytree$tip.label == "Pan"] <- "Pan troglodytes"
+mytree$tip.label[mytree$tip.label == "Vulpes lagopus"] <- "Alopex lagopus"
+mytree$tip.label[mytree$tip.label == "Pelophylax lessonae"] <- "Rana lessonae"
+mytree$tip.label[mytree$tip.label == "Diodella teres"] <- "Diodia teres" 
+mytree$tip.label[mytree$tip.label == "Solidago canadensis"] <- "Solidago altissima"
+mytree$tip.label[mytree$tip.label == "Radix balthica"] <- "Ampullaceana balthica"
+mytree$tip.label[mytree$tip.label == "Magallana gigas"] <- "Crassostrea gigas"
+mytree$tip.label[mytree$tip.label == "Derocephalus angusticollis"] <- "Telostylinus angusticollis" 
+mytree$tip.label[mytree$tip.label == "Carinascincus metallicus"] <- "Niveoscincus metallicus" 
+mytree$tip.label[mytree$tip.label == "Pecari tajacu"] <- "Dicotyles tajacu" 
+mytree$tip.label[mytree$tip.label == "Palaemon pugio"] <- "Palaemonetes pugio" 
+
+## Reverse substitutions of species names in the species list:
+Species_info$species_name[Species_info$species_name == "Hydrobia acuta"] <- "Peringia ulvae"
+Species_info$species_name[Species_info$species_name == "Anoplodrepanus reconditus"] <- "Euoniticellus intermedius"
+Species_info$species_name[Species_info$species_name == "Chrysanthemum indicum"] <- "Chrysanthemum morifolium"
+Species_info$species_name[Species_info$species_name == "Fragaria chiloensis"] <- "Fragaria ananassa" 
+Species_info$species_name[Species_info$species_name == "Poecilopsis catemaco"] <- "Poecilopsis gracilis"
+Species_info$species_name[Species_info$species_name == "Populus cathayana"] <- "Populus beijingensis"
+Species_info$species_name[Species_info$species_name == "Ludwigia grandiflora"] <- "Ludwigia hexapetala"
+Species_info$species_name[Species_info$species_name == "Pinus cubensis"] <- "Pinus caribaea" 
+Species_info$species_name[Species_info$species_name == "Cerasina luteola"] <- "Racesina luteola" 
+Species_info$species_name[Species_info$species_name == "Chrysanthemum boreale"] <- "Chrysanthemum nankingense" 
+Species_info$species_name[Species_info$species_name == "Cyprinodon"] <- "Cyprinodon variegatus"
+
+#Fix more names in the species list:
+Species_info$species_name[Species_info$species_name == "Strongylocentrotus franciscanus"] <- "Mesocentrotus franciscanus"
+Species_info$species_name[Species_info$species_name == "Mytilus chilensis"] <- "Mytilus edulis"
+Species_info$species_name[Species_info$species_name == "Stagastes partitus"] <- "Stegastes partitus"
+Species_info$species_name[Species_info$species_name == "Populus pseudo-simonii"] <- "Populus pseudosimonii"
+Species_info$species_name[Species_info$species_name == "Channa naculata"] <- "Channa maculata"
+Species_info$species_name[Species_info$species_name == "Bythotrephes longima"] <- "Bythotrephes longimanus"
+Species_info$species_name[Species_info$species_name == "Brachyraphis roseni"] <- "Brachyrhaphis roseni"
+Species_info$species_name[Species_info$species_name == "Biomphalaria galbrata"] <- "Biomphalaria glabrata"
+Species_info$species_name[Species_info$species_name == "Brachyraphis rhabdophora"] <- "Brachyrhaphis rhabdophora"
+Species_info$species_name[Species_info$species_name == "Dicotyles tajacus"] <- "Dicotyles tajacu"
+Species_info$species_name[Species_info$species_name == "Poecilopsis catemaco"] <- "Poeciliopsis catemaco"
+Species_info$species_name[Species_info$species_name == "Poeciolopsis occidentalis"] <- "Poeciliopsis occidentalis"
+Species_info$species_name[Species_info$species_name == "Niveoscincus ocellatus"] <- "Carinascincus ocellatus"
+Species_info$species_name[Species_info$species_name == "Polygonum dropiper"] <- "Persicaria hydropiper"
+Species_info$species_name[Species_info$species_name == "Polygonum persicaria"] <- "Persicaria glabra"
+Species_info$species_name[Species_info$species_name == "Priapichthys festae"] <- "Pseudopoecilia festae"
+
+sort(intersect(as.character(mytree$tip.label), unique(Species_info$species_name))) ## 335 names are matching - all fixed 
+sort(setdiff(unique(Species_info$species_name), as.character(mytree$tip.label))) ## names not matching - not in tip.label
+sort(setdiff(as.character(mytree$tip.label), unique(Species_info$species_name))) ## names not matching - not in species_name
+
+table(unique(Species_info$species_name))
+
+plot(mytree, show.tip.label = T, cex = 0.8, no.margin = TRUE)
+str(mytree) #335 tips
+
+write.tree(mytree, file = "species_tree.tre") #save the tree 
+# mytree <- read.tree(file = "species_tree.tre") #if you need to read the tree
+
+write.csv(Species_info, file = "Species_info.csv")
+```

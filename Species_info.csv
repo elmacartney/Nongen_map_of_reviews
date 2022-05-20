@@ -1,0 +1,557 @@
+"","id","species_name","species_comment"
+"1","Yin et al _2019","Galeolaria caespitosa",NA
+"2","Yin et al _2019","Arabidopsis thaliana",NA
+"3","Yin et al _2019","Calluna vulgaris",NA
+"4","Yin et al _2019","Genista tinctoria",NA
+"5","Yin et al _2019","Rattus norvegicus",NA
+"6","Yin et al _2019","Coturnix coturnix",NA
+"7","Yin et al _2019","Columba livia",NA
+"8","Yin et al _2019","Cardamine alpina",NA
+"9","Yin et al _2019","Veronica alpina",NA
+"10","Yin et al _2019","Leucanthemopsis alpina",NA
+"11","Yin et al _2019","Gnaphalium supinum",NA
+"12","Yin et al _2019","Cardamine alpina",NA
+"13","Yin et al _2019","Medicago truncatula",NA
+"14","Yin et al _2019","Physa acuta",NA
+"15","Yin et al _2019","Gambusia affinis",NA
+"16","Yin et al _2019","Microtus oeconomus",NA
+"17","Yin et al _2019","Niveoscincus metallicus",NA
+"18","Yin et al _2019","Drosophila melanogaster",NA
+"19","Yin et al _2019","Rattus norvegicus",NA
+"20","Yin et al _2019","Drosophila suzukii",NA
+"21","Yin et al _2019","Knautia arvensis",NA
+"22","Yin et al _2019","Trifolium repens",NA
+"23","Yin et al _2019","Physa acuta",NA
+"24","Yin et al _2019","Callosobruchus maculatus",NA
+"25","Yin et al _2019","Cerastium cerastoides",NA
+"26","Yin et al _2019","Cactoblastis cactorum",NA
+"27","Yin et al _2019","Caenorhabditis elegans",NA
+"28","Yin et al _2019","Sclerodermus pupariae",NA
+"29","Yin et al _2019","Gasterosteus aculeatus",NA
+"30","Yin et al _2019","Apostichopus japonicus",NA
+"31","Yin et al _2019","Poecilia reticulata",NA
+"32","Yin et al _2019","Trichogramma telengai",NA
+"33","Yin et al _2019","Acanthochromis polyacanthus",NA
+"34","Yin et al _2019","Acyrthosiphon pisum",NA
+"35","Yin et al _2019","Oryzias latipes",NA
+"36","Yin et al _2019","Daphnia magna",NA
+"37","Yin et al _2019","Verbascum thapsus",NA
+"38","Yin et al _2019","Oncorhynchus nerka",NA
+"39","Yin et al _2019","Danio rerio",NA
+"40","Yin et al _2019","Enchytraeus crypticus",NA
+"41","Yin et al _2019","Daphnia pulex",NA
+"42","Yin et al _2019","Daphnia carinata",NA
+"43","Yin et al _2019","Stipa krylovii",NA
+"44","Yin et al _2019","Artemisia frigida",NA
+"45","Yin et al _2019","Anastrepha ludens",NA
+"46","Yin et al _2019","Hydroides elegans",NA
+"47","Yin et al _2019","Ludwigia hexapetala",NA
+"48","Yin et al _2019","Taeniopygia guttata",NA
+"49","Yin et al _2019","Pocillopora damicornis",NA
+"50","Yin et al _2019","Agriophyllum squarrosum",NA
+"51","Yin et al _2019","Larus michahellis",NA
+"52","Yin et al _2019","Cimex lectularius",NA
+"53","Yin et al _2019","Saccostrea glomerata",NA
+"54","Yin et al _2019","Caenorhabditis remanei",NA
+"55","Yin et al _2019","Daphnia ambigua",NA
+"56","Yin et al _2019","Tachycineta bicolor",NA
+"57","Yin et al _2019","Pinus pinaster",NA
+"58","Yin et al _2019","Gammarus fasciatus",NA
+"59","Yin et al _2019","Sitobion avenae",NA
+"60","Yin et al _2019","Plantago lanceolata",NA
+"61","Yin et al _2019","Drosophila subpulchrella",NA
+"62","Yin et al _2019","Aedes aegypti",NA
+"63","Yin et al _2019","Tamiasciurus hudsonicus",NA
+"64","Yin et al _2019","Fredericella sultana",NA
+"65","Yin et al _2019","Rattus norvegicus",NA
+"66","Yin et al _2019","Amaranthus retroflexus",NA
+"67","Yin et al _2019","Galinsoga parviflora",NA
+"68","Yin et al _2019","Galinsoga quadriradiata",NA
+"69","Yin et al _2019","Amaranthus albus",NA
+"70","Yin et al _2019","Salmo salar",NA
+"71","Yin et al _2019","Palaemonetes pugio",NA
+"72","Yin et al _2019","Leymus chinensis",NA
+"73","Yin et al _2019","Styela plicata",NA
+"74","Yin et al _2019","Fragaria vesca",NA
+"75","Yin et al _2019","Physa pomilia",NA
+"76","Yin et al _2019","Bythotrephes longimanus",NA
+"77","Yin et al _2019","Gadus morhua",NA
+"78","Yin et al _2019","Avena barbata",NA
+"79","Yin et al _2019","Daphnia cucullata",NA
+"80","Yin et al _2019","Raphanus raphanistrum",NA
+"81","Yin et al _2019","Stator limbatus",NA
+"82","Yin et al _2019","Bugula neritina",NA
+"83","Yin et al _2019","Telostylinus angusticollis",NA
+"84","Yin et al _2019","Caryedon serratus",NA
+"85","Yin et al _2019","Centaurea hyssopifolia",NA
+"86","Yin et al _2019","Pieris rapae",NA
+"87","Yin et al _2019","Cyprinodon variegatus",NA
+"88","Yin et al _2019","Bromus erectus",NA
+"89","Yin et al _2019","Folsomia candida",NA
+"90","Yin et al _2019","Persicaria glabra",NA
+"91","Yin et al _2019","Persicaria hydropiper",NA
+"92","Yin et al _2019","Tachyporus hypnorum",NA
+"93","Yin et al _2019","Ipomoea purpurea",NA
+"94","Yin et al _2019","Plantago media",NA
+"95","Yin et al _2019","Diodia teres",NA
+"96","Yin et al _2019","Aphis nerii",NA
+"97","Yin et al _2019","Ophraella notulata",NA
+"98","Yin et al _2019","Tigriopus japonicus",NA
+"99","Yin et al _2019","Campanula americana",NA
+"100","Yin et al _2019","Campanula americana",NA
+"101","Yin et al _2019","Allonemobius socius",NA
+"102","Yin et al _2019","Moina macrocopa",NA
+"103","Yin et al _2019","Myzus persicae",NA
+"104","Yin et al _2019","Chenopodium album",NA
+"105","Yin et al _2019","Bicyclus anynana",NA
+"106","Yin et al _2019","Saissetia coffeae",NA
+"107","Yin et al _2019","Poa pratensis",NA
+"108","Yin et al _2019","Schizachyrium scoparium",NA
+"109","Yin et al _2019","Lupinus perennis",NA
+"110","Yin et al _2019","Erigone dentipalpis",NA
+"111","Yin et al _2019","Anopheles stephensi",NA
+"112","Yin et al _2019","Sorghum bicolor",NA
+"113","Yin et al _2019","Carinascincus ocellatus",NA
+"114","Yin et al _2019","Thlaspi arvense",NA
+"115","Besson et al_2015","Rattus norvegicus",NA
+"116","Besson et al_2015","Mus musculus",NA
+"117","Lagisz et al_2014","Rattus norvegicus",NA
+"118","Lagisz et al_2014","Mus musculus",NA
+"119","Lagisz et al_2015","Rattus norvegicus",NA
+"120","Lagisz et al_2015","Mus musculus",NA
+"121","Burgueno et al_2020","Rattus norvegicus",NA
+"122","Burgueno et al_2020","Mus musculus",NA
+"123","Burgueno et al_2020","Cavia porcellus",NA
+"124","Moore et al_2019","Acrocephalus arundinaceus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"125","Moore et al_2019","Nicrophorus vespilloides","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"126","Moore et al_2019","Phylloscopus nitidus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"127","Moore et al_2019","Oncorhynchus tshawytscha","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"128","Moore et al_2019","Haemorhous mexicanus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"129","Moore et al_2019","Cinclus cinclus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"130","Moore et al_2019","Gryllus texensis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"131","Moore et al_2019","Taeniopygia guttata","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"132","Moore et al_2019","Macaca mulatta","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"133","Moore et al_2019","Danio rerio","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"134","Moore et al_2019","Acanthochromis polyacanthus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"135","Moore et al_2019","Alces alces","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"136","Moore et al_2019","Salmo salar","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"137","Moore et al_2019","Myodes glareolus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"138","Moore et al_2019","Hirundo rustica","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"139","Moore et al_2019","Stegastes partitus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"140","Moore et al_2019","Ovis canadensis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"141","Moore et al_2019","Cyanistes caeruleus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"142","Moore et al_2019","Salvelinus fontinalis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"143","Moore et al_2019","Coenagrion puella","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"144","Moore et al_2019","Chlamydotis undulata","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"145","Moore et al_2019","Ficedula albicollis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"146","Moore et al_2019","Urocitellus columbianus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"147","Moore et al_2019","Larus canus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"148","Moore et al_2019","Eulamprus quoyii","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"149","Moore et al_2019","Meles meles","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"150","Moore et al_2019","Aphelocoma coerulescens","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"151","Moore et al_2019","Gambusia holbrooki","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"152","Moore et al_2019","Melitaea cinxia","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"153","Moore et al_2019","Parus major","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"154","Moore et al_2019","Anser anser","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"155","Moore et al_2019","Gryllus integer","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"156","Moore et al_2019","Sylvia atricapilla","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"157","Moore et al_2019","Vipera ursinii","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"158","Moore et al_2019","Coturnix japonica","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"159","Moore et al_2019","Xenochrophis piscator","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"160","Moore et al_2019","Negaprion brevirostris","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"161","Moore et al_2019","Eublepharis macularius","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"162","Moore et al_2019","Lestes sponsa","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"163","Moore et al_2019","Mus musculus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"164","Moore et al_2019","Cygnus olor","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"165","Moore et al_2019","Pungitius pungitius","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"166","Moore et al_2019","Charadrius melodus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"167","Moore et al_2019","Porcellio laevis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"168","Moore et al_2019","Strongylocentrotus purpuratus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"169","Moore et al_2019","Oncorhynchus mykiss","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"170","Moore et al_2019","Rana arvalis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"171","Moore et al_2019","Rana temporaria","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"172","Moore et al_2019","Uta stansburiana","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"173","Moore et al_2019","Ovis aries","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"174","Moore et al_2019","Melospiza melodia","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"175","Moore et al_2019","Spodoptera littoralis","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"176","Moore et al_2019","Saxicola rubicola","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"177","Moore et al_2019","Temnothorax curvispinosus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"178","Moore et al_2019","Gasterosteus aculeatus","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"179","Moore et al_2019","Scathophaga stercoraria","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"180","Moore et al_2019","Marmota flaviventris","data at https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.360v97q , file m2.main.csv"
+"181","Ainge et al_2011","Rattus norvegicus",NA
+"182","Ribaroff et al_2017","Rattus norvegicus",NA
+"183","Ribaroff et al_2017","Mus musculus",NA
+"184","Palencia et al_2015","Sus scrofa","Does not specify species but is implied that its domestic pigs"
+"185","Snell et al_2012","Zea mays",NA
+"186","Snell et al_2012","Glycine max",NA
+"187","Snell et al_2012","Solanum tuberosum",NA
+"188","Arnott et al_2012","Bos taurus","Does not specify but is implied tthat its domestic cows"
+"189","Vesterinin et al_2017","Rattus norvegicus","Does not provide species list of species inclusion criteria but specifically discusses results on rats and mice"
+"190","Vesterinin et al_2017","Mus musculus","Does not provide species list of species inclusion criteria but specifically discusses results on rats and mice"
+"191","English and Uller_2016","Rattus norvegicus","only included non insect studies as insect studies manipulated environment as larvae"
+"192","English and Uller_2016","Mus musculus","only included non insect studies as insect studies manipulated environment as larvae"
+"193","Bonapersona et al_2018","Rattus norvegicus",NA
+"194","Bonapersona et al_2018","Mus musculus",NA
+"195","Assis et al_2010","Rattus norvegicus",NA
+"196","Christians et al_2019","Rattus norvegicus",NA
+"197","Christians et al_2019","Mus musculus",NA
+"198","Sparling et al_2020","Rattus norvegicus",NA
+"199","Sparling et al_2020","Mus musculus",NA
+"200","Rowinski and Rogell_2017","Bos taurus",NA
+"201","Rowinski and Rogell_2017","Chlorocebus sabaeus",NA
+"202","Rowinski and Rogell_2017","Coregonus palaea",NA
+"203","Rowinski and Rogell_2017","Coturnix japonica",NA
+"204","Rowinski and Rogell_2017","Crassostrea gigas",NA
+"205","Rowinski and Rogell_2017","Dicentrarchus labrax",NA
+"206","Rowinski and Rogell_2017","Drosophila ananassae",NA
+"207","Rowinski and Rogell_2017","Drosophila birchii",NA
+"208","Rowinski and Rogell_2017","Drosophila melanogaster",NA
+"209","Rowinski and Rogell_2017","Dysdercus fasciatus",NA
+"210","Rowinski and Rogell_2017","Gasterosteus aculeatus",NA
+"211","Rowinski and Rogell_2017","Lymantria dispar",NA
+"212","Rowinski and Rogell_2017","Mytilus trossulus",NA
+"213","Rowinski and Rogell_2017","Mytilus edulis",NA
+"214","Rowinski and Rogell_2017","Nauphoeta cinerea",NA
+"215","Rowinski and Rogell_2017","Nicrophorus pustulatus",NA
+"216","Rowinski and Rogell_2017","Oncorhynchus gorbuscha",NA
+"217","Rowinski and Rogell_2017","Oncorhynchus keta",NA
+"218","Rowinski and Rogell_2017","Oncorhynchus mykiss",NA
+"219","Rowinski and Rogell_2017","Oreochromis niloticus",NA
+"220","Rowinski and Rogell_2017","Ovis aries",NA
+"221","Rowinski and Rogell_2017","Ovis canadensis",NA
+"222","Rowinski and Rogell_2017","Cyanistes caeruleus",NA
+"223","Rowinski and Rogell_2017","Poecilia reticulata",NA
+"224","Rowinski and Rogell_2017","Pseudophryne guentheri",NA
+"225","Rowinski and Rogell_2017","Rana lessonae",NA
+"226","Rowinski and Rogell_2017","Rana temporaria",NA
+"227","Rowinski and Rogell_2017","Salmo trutta",NA
+"228","Rowinski and Rogell_2017","Salvelinus alpinus",NA
+"229","Rowinski and Rogell_2017","Scophthalmus maximus",NA
+"230","Rowinski and Rogell_2017","Mesocentrotus franciscanus",NA
+"231","Rowinski and Rogell_2017","Teleogryllus oceanicus",NA
+"232","Anastasiadi et al_2021","Acropora millepora",NA
+"233","Anastasiadi et al_2021","Aedes albopictus",NA
+"234","Anastasiadi et al_2021","Aphis citricidus",NA
+"235","Anastasiadi et al_2021","Apis mellifera",NA
+"236","Anastasiadi et al_2021","Apostichopus japonicus",NA
+"237","Anastasiadi et al_2021","Arabidopsis thaliana",NA
+"238","Anastasiadi et al_2021","Arabidopsis thaliana",NA
+"239","Anastasiadi et al_2021","Artemia franciscana",NA
+"240","Anastasiadi et al_2021","Austrofundulus limnaeus",NA
+"241","Anastasiadi et al_2021","Boechera stricta",NA
+"242","Anastasiadi et al_2021","Bos primigenius",NA
+"243","Anastasiadi et al_2021","Bos indicus",NA
+"244","Anastasiadi et al_2021","Bos taurus",NA
+"245","Anastasiadi et al_2021","Brassica juncea",NA
+"246","Anastasiadi et al_2021","Brassica napus",NA
+"247","Anastasiadi et al_2021","Brassica carinata",NA
+"248","Anastasiadi et al_2021","Brassica napus",NA
+"249","Anastasiadi et al_2021","Brassica oleracea",NA
+"250","Anastasiadi et al_2021","Brassica rapa",NA
+"251","Anastasiadi et al_2021","Brassica rapa",NA
+"252","Anastasiadi et al_2021","Caenorhabditis elegans",NA
+"253","Anastasiadi et al_2021","Cajanus cajan",NA
+"254","Anastasiadi et al_2021","Callithrix jacchus",NA
+"255","Anastasiadi et al_2021","Capra hircus",NA
+"256","Anastasiadi et al_2021","Capsicum annuum",NA
+"257","Anastasiadi et al_2021","Carassius gibelio",NA
+"258","Anastasiadi et al_2021","Cyprinus carpio",NA
+"259","Anastasiadi et al_2021","Cavia aperea",NA
+"260","Anastasiadi et al_2021","Cavia porcellus",NA
+"261","Anastasiadi et al_2021","Channa argus",NA
+"262","Anastasiadi et al_2021","Channa maculata",NA
+"263","Anastasiadi et al_2021","Chlamydomonas reinhardtii",NA
+"264","Anastasiadi et al_2021","Chrysanthemum morifolium",NA
+"265","Anastasiadi et al_2021","Chrysanthemum nankingense",NA
+"266","Anastasiadi et al_2021","Tanacetum vulgare",NA
+"267","Anastasiadi et al_2021","Copidosoma koehleri",NA
+"268","Anastasiadi et al_2021","Coturnix japonica",NA
+"269","Anastasiadi et al_2021","Crassostrea gigas",NA
+"270","Anastasiadi et al_2021","Crocuta crocuta",NA
+"271","Anastasiadi et al_2021","Danio rerio",NA
+"272","Anastasiadi et al_2021","Daphnia magna",NA
+"273","Anastasiadi et al_2021","Dicentrarchus labrax",NA
+"274","Anastasiadi et al_2021","Drosophila buzzatii",NA
+"275","Anastasiadi et al_2021","Drosophila koepferae",NA
+"276","Anastasiadi et al_2021","Drosophila melanogaster",NA
+"277","Anastasiadi et al_2021","Equus ferus",NA
+"278","Anastasiadi et al_2021","Eriobotrya japonica",NA
+"279","Anastasiadi et al_2021","Fragaria ananassa",NA
+"280","Anastasiadi et al_2021","Fragaria viridis",NA
+"281","Anastasiadi et al_2021","Gallus gallus",NA
+"282","Anastasiadi et al_2021","Gallus gallus",NA
+"283","Anastasiadi et al_2021","Gasterosteus aculeatus",NA
+"284","Anastasiadi et al_2021","Geranium sylvaticum",NA
+"285","Anastasiadi et al_2021","Gladioferens pectinatus",NA
+"286","Anastasiadi et al_2021","Glycine max",NA
+"287","Anastasiadi et al_2021","Gossypium hirsutum",NA
+"288","Anastasiadi et al_2021","Hirundo rustica",NA
+"289","Anastasiadi et al_2021","Kryptolebias marmoratus",NA
+"290","Anastasiadi et al_2021","Lamprotornis superbus",NA
+"291","Anastasiadi et al_2021","Lavandula latifolia",NA
+"292","Anastasiadi et al_2021","Leptinotarsa decemlineata",NA
+"293","Anastasiadi et al_2021","Malus domestica",NA
+"294","Anastasiadi et al_2021","Manduca sexta",NA
+"295","Anastasiadi et al_2021","Medicago sativa",NA
+"296","Anastasiadi et al_2021","Microtus ochrogaster",NA
+"297","Anastasiadi et al_2021","Erythranthe guttata",NA
+"298","Anastasiadi et al_2021","Mus musculus",NA
+"299","Anastasiadi et al_2021","Musa acuminata",NA
+"300","Anastasiadi et al_2021","Musa balbisiana",NA
+"301","Anastasiadi et al_2021","Nasonia vitripennis",NA
+"302","Anastasiadi et al_2021","Nasonia giraulti",NA
+"303","Anastasiadi et al_2021","Oncorhynchus tshawytscha",NA
+"304","Anastasiadi et al_2021","Oryza sativa",NA
+"305","Anastasiadi et al_2021","Oryza sativa",NA
+"306","Anastasiadi et al_2021","Oryza longistaminata",NA
+"307","Anastasiadi et al_2021","Oryzias latipes",NA
+"308","Anastasiadi et al_2021","Oryzias melastigma",NA
+"309","Anastasiadi et al_2021","Ovis aries",NA
+"310","Anastasiadi et al_2021","Parus major",NA
+"311","Anastasiadi et al_2021","Phodopus sungorus",NA
+"312","Anastasiadi et al_2021","Physa acuta",NA
+"313","Anastasiadi et al_2021","Pinus elliottii",NA
+"314","Anastasiadi et al_2021","Pinus caribaea",NA
+"315","Anastasiadi et al_2021","Pistacia lentiscus",NA
+"316","Anastasiadi et al_2021","Plantago lanceolata",NA
+"317","Anastasiadi et al_2021","Populus nigra",NA
+"318","Anastasiadi et al_2021","Populus pseudosimonii",NA
+"319","Anastasiadi et al_2021","Populus nigra",NA
+"320","Anastasiadi et al_2021","Populus beijingensis",NA
+"321","Anastasiadi et al_2021","Populus trichocarpa",NA
+"322","Anastasiadi et al_2021","Populus deltoides",NA
+"323","Anastasiadi et al_2021","Rattus norvegicus",NA
+"324","Anastasiadi et al_2021","Ricinus communis",NA
+"325","Anastasiadi et al_2021","Salmo salar",NA
+"326","Anastasiadi et al_2021","Solanum pimpinellifolium",NA
+"327","Anastasiadi et al_2021","Sialia sialis",NA
+"328","Anastasiadi et al_2021","Solanum demissum",NA
+"329","Anastasiadi et al_2021","Solanum lycopersicum",NA
+"330","Anastasiadi et al_2021","Solanum tuberosum",NA
+"331","Anastasiadi et al_2021","Sparus aurata",NA
+"332","Anastasiadi et al_2021","Strongylocentrotus purpuratus",NA
+"333","Anastasiadi et al_2021","Sus scrofa",NA
+"334","Anastasiadi et al_2021","Taraxacum alatum",NA
+"335","Anastasiadi et al_2021","Taraxacum hemicyclum",NA
+"336","Anastasiadi et al_2021","Taraxacum officinale",NA
+"337","Anastasiadi et al_2021","Thlaspi arvense",NA
+"338","Anastasiadi et al_2021","Trifolium repens",NA
+"339","Anastasiadi et al_2021","Triticum turgidum",NA
+"340","Anastasiadi et al_2021","Zea mays",NA
+"341","Negri et al_2017","Rattus norvegicus",NA
+"342","Negri et al_2017","Mus musculus",NA
+"343","Sartori et al_2020","Ovis aries","doesn't explictly state but appears to be focused on domestic sheep"
+"344","Weaver et al_2020","Rattus norvegicus","latin names not given but only three species included"
+"345","Weaver et al_2020","Mus musculus","latin names not given but only three species included"
+"346","Weaver et al_2020","Oryctolagus cuniculus","latin names not given but only three species included"
+"347","Williams et al_2018","Rattus norvegicus","latin names not given but only four species included"
+"348","Williams et al_2019","Mus musculus","latin names not given but only four species included"
+"349","Williams et al_2020","Oryctolagus cuniculus","latin names not given but only four species included"
+"350","Williams et al_2021","Danio rerio","latin names not given but only four species included"
+"351","Thayer et al_2018","Thamnophis elegans",NA
+"352","Thayer et al_2018","Coturnix japonica",NA
+"353","Thayer et al_2018","Gallus gallus",NA
+"354","Thayer et al_2018","Alopex lagopus",NA
+"355","Thayer et al_2018","Arctocephalus gazella",NA
+"356","Thayer et al_2018","Sus scrofa",NA
+"357","Thayer et al_2018","Ovis aries",NA
+"358","Thayer et al_2018","Pan troglodytes",NA
+"359","Thayer et al_2018","Macaca mulatta",NA
+"360","Thayer et al_2018","Lepus americanus",NA
+"361","Thayer et al_2018","Cavia porcellus",NA
+"362","Thayer et al_2018","Rattus norvegicus",NA
+"363","Thayer et al_2018","Mus musculus",NA
+"364","Grueber et al_2017","Rattus norvegicus",NA
+"365","Grueber et al_2017","Mus musculus",NA
+"366","Grueber et al_2017","Plodia interpunctella",NA
+"367","Grueber et al_2017","Ovis aries",NA
+"368","Grueber et al_2017","Gallus gallus",NA
+"369","Grueber et al_2017","Macaca fuscata",NA
+"370","Grueber et al_2017","Coturnix japonica",NA
+"371","Grueber et al_2017","Capra hircus",NA
+"372","Grueber et al_2017","Tscherskia triton",NA
+"373","Grueber et al_2017","Galleria mellonella",NA
+"374","Grueber et al_2017","Anopheles stephensi",NA
+"375","Grueber et al_2017","Trichoplusia ni",NA
+"376","Grueber et al_2017","Sus scrofa",NA
+"377","Veenendaal et al_2012","Rattus norvegicus",NA
+"378","Veenendaal et al_2012","Mus musculus",NA
+"379","Veenendaal et al_2012","Cavia porcellus",NA
+"380","Veenendaal et al_2012","Ovis aries",NA
+"381","Rutowska et al_2020","Drosophila serrata",NA
+"382","Rutowska et al_2020","Phodopus sungorus",NA
+"383","Rutowska et al_2020","Campanula americana",NA
+"384","Rutowska et al_2020","Mus musculus",NA
+"385","Rutowska et al_2020","Salmo salar",NA
+"386","Rutowska et al_2020","Hydroides dirampha",NA
+"387","Rutowska et al_2020","Gasterosteus aculeatus",NA
+"388","Rutowska et al_2020","Tribolium castaneum",NA
+"389","Rutowska et al_2020","Strongylocentrotus intermedius",NA
+"390","Rutowska et al_2020","Drosophila melanogaster",NA
+"391","Rutowska et al_2020","Plantago lanceolata",NA
+"392","Rutowska et al_2020","Galeolaria caespitosa",NA
+"393","Rutowska et al_2020","Rattus norvegicus",NA
+"394","Rutowska et al_2020","Strongylocentrotus intermedius",NA
+"395","Rutowska et al_2020","Pimephales promelas",NA
+"396","Rutowska et al_2020","Danio rerio",NA
+"397","Rutowska et al_2020","Sepsis punctum",NA
+"398","Rutowska et al_2020","Euoniticellus intermedius",NA
+"399","Rutowska et al_2020","Evechinus chloroticus",NA
+"400","Rutowska et al_2020","Ovis aries",NA
+"401","Rutowska et al_2020","Coccinella undecimpunctata",NA
+"402","Rutowska et al_2020","Galleria mellonella",NA
+"403","Rutowska et al_2020","Telostylinus angusticollis",NA
+"404","Rutowska et al_2020","Solidago altissima",NA
+"405","Rutowska et al_2020","Ophraella notulata",NA
+"406","Rutowska et al_2020","Aedes aegypti",NA
+"407","Rutowska et al_2020","Plodia interpunctella",NA
+"408","Rutowska et al_2020","Stator limbatus",NA
+"409","Rutowska et al_2020","Taeniopygia guttata",NA
+"410","Rutowska et al_2020","Geranium sylvaticum",NA
+"411","Rutowska et al_2020","Teleogryllus oceanicus",NA
+"412","Rutowska et al_2020","Syngnathus typhle",NA
+"413","Rutowska et al_2020","Crassostrea gigas",NA
+"414","Rutowska et al_2020","Pieris brassicae",NA
+"415","Rutowska et al_2020","Locusta migratoria",NA
+"416","Rutowska et al_2020","Drosophila simulans",NA
+"417","Rutowska et al_2020","Xenopus laevis",NA
+"418","Rutowska et al_2020","Coenonympha pamphilus",NA
+"419","Rutowska et al_2020","Callosobruchus maculatus",NA
+"420","Rutowska et al_2020","Tenebrio molitor",NA
+"421","Rutowska et al_2020","Macaca mulatta",NA
+"422","Rutowska et al_2020","Cavia aperea",NA
+"423","Rutowska et al_2020","Amphibolurus muricatus",NA
+"424","Rutowska et al_2020","Gryllus bimaculatus",NA
+"425","Rutowska et al_2020","Mus musculus",NA
+"426","Rutowska et al_2020","Cavia porcellus",NA
+"427","Rutowska et al_2020","Cordylochernes scorpioides",NA
+"428","Rutowska et al_2020","Oncorhynchus mykiss",NA
+"429","Rutowska et al_2020","Oryctolagus cuniculus",NA
+"430","Rutowska et al_2020","Gallus gallus",NA
+"431","Rutowska et al_2020","Caenorhabditis elegans",NA
+"432","Rutowska et al_2020","Poecilia reticulata",NA
+"433","Rutowska et al_2020","Gambusia holbrooki",NA
+"434","Rutowska et al_2020","Oryctolagus cuniculus",NA
+"435","Rutowska et al_2020","Coccinella septempunctata",NA
+"436","Rutowska et al_2020","Coccinella transversalis",NA
+"437","Rutowska et al_2020","Oncorhynchus tshawytscha",NA
+"438","Rutowska et al_2020","Cheilomenes sexmaculata",NA
+"439","Rutowska et al_2020","Mesocricetus auratus",NA
+"440","Rutowska et al_2020","Harmonia axyridis",NA
+"441","Rutowska et al_2020","Styela plicata",NA
+"442","da Silva et al_2021","Mus musculus",NA
+"443","da Silva et al_2021","Rattus norvegicus",NA
+"444","da Silva et al_2021","Macaca fuscata",NA
+"445","Xie et al_2016","Rattus norvegicus",NA
+"446","Xie et al_2016","Mus musculus",NA
+"447","Xie et al_2016","Ovis aries","Scottish blackface ewe"
+"448","Brasil et al_2017","Rattus norvegicus",NA
+"449","Brasil et al_2017","Mus musculus",NA
+"450","Menting et al_2018","Rattus norvegicus","latin names not given but only domestic species in list"
+"451","Menting et al_2018","Mus musculus","latin names not given but only domestic species in list"
+"452","Menting et al_2018","Ovis aries","latin names not given but only domestic species in list"
+"453","Menting et al_2018","Macaca fuscata","latin names not given but only domestic species in list"
+"454","Menting et al_2018","Sus scrofa","latin names not given but only domestic species in list"
+"455","Roca Fraga et al_2018","Ovis aries",NA
+"456","Morahan et al_2020","Rattus norvegicus",NA
+"457","Morahan et al_2020","Mus musculus",NA
+"458","Hoek et al_2020","Rattus norvegicus","based on Table 1"
+"459","Hoek et al_2020","Mus musculus","based on Table 1"
+"460","Goncalves et al_2021","Rattus norvegicus",NA
+"461","Goncalves et al_2021","Mus musculus",NA
+"462","Rochester et al_2018","Rattus norvegicus","converted from Table S1"
+"463","Rochester et al_2018","Mus musculus","converted from Table S1"
+"464","Berghanel et al_2017","Papio anubis","converted from Table S1"
+"465","Berghanel et al_2017","Dicotyles tajacu","converted from Table S1"
+"466","Berghanel et al_2017","Callithrix jacchus","converted from Table S1"
+"467","Berghanel et al_2017","Bos taurus","converted from Table S1"
+"468","Berghanel et al_2017","Capra hircus","converted from Table S1"
+"469","Berghanel et al_2017","Sus scrofa","converted from Table S1"
+"470","Berghanel et al_2017","Mesocricetus auratus","converted from Table S1"
+"471","Berghanel et al_2017","Cavia porcellus","converted from Table S1"
+"472","Berghanel et al_2017","Equus ferus","converted from Table S1"
+"473","Berghanel et al_2017","Rattus norvegicus","converted from Table S1"
+"474","Berghanel et al_2017","Mus musculus","converted from Table S1"
+"475","Berghanel et al_2017","Equus ferus","converted from Table S1"
+"476","Berghanel et al_2017","Oryctolagus cuniculus","converted from Table S1"
+"477","Berghanel et al_2017","Cervus elaphus","converted from Table S1"
+"478","Berghanel et al_2017","Sciurus vulgaris","converted from Table S1"
+"479","Berghanel et al_2017","Macaca mulatta","converted from Table S1"
+"480","Berghanel et al_2017","Microtus oeconomus","converted from Table S1"
+"481","Berghanel et al_2017","Chlorocebus pygerythrus","converted from Table S1"
+"482","Chaves et al_2020","Rattus norvegicus",NA
+"483","Chaves et al_2020","Mus musculus",NA
+"484","Christian et al_2021","Rattus norvegicus",NA
+"485","Christian et al_2021","Mus musculus",NA
+"486","Urban et al_2020","Rattus norvegicus","latin names not given but only domestic species in list"
+"487","Urban et al_2020","Mus musculus","latin names not given but only domestic species in list"
+"488","Urban et al_2020","Gallus gallus","latin names not given but only domestic species in list"
+"489","Urban et al_2020","Oryctolagus cuniculus","latin names not given but only domestic species in list"
+"490","Urban et al_2020","Danio rerio","latin names not given but only domestic species in list"
+"491","Dorman et al_2018","Rattus norvegicus",NA
+"492","Dorman et al_2018","Mus musculus",NA
+"493","Tellechea et al_2017","Rattus norvegicus",NA
+"494","Muhlhauser et al_2011","Rattus norvegicus",NA
+"495","Van Ableen et al_2012","Rattus norvegicus",NA
+"496","Van Ableen et al_2012","Mus musculus",NA
+"497","Van Ableen et al_2012","Ovis aries",NA
+"498","Van Ableen et al_2012","Cavia porcellus",NA
+"499","Pet and Brouwer-Brolsma_2016","Rattus norvegicus",NA
+"500","Pet and Brouwer-Brolsma_2016","Mus musculus",NA
+"501","Menting et al_2019","Rattus norvegicus",NA
+"502","Menting et al_2019","Mus musculus",NA
+"503","Moore et al_2016","Brachyrhaphis rhabdophora","Table S1"
+"504","Moore et al_2016","Brachyrhaphis roseni","Table S1"
+"505","Moore et al_2016","Gambusia affinis","Table S1"
+"506","Moore et al_2016","Gambusia geiseri","Table S1"
+"507","Moore et al_2016","Gambusia holbrooki","Table S1"
+"508","Moore et al_2016","Gambusia hubbsi","Table S1"
+"509","Moore et al_2016","Gambusia sexradiata","Table S1"
+"510","Moore et al_2016","Heterandria formosa","Table S1"
+"511","Moore et al_2016","Pseudopoecilia festae","Table S1"
+"512","Moore et al_2016","Poeciliopsis catemaco","Table S1"
+"513","Moore et al_2016","Poecilia latipinna","Table S1"
+"514","Moore et al_2016","Poecilia mexicana","Table S1"
+"515","Moore et al_2016","Poeciliopsis monacha","Table S1"
+"516","Moore et al_2016","Poeciliopsis prolifica","Table S1"
+"517","Moore et al_2016","Poeciliopsis occidentalis","Table S1"
+"518","Moore et al_2016","Poecilia reticulata","Table S1"
+"519","Moore et al_2016","Poeciliopsis turneri","Table S1"
+"520","Lee et al_2019","Rattus norvegicus",NA
+"521","Lee et al_2019","Ovis aries",NA
+"522","Lee et al_2019","Capra hircus",NA
+"523","Lee et al_2019","Papio anubis",NA
+"524","Caixeta et al_2020","Ampullaceana balthica",NA
+"525","Caixeta et al_2020","Bellamya aeruginosa",NA
+"526","Caixeta et al_2020","Bellamya purificata",NA
+"527","Caixeta et al_2020","Biomphalaria alexandrina",NA
+"528","Caixeta et al_2020","Biomphalaria glabrata",NA
+"529","Caixeta et al_2020","Biomphalaria pfeifferi",NA
+"530","Caixeta et al_2020","Cipangopaludina cathayensis",NA
+"531","Caixeta et al_2020","Cipangopaludina chinensis",NA
+"532","Caixeta et al_2020","Lymnaea stagnalis",NA
+"533","Caixeta et al_2020","Physa acuta",NA
+"534","Caixeta et al_2020","Potamopyrgus antipodarum",NA
+"535","Caixeta et al_2020","Racesina luteola",NA
+"536","Caixeta et al_2020","Peringia ulvae",NA
+"537","Caixeta et al_2020","Littorina littorea",NA
+"538","Caixeta et al_2020","Cornu aspersum",NA
+"539","Caixeta et al_2020","Eobania vermiculata",NA
+"540","Caixeta et al_2020","Lissachatina fulica",NA
+"541","Caixeta et al_2020","Theba pisana",NA
+"542","Badihian et al_2020","Rattus norvegicus",NA
+"543","Badihian et al_2020","Mus musculus",NA
+"544","Badihian et al_2020","Cavia porcellus",NA
+"545","Van Cauwenbergh et al_2020","Rattus norvegicus",NA
+"546","Van Cauwenbergh et al_2020","Mus musculus",NA
+"547","Anwer et al_2021","Rattus norvegicus",NA
+"548","Anwer et al_2021","Mus musculus",NA
+"549","Moraes_Sousa et al_ 2021","Rattus norvegicus",NA
+"550","Moraes_Sousa et al_ 2021","Mus musculus",NA
+"551","Morahan et al_2020_2","Rattus norvegicus",NA
+"552","Rooke et al_2017","Ovis aries",NA
+"553","Yost et al_2019","Rattus norvegicus",NA
+"554","Yost et al_2019","Mus musculus",NA
+"555","Rooke et al_2015","Ovis aries",NA
+"556","Rutowska et al_2020","Rattus norvegicus",NA
