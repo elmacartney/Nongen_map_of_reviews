@@ -15,15 +15,15 @@ editor_options:
 knitr::opts_chunk$set(
 message = FALSE,
 warning = FALSE,
-cache = TRUE, 
-tidy = TRUE, 
+cache = FALSE,
+tidy = TRUE,
 echo = TRUE
 )
 
 rm(list = ls())
 ```
 
-### Seutup and data organisation
+### Setup and data organisation
 
 ```{r setup, results = 'hide'}
 
@@ -97,8 +97,6 @@ Fig3a <- Publication_info_discipline %>%
   theme_classic() +
   labs(x = "Year", y = "Article count")+
   theme(legend.position = "none", axis.title.x = element_text(size = 10))
-
-
 
 Fig3a
 
@@ -317,4 +315,204 @@ Fig4 <- ((Fig4a | Fig4b | Fig4c | Fig4d) / (Fig4e | Fig4f | Fig4f | Fig4h)) + pl
 Fig4
 
 #TODO remove x axis label from a -d
+```
+
+#Objective Two - Within discipline effects
+
+## Figure five - discipline specific research patterns {.tabset}
+
+### Fig. 5A - Inter- vs trans- inheritance
+
+``` {r}
+Merged_inter_vs_trans <- merge(Inter_vs_trans_info, Review_info)
+
+count_inter_vs_trans <- Merged_inter_vs_trans %>% count(inter_vs_trans_code, by = discipline_code ) %>% arrange(desc(n))
+
+count_inter_vs_trans <-count_inter_vs_trans %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5a <- ggplot(count_inter_vs_trans, aes(x = discipline_code, y = inter_vs_trans_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Inter- vs trans-inheritance", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5a
+```
+
+
+### Fig. 5B - Transmission mode
+
+```{r}
+Merged_transmission_info <- merge(Transmission_info, Review_info)
+
+count_transmission <- Merged_transmission_info %>%  count(transmission_code, by = discipline_code) %>% arrange(desc(n))
+
+count_transmission <-count_transmission %>%
+  rename(
+    discipline_code = by
+  )
+
+
+Fig5b <- ggplot(count_transmission, aes(x = discipline_code, y = transmission_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Transmission mode", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5b
+
+```
+
+### Fig. 5C - Terminology match vs mismatch
+
+``` {r}
+count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
+
+count_terminology<- count_terminology %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5c <- ggplot(count_terminology, aes(y = reorder(terminology_code, -n), discipline_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Terminology use matches Fig. 1", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5c
+
+```
+
+### Fig. 5D - Type of F0 exposure
+
+```{r}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+ 
+count_F0_env <-count_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5d <- ggplot(count_F0_env, aes(x = discipline_code, y = F0_env_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Type of environmental exposure", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5d
+```
+
+### Fig. 5E - Timing of F0 Exposure
+
+```{r}
+
+merged_exposure_timing <- merge(Exposure_timing_info, Review_info)
+
+count_exposure_timing <- merged_exposure_timing %>% count(exposure_timing_code, by = discipline_code) %>% arrange(desc(n))
+
+count_exposure_timing <- count_exposure_timing %>%
+  rename (
+    discipline_code = by
+  )
+
+Fig5e <- ggplot(count_exposure_timing, aes(x = discipline_code, y = exposure_timing_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Timing of F0 (ancestor) exposure", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5e
+```
+
+### Fig. 5F - Descendant trait
+
+```{r}
+
+merged_descendant_trait <- merge(Descendant_trait_info, Review_info)
+count_descendant_trait <- merged_descendant_trait %>% count(descendant_trait_code, by = discipline_code) %>% arrange(desc(n))
+
+count_descendant_trait <- count_descendant_trait %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5f <- ggplot(count_descendant_trait, aes(x = discipline_code, y = descendant_trait_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Descendant traits", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5f
+```
+### Fig. 5E - Descendant sex
+
+```{r}
+
+merged_descendant_sex <- merge(Descendant_sex_info, Review_info)
+count_descendant_sex <- merged_descendant_sex %>% count(descendant_sex_code, by = discipline_code) %>% arrange(desc(n))
+
+count_descendant_sex <- count_descendant_sex %>%
+  rename(
+    discipline_code = by
+           )
+
+Fig5g <- ggplot(count_descendant_sex, aes(x = discipline_code, y = descendant_sex_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Descendant sex", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5g
+```
+
+### Fig. 4H - Environmental effect direction 
+
+```{r}
+
+merged_env_eff <- merge(Env_eff_diection_info, Review_info)
+
+count_env_eff <- merged_env_eff %>% count(env_eff_direction_code, by = discipline_code) %>% arrange(desc(n))
+
+count_env_eff <-count_env_eff %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5h <- ggplot(count_env_eff, aes(x = discipline_code, y = env_eff_direction_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Discipline", y = "Environmental effect direction", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "gray80", high = "gray20")
+
+Fig5h
+```
+
+### Fig. 4 - Panel
+
+```{r}
+
+Fig5 <- ((Fig5a | Fig5b | Fig5c | Fig5d) / (Fig5e | Fig5f | Fig5f | Fig5h)) + plot_annotation(tag_levels = "A")
+
+Fig5
 ```
