@@ -15,8 +15,8 @@ editor_options:
 knitr::opts_chunk$set(
 message = FALSE,
 warning = FALSE,
-cache = TRUE, 
-tidy = TRUE, 
+cache = TRUE,
+tidy = TRUE,
 echo = TRUE
 )
 
@@ -318,3 +318,25 @@ Fig4
 
 #TODO remove x axis label from a -d
 ```
+
+#Objective Two - Within discipline effects
+
+## Figure five - discipline specific research patterns {.tabset}
+
+### Fig. 5A - Inter- vs trans- inheritance
+
+### Fig. 5B - Transmission mode
+
+### Fig. 5C - Terminology match vs mismatch
+
+### Fig. 5D - Type of F0 exposure
+
+### Fig. 5E - Timing of F0 Exposure
+
+### Fig. 5F - Descendant trait
+
+### Fig. 5E - Descendant sex
+
+### Fig. 4H - Environmental effect direction 
+
+### Fig. 4 - Panel
