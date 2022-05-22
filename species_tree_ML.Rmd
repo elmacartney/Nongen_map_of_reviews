@@ -14,6 +14,14 @@ library(tidyverse)
 library(here)
 library(rotl)
 library(ape)
+library(ggplot2)
+library(ggnewscale)
+library(ggtree)
+#install ggtreeExtra
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ggtreeExtra")
+library(ggtreeExtra)
 ```
 
 ## R Markdown
@@ -226,8 +234,6 @@ sort(intersect(as.character(mytree$tip.label), unique(Species_info$species_name)
 sort(setdiff(unique(Species_info$species_name), as.character(mytree$tip.label))) ## names not matching - not in tip.label
 sort(setdiff(as.character(mytree$tip.label), unique(Species_info$species_name))) ## names not matching - not in species_name
 
-table(unique(Species_info$species_name))
-
 plot(mytree, show.tip.label = T, cex = 0.8, no.margin = TRUE)
 str(mytree) #335 tips
 
@@ -235,4 +241,41 @@ write.tree(mytree, file = "species_tree.tre") #save the tree
 # mytree <- read.tree(file = "species_tree.tre") #if you need to read the tree
 
 write.csv(Species_info, file = "Species_info.csv")
+
+```
+
+```{r plot tree}
+#count of papers per species name:
+sample_data <- count(Species_info, species_name)
+
+#sample_data$species_name %in% mytree$tip.label
+#mytree$tip.label %in% sample_data$species_name
+
+ggtree(mytree, layout="circular") +                    
+  geom_tiplab(                             # adds name of sample to tip of its branch 
+    color = 'black',                       
+    offset = 1,
+    size = 1,
+    geom = "text",
+    align = TRUE) 
+
+p <- ggtree(mytree, layout = "circular", branch.length = 'none') %<+% sample_data + # %<+% adds dataframe with sample data to tree 
+  new_scale_color() +                             # allows to add an additional color scheme for another variable
+    geom_tippoint(
+      mapping = aes(color = n),  
+      size = 1) +
+  scale_colour_gradient(low = "yellow", high = "red") +
+  geom_tiplab(                             # adds name of sample to tip of its branch 
+    color = 'black',                       
+    offset = 1,
+    size = 1,
+    geom = "text",
+    align = TRUE) 
+  
+
+#ggtree(mytree, layout="circular", branch.length = "none") # simple circular tree with all tips aligned
+#ggtree(mytree, layout="fan", open.angle=10, yscale = "none")
+
+ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
+
 ```
