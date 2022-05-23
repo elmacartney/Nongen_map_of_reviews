@@ -276,6 +276,7 @@ p <- ggtree(mytree, layout = "circular", branch.length = 'none') %<+% sample_dat
 #ggtree(mytree, layout="circular", branch.length = "none") # simple circular tree with all tips aligned
 #ggtree(mytree, layout="fan", open.angle=10, yscale = "none")
 
-ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
+# ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
 
+p
 ```

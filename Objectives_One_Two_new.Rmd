@@ -57,9 +57,9 @@ xldata <- "./Data_extraction_postcrosschecking.xlsx"
 #note that here packeage doen't work with data wrangling code below
 
 # #bibliometric data
-# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
 
-bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+# bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 ``` {r, results = 'hide'}
