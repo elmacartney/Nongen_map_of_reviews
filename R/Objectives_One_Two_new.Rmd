@@ -51,15 +51,15 @@ library(circlize)
 
 ``` {r, results = 'hide'}
 #manually extracted data
-xldata <- "./Data_extraction_postcrosschecking.xlsx"
+xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 
-# xldata <- read_excel(here("Data_extraction_postcrosschecking.xlsx"))
+# xldata <- read_excel(here("data", "Data_extraction_postcrosschecking.xlsx"))
 #note that here packeage doen't work with data wrangling code below
 
 # #bibliometric data
-bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+# bib <- convert2df("./data/bibliometric.bib", dbsource = "scopus", format = "bibtex")
 
-# bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+# bib <- convert2df(here("data", "bibliometric.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 ``` {r, results = 'hide'}
@@ -77,6 +77,7 @@ names(list_all) <- tab_names
 #get dataframes out of list
 list2env(list_all, .GlobalEnv)
 ```
+
 # Objective One - Between discipline patterns 
 
 ## Figure 3 - Broad patterns {.tabset}
@@ -310,7 +311,7 @@ Fig4h
 ### Fig. 4 - Panel 
 
 ```{r}
-Fig4 <- ((Fig4a | Fig4b | Fig4c | Fig4d) / (Fig4e | Fig4f | Fig4f | Fig4h)) + plot_annotation(tag_levels = "A")
+Fig4 <- ((Fig4a | Fig4b | Fig4c | Fig4d) / (Fig4e | Fig4f | Fig4g | Fig4h)) + plot_annotation(tag_levels = "A")
 
 Fig4
 
@@ -484,7 +485,7 @@ Fig5g <- ggplot(count_descendant_sex, aes(x = discipline_code, y = descendant_se
 Fig5g
 ```
 
-### Fig. 4H - Environmental effect direction 
+### Fig. 5H - Environmental effect direction 
 
 ```{r}
 
@@ -508,7 +509,7 @@ Fig5h <- ggplot(count_env_eff, aes(x = discipline_code, y = env_eff_direction_co
 Fig5h
 ```
 
-### Fig. 4 - Panel
+### Fig. 5 - Panel
 
 ```{r}
 
