@@ -1,0 +1,117 @@
+---
+title: "Main text figures: Objective four"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+output:
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+
+  
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = FALSE,
+tidy = TRUE,
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+### Setup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(plyr)
+library(here)
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(forcats)
+library(ggplot2)
+library(hrbrthemes) #for ggplot2
+library(bibliometrix)
+library(igraph)
+library(patchwork)
+library(RColorBrewer)
+library(wordcloud2)
+library(migest)
+library(circlize)
+```
+
+``` {r, results = 'hide'}
+#manually extracted data
+xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
+```
+
+``` {r, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Objective four - CEESAT Critical Appraisal
+
+### Blinding paper ID and wrangling data into long format
+
+Paper ID was blinded for the pilot but will not be blinded for the full study
+
+```{r}
+#blinding authors
+Assessment$id <- paste("ID", c(1:length(Assessment$id)), sep = "")
+#shortening column names
+names(Assessment) <- gsub("CEESAT_", "", names(Assessment), fixed = TRUE)
+#selecting only the columns with scores
+#selecting only the columns with scores
+Assessment_reduced <- select(Assessment, c("id", !ends_with("_comment")))
+#wrangling data into long format
+ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key=TRUE)
+```
+
+
+### Fig. X - Average scores across SRs
+
+```{r}
+#calculating the % of scores within each questions 
+count_ceesat_score <- ceesat_long %>% count(score, by = question) 
+percent_ceesat_score <- count_ceesat_score %>% mutate(percent = (n/sum(n))*100)
+percent_ceesat_score <- percent_ceesat_score %>%
+  rename(
+    question = by
+  )
+percent_ceesat_score$question <- as.factor(percent_ceesat_score$question)
+percent_ceesat_score$question <- factor(percent_ceesat_score$question, levels(percent_ceesat_score$question)[length(percent_ceesat_score$question):1]) #reverse the order of questions
+percent_ceesat_score$score <- as.factor(percent_ceesat_score$score)
+percent_ceesat_score$score <- factor(percent_ceesat_score$score, levels(percent_ceesat_score$score)[c(2,3,1,4)]) #set the order of levels for assessment scores:
+
+Figx <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
+  geom_col(mapping = aes(x = question, y = percent, fill = score), width = 0.7,
+           position = "fill", color = "black") +
+  coord_flip(ylim = c(0, 1)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_fill_manual(values = c("yellow","green", "orange","red"), name = "Score:") +
+  theme(legend.position = "none", panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank()) + 
+  ylab("Proportion") + xlab("CEESAT Question")
+
+Figx
+``` 
