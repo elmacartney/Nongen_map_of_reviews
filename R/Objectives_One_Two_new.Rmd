@@ -58,7 +58,7 @@ xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 
 # #bibliometric data
 # bib <- convert2df("./data/bibliometric.bib", dbsource = "scopus", format = "bibtex")
-
+# 
 # bib <- convert2df(here("data", "bibliometric.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
@@ -513,7 +513,7 @@ Fig5h
 
 ```{r}
 
-Fig5 <- ((Fig5a | Fig5b | Fig5c | Fig5d) / (Fig5e | Fig5f | Fig5f | Fig5h)) + plot_annotation(tag_levels = "A")
+Fig5 <- ((Fig5a | Fig5b | Fig5c | Fig5d) / (Fig5e | Fig5f | Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
 
 Fig5
 ```
