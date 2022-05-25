@@ -55,12 +55,12 @@ library(circlize)
 
 ``` {r, results = 'hide'}
 #manually extracted data
-xldata <- "./Data_extraction_postcrosschecking.xlsx"
+xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 # xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
 
 # #bibliometric data
 # bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
-bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("data","bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 
@@ -554,6 +554,7 @@ Fig6
 bib2 <- biblioAnalysis(bib, sep = ";")
 S <- summary(object = bib2, k = 50, pause = FALSE)
 ```
+
 ``` {r, message = FALSE, warning = FALSE}
 keywords <- S$MostRelKeywords
 words<-keywords[,1]
