@@ -214,10 +214,6 @@ rect_matrix<- t(rowsum(t(net_matrix), group = colnames(net_matrix), na.rm = T))
 small_matrix <- rowsum(rect_matrix, group = rownames(rect_matrix))
 small_matrix[lower.tri(small_matrix)] <- 0
 
-# TODO 
-# you can look at this matrix
-small_matrix
-
 # chord diagram
 circos.clear()
 fig <- chordDiagramFromMatrix(small_matrix)
