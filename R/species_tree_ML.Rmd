@@ -1,5 +1,5 @@
 ---
-title: "speciest_tree"
+title: "species_tree"
 author: "ML"
 date: "19/05/2022"
 output: html_document
@@ -280,4 +280,27 @@ p <- ggtree(mytree, layout = "circular", branch.length = 'none') %<+% sample_dat
 # ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
 
 p
+```
+
+```{r plot tree}
+
+Species_info_merged<- merge(Species_info, Higher_taxon_info)
+# sample_data <- sample_data_merge %>% add_count(species_name)
+
+sample_data <- count(Species_info_merged,species_name)
+# sample_data <- as.data.frame(sample_data)
+sample_data2 <-mutate(sample_data, tip.label = species_name)
+sample_data2$tip.label <- as.factor(sample_data2$tip.label)
+sample_data2$species_name<-as.factor(sample_data2$species_name)
+sample_data2$taxon_code <- as.factor(sample_data2$taxon_code)
+mytree$tip.label <- strip_ott_ids(mytree$tip.label, remove_underscores = TRUE)
+#summary(sample_data2$tip.label)
+# sample_data2$n <- as.numeric(sample_data2$n)
+
+tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data2 + geom_fruit(geom = geom_bar, mapping = aes(x = n, fill = tip.label), stat = "identity", col = "gray1", orientation = "y", axis.params = list(axis = "x",
+    text.angle = -45, hjust = 0, text.size = 2), grid.params = list(alpha = 0.35),offset = 0.085, pwidth = 0.55, alpha = 0.8) + theme(legend.position = "none") 
+
+# way too many species - should probably remove legend and just put a silhouette for the most common ones
+# add a tile with vertebrate or invertebrate or plant
+
 ```
