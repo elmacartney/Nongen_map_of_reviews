@@ -1,0 +1,232 @@
+---
+title: "Question3"
+author: "Shinichi Nakagawa"
+date: '2022-05-23'
+output: html_document
+---
+
+## The main question
+
+> How are authors of the SR literature connected across different countries and disciplines?
+
+1.  Frequency map of authors (1st author)
+
+2.  Cord plot or network plot between countries and fields via
+
+### Setup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(plyr)
+library(here)
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(forcats)
+library(ggplot2)
+#library(hrbrthemes) #for ggplot2
+library(bibliometrix)
+library(igraph)
+library(patchwork)
+library(RColorBrewer)
+library(wordcloud2)
+library(migest)
+library(circlize)
+library(igraph)
+library(stringi)
+library(tidystringdist)
+library(stringdist)
+library(fuzzyjoin)
+```
+
+```{r, results = 'hide'}
+#manually extracted data
+xldata <- here("data", "Data_extraction_postcrosschecking.xlsx")
+
+# xldata <- read_excel(here("Data_extraction_postcrosschecking.xlsx"))
+#note that here packeage doen't work with data wrangling code below
+
+# #bibliometric data
+# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+
+bib <- convert2df(here("data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
+```
+
+```{r, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Bibliometric analysis
+
+
+```{r, message = FALSE, warning = FALSE}
+keywords <- S$MostRelKeywords
+words<-keywords[,1]
+freq<-as.numeric(keywords[,2])
+prob<-freq/sum(freq)
+
+Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
+
+Fig7
+
+
+
+```
+
+## Figure 8 - Country collaboration
+
+# this is good - collobraiton can be done
+# We need connection by co-citation or conneciton by coupling
+
+
+```{r, results = 'hide'}
+
+# Data
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+# matching with 1st author and title
+Fields <- Publication_info_discipline %>%
+  mutate(title = tolower(unlist(lapply(data.frame(t(str_split_fixed(title, " ", n = 15)[,1:14])), 
+                                       function(x) str_c(x, collapse  = " ")))),
+         ntitle = paste(tolower(str_split_fixed(id, "\\_", n = 2)[,1]), title, sep = " "),
+         ntitle = trimws(ntitle)) %>% 
+  select(ntitle, discipline_code)
+
+
+Bib_names <- bib %>% rownames_to_column(., var = "mat_names") %>% 
+  mutate(TI2 = tolower(unlist(lapply(data.frame(t(str_split_fixed(TI, " ", n = 15)[,1:14])), function(x) str_c(x, collapse  = " ")))),
+         name2 = stri_trans_general(tolower(str_split_fixed(SR, " ", n = 2)[,1]), "latin-ascii"),
+         TI2 = paste(name2, TI2, sep= " "),
+         TI2 = trimws(TI2)) %>% 
+  select(TI2, mat_names)
+ 
+
+# Joined <- stringdist_left_join(Bib_names, Fields, 
+#                 by = c(TI2 = "ntitle"),
+#                 max_dist = 10,
+#                 method = "lv") 
+# 
+# dim(Joined)
+# 
+# # this seems to be the best we can do
+# Joined
+
+# This is to match the highest matches between two author-title columns
+#stringdist(Bib_names$TI2, Fields$ntitle[1], method = 'osa')
+pos <- lapply(Bib_names$TI2, function(x) stringdist(Fields$ntitle, x))
+pos2<- map_dbl(pos, which.min)
+
+# these are looking good - both have the perfect matches (at least at a glance)
+Bib_names$TI2
+Fields$ntitle[pos2]
+
+# now we can merge two datasets 
+Bib_names$discipline_code <- Fields$discipline_code[pos2]
+
+
+## The same idea as above but this does not work
+# tidy_comb_sw <- tidy_comb_all(Fields$ntitle, Bib_names$TI2[1])
+# 
+# compact<- tidy_stringdist(tidy_comb_sw, method= "osa") %>% slice(which.min(osa))
+# 
+# compact<- tidy_stringdist(tidy_comb_sw, method= "osa") %>% group_by(V1) %>% 
+#  slice(which.min(osa))
+# 
+# compact2<- tidy_stringdist(tidy_comb_sw, method= "jw") %>% group_by(V2) %>% 
+#  summarise(min = min(jw))
+
+#test <- data.frame(t(str_split_fixed(bib$TI, " ", n = 12)[,1:10]))
+#vector(lapply(test, function(x) str_c(x, collapse  = " ")))
+
+
+# # works OK - but not a general solution
+# # attempting to match with author name and year and it won't work well
+# 
+# # creating name_year - the first name (element of) and year combined
+# Fields <- Review_info %>% mutate(name_year = paste(tolower(str_split_fixed(Review_info$id, "\\_", n = 2)[,1]), 
+#                                                   str_sub(Review_info$id, -4, -1), sep = "_")) %>% 
+#   select(name_year, discipline_code)
+# 
+# # agin creating name_year - the first name (element of) and year combined
+# Bib_names <- bib %>% rownames_to_column(., var = "mat_names") %>% 
+#   mutate(name_year = paste(tolower(str_split_fixed(bib$SR, " ", n = 2)[,1]), 
+#                                                   bib$PY, sep = "_"),
+#          name_year = stri_trans_general(name_year, "latin-ascii")) %>% 
+#   select(name_year, mat_names)
+# 
+# #match(Fields$name_year, Bib_names$name_year)
+# 
+# match(levels(factor(Fields$name_year)),levels(factor(Bib_names$name_year)))
+# 
+# 
+# # "anwer_2022" <- "anwer_2021"
+# # "besson_2016" <-  "besson_2016" 
+# # "chaves_2021" <- "chaves_2020"
+# # "grueber_2018" <- "grueber_2017"
+# # "menting_2019" <- "menting_2018"
+# 
+# 
+# # joining
+# 
+# Bib_names %>% left_join(Fields, by = ("name_year" = "name_year") )  -> Bib_names2
+# 
+# #CR <- citations(bib, field = "article", sep = ";")
+# 
+# #mat <- cocMatrix(bib, Field = "CR", sep = ";")
+
+# Creating matrix for bibliometric coupling
+NetMatrix <- biblioNetwork(bib, analysis = "coupling", network = "references", sep = ";")
+#NetMatrix2 <- biblioNetwork(bib, analysis = "co-citation", network = "references", sep = ";")
+
+# net=networkPlot(NetMatrix,  normalize = "salton", weighted=NULL, n = 10,
+#                 Title = "Authors' Coupling", type = "fruchterman", size=5,size.cex=T,remove.multiple=TRUE,
+#                 labelsize=0.8,label.n=10,label.cex=F)
+
+#NetMatrix <- biblioNetwork(mat, analysis = "coupling", network = "authors", sep = ";")
+
+# forcing into a nromal matrix
+net_matrix <- as.matrix(NetMatrix)
+diag(net_matrix) <- 0 #get rid of counts for the same papers
+
+# replacing names with discipline_code
+rownames(net_matrix) <- Bib_names$discipline_code
+colnames(net_matrix) <- Bib_names$discipline_code
+
+# reducing matrix according to discipline_code
+rect_matrix<- t(rowsum(t(net_matrix), group = colnames(net_matrix), na.rm = T))
+small_matrix <- rowsum(rect_matrix, group = rownames(rect_matrix))
+small_matrix[lower.tri(small_matrix)] <- 0
+
+# TODO 
+# you can look at this matrix
+small_matrix
+
+# chord diagram
+circos.clear()
+fig <- chordDiagramFromMatrix(small_matrix)
+# 
+# # it is a bit hard to understand - need to come back if you want to label differently
+# circos.track(track.index = 1, panel.fun = function(x, y) {
+#     circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index,
+#         facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+# }, bg.border = NA) # here set bg.border to NA is important
+
+
+```

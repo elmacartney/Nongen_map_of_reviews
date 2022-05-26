@@ -59,7 +59,7 @@ xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 # #bibliometric data
 # bib <- convert2df("./data/bibliometric.bib", dbsource = "scopus", format = "bibtex")
 # 
-# bib <- convert2df(here("data", "bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+#bib <- convert2df(here("data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 ``` {r, results = 'hide'}
