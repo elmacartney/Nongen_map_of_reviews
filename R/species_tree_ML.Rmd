@@ -246,55 +246,62 @@ write.csv(Species_info, file = "Species_info.csv")
 ```
 
 ```{r plot tree}
-#count of papers per species name:
-sample_data <- count(Species_info,species_name)
-
-# sample_data$species_name %in% mytree$tip.label
-# mytree$tip.label %in% sample_data$species_name
-
-ggtree(mytree, layout="circular") +                    
-  geom_tiplab(                             # adds name of sample to tip of its branch 
-    color = 'black',                       
-    offset = 1,
-    size = 1,
-    geom = "text",
-    align = TRUE) 
-
-p <- ggtree(mytree, layout = "circular", branch.length = 'none') %<+% sample_data + # %<+% adds dataframe with sample data to tree 
-  new_scale_color() +                             # allows to add an additional color scheme for another variable
-    geom_tippoint(
-      mapping = aes(color = n),  
-      size = 1) +
-  scale_colour_gradient(low = "yellow", high = "red") +
-  geom_tiplab(                             # adds name of sample to tip of its branch 
-    color = 'black',                       
-    offset = 1,
-    size = 1,
-    geom = "text",
-    align = TRUE) 
-  
-
-#ggtree(mytree, layout="circular", branch.length = "none") # simple circular tree with all tips aligned
-#ggtree(mytree, layout="fan", open.angle=10, yscale = "none")
-
-# ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
-
-p
+# #count of papers per species name:
+# sample_data <- count(Species_info,species_name)
+# 
+# # sample_data$species_name %in% mytree$tip.label
+# # mytree$tip.label %in% sample_data$species_name
+# 
+# ggtree(mytree, layout="circular") +                    
+#   geom_tiplab(                             # adds name of sample to tip of its branch 
+#     color = 'black',                       
+#     offset = 1,
+#     size = 1,
+#     geom = "text",
+#     align = TRUE) 
+# 
+# p <- ggtree(mytree, layout = "circular", branch.length = 'none') %<+% sample_data + # %<+% adds dataframe with sample data to tree 
+#   new_scale_color() +                             # allows to add an additional color scheme for another variable
+#     geom_tippoint(
+#       mapping = aes(color = n),  
+#       size = 1) +
+#   scale_colour_gradient(low = "yellow", high = "red") +
+#   geom_tiplab(                             # adds name of sample to tip of its branch 
+#     color = 'black',                       
+#     offset = 1,
+#     size = 1,
+#     geom = "text",
+#     align = TRUE) 
+#   
+# 
+# #ggtree(mytree, layout="circular", branch.length = "none") # simple circular tree with all tips aligned
+# #ggtree(mytree, layout="fan", open.angle=10, yscale = "none")
+# 
+# # ggsave("species_tree_circular_v0.pdf", width = 12, height = 10, scale = 10)
+# 
+# p
 ```
 
 ```{r plot tree}
-sample_data <- count(Species_info,species_name)
+
+sample_data <- count(Species_info, species_name)
 sample_data <- as.data.frame(sample_data)
 sample_data2 <-mutate(sample_data, tip.label = species_name)
-sample_data2$tip.label <- as.factor(sample_data2$tip.label)
-sample_data2$species_name<-as.factor(sample_data2$species_name)
+# sample_data2$Class <- as.factor(sample_data2$Class)
 mytree$tip.label <- strip_ott_ids(mytree$tip.label, remove_underscores = TRUE)
-#summary(sample_data2$tip.label)
-# sample_data2$n <- as.numeric(sample_data2$n)
+# summary(sample_data2$tip.label)
+# sample_data2$count <- as.numeric(sample_data2$count)
+sample_data3 <- left_join(sample_data2, Species_info[,c("species_name","Class")], by = "species_name")
+sample_data4 <- distinct(sample_data3, species_name, .keep_all = TRUE)
+# is.na(sample_data4)
+sample_data4$species_name<- as.factor(sample_data4$species_name)
+sample_data4$tip.label <- as.factor(sample_data4$tip.label)
 
-tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data2 + geom_fruit(geom = geom_bar, mapping = aes(x = n, fill = tip.label), stat = "identity", col = "gray1", orientation = "y", axis.params = list(axis = "x",text.angle = -45, hjust = 0, text.size = 3), grid.params = list(alpha = 0.35),offset = 0.085, pwidth = 0.55, alpha = 0.8) + theme(legend.position = "none") 
+tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data4 + aes(color = Class) + geom_fruit(geom = geom_bar, mapping = aes(x = n, fill = tip.label), stat = "identity", col = "gray1", orientation = "y", axis.params = list(axis = "x",text.angle = -45, hjust = 0, text.size = 3), grid.params = list(alpha = 0.35),offset = 0.085, pwidth = 0.55, alpha = 0.8) + theme(legend.position = "none") 
+
 
 tree2
 
+#TODO remove colours of bars as not needed 
 ## will add silhouettes to most common species
 ```
