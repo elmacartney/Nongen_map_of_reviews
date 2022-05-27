@@ -86,7 +86,7 @@ Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 
 
 Fig7
 
-
+#TODO put this in supplementary material
 
 ```
 
