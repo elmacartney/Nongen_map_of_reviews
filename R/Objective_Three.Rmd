@@ -76,7 +76,7 @@ list2env(list_all, .GlobalEnv)
 # Bibliometric analysis
 
 
-```{r, message = FALSE, warning = FALSE}
+```{r, eval = FALSE, message = FALSE, warning = FALSE}
 keywords <- S$MostRelKeywords
 words<-keywords[,1]
 freq<-as.numeric(keywords[,2])
@@ -90,7 +90,7 @@ Fig7
 
 ```
 
-## Figure 8 - Country collaboration
+## Fig - connection via disapline
 
 # this is good - collobraiton can be done
 # We need connection by co-citation or conneciton by coupling
@@ -102,6 +102,7 @@ Fig7
 Publication_info_discipline <- merge(Publication_info, Review_info)
 
 # matching with 1st author and title
+# mapping data
 Fields <- Publication_info_discipline %>%
   mutate(title = tolower(unlist(lapply(data.frame(t(str_split_fixed(title, " ", n = 15)[,1:14])), 
                                        function(x) str_c(x, collapse  = " ")))),
@@ -109,9 +110,11 @@ Fields <- Publication_info_discipline %>%
          ntitle = trimws(ntitle)) %>% 
   select(ntitle, discipline_code)
 
-
+# bib data
 Bib_names <- bib %>% rownames_to_column(., var = "mat_names") %>% 
-  mutate(TI2 = tolower(unlist(lapply(data.frame(t(str_split_fixed(TI, " ", n = 15)[,1:14])), function(x) str_c(x, collapse  = " ")))),
+  mutate(TI2 = tolower(unlist(lapply(data.frame(t(str_split_fixed(TI, " ", n = 15)[,1:14])), 
+                                     function(x) str_c(x, collapse  = " ")))),
+         # stri_trans_general = getting rid of special letters
          name2 = stri_trans_general(tolower(str_split_fixed(SR, " ", n = 2)[,1]), "latin-ascii"),
          TI2 = paste(name2, TI2, sep= " "),
          TI2 = trimws(TI2)) %>% 
@@ -139,7 +142,6 @@ Fields$ntitle[pos2]
 
 # now we can merge two datasets 
 Bib_names$discipline_code <- Fields$discipline_code[pos2]
-
 
 ## The same idea as above but this does not work
 # tidy_comb_sw <- tidy_comb_all(Fields$ntitle, Bib_names$TI2[1])
@@ -212,7 +214,12 @@ colnames(net_matrix) <- Bib_names$discipline_code
 # reducing matrix according to discipline_code
 rect_matrix<- t(rowsum(t(net_matrix), group = colnames(net_matrix), na.rm = T))
 small_matrix <- rowsum(rect_matrix, group = rownames(rect_matrix))
-small_matrix[lower.tri(small_matrix)] <- 0
+# getting rid of lower trangle (as this is duplication of info)
+small_matrix[lower.tri(small_matrix)] <- 0 
+
+# TODO 
+# you can look at this matrix
+small_matrix
 
 # chord diagram
 circos.clear()
@@ -226,3 +233,63 @@ fig <- chordDiagramFromMatrix(small_matrix)
 
 
 ```
+
+
+```{r}
+## Figure 8 - Country collaboration
+
+bib2 <- metaTagExtraction(bib, Field = "AU1_CO", sep = ";") 
+bib2 <- metaTagExtraction(bib2, Field = "AU_CO", sep = ";") 
+
+NetMatrix2 <- biblioNetwork(bib2, analysis = "collaboration", 
+                           network = "countries", sep = ";")
+#results <- biblioAnalysis(bib3, sep = ";")
+#S2 <- summary(object = results, k=20 ,pause = FALSE) 
+#MostProdCountries <- S2$MostProdCountries
+#MostProdCountries$Articles <- as.numeric(MostProdCountries$Articles)
+#countries <- MostProdCountries[1:8,'Country']
+#countries <- trimws(countries)
+
+
+net_matrix2 <- as.matrix(NetMatrix2)
+#net_matrix2 <-net_matrix[rownames(NetMatrix2), countries]
+diag(small_matrix) <- 0 #get rid of collaboration with same country
+
+# getting rid of lower trangle (as this is duplication of info)
+net_matrix2[lower.tri(net_matrix2)] <- 0 
+
+
+circos.clear()
+grid.col <- setNames(rainbow(length(unlist(dimnames(net_matrix2)))), union(rownames(net_matrix2), colnames(net_matrix2)))
+par(mar = c(0, 0, 0, 0), mfrow = c(1, 2))
+
+fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = grid.col)
+
+circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+  xlim = get.cell.meta.data("xlim")
+  ylim = get.cell.meta.data("ylim")
+  sector.name = get.cell.meta.data("sector.index")
+  circos.text(mean(xlim), ylim[1] + .1, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+  circos.axis(h = "top", labels.cex = 0.5, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
+}, bg.border = NA)
+
+
+#fig1
+# circos.clear()
+# fig1 <- chordDiagram(net_matrix2, grid.col = grid.col, annotationTrack = "grid", 
+#     preAllocateTracks = list(track.height = max(strwidth(unlist(dimnames(net_matrix2))))))
+# # we go back to the first track and customize sector labels
+# circos.track(track.index = 1, panel.fun = function(x, y) {
+#    sector.name = get.cell.meta.data("sector.index")
+#     circos.text(CELL_META$xcenter, CELL_META$ylim[1], CELL_META$sector.index, 
+#         facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+#   circos.axis(h = "top", labels.cex = 0.5, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
+# }, bg.border = NA) 
+
+#https://www.riinu.me/2022/02/world-map-ggplot2/
+
+
+```
+
+```
+
