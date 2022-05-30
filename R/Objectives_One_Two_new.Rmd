@@ -284,7 +284,9 @@ Fig5
 
 #Objective Two - Within discipline effects
 
-## Figure 6 - Disciplines
+## Figure 6 - Disciplines {.Tabset}
+
+### Fig. 6A - Proportion of disciplines
 
 ``` {r, results = 'hide'}
 
@@ -293,7 +295,7 @@ percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
 percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
-Fig5 <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
   geom_col(aes(), width = 0.7) + 
   geom_text(aes(label = percent), vjust = -0.2) +
   scale_y_continuous(name = "Percent (%)") +
@@ -301,10 +303,11 @@ Fig5 <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) +
   # scale_fill_manual(values=my.cols) +
   theme_classic() 
 
-Fig5s
+Fig6a
 
 ```
 
+### Fig. 6B - Class by discipline
 
 ## Figure 7 - Discipline specific research patterns {.tabset}
 
