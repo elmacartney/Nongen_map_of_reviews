@@ -221,9 +221,13 @@ small_matrix[lower.tri(small_matrix)] <- 0
 # you can look at this matrix
 small_matrix
 
+grid.cols <- setNames(rainbow(length(unlist(dimnames(small_matrix)))), union(rownames(small_matrix), colnames(small_matrix)))
+par(mar = c(0, 0, 0, 0), mfrow = c(1, 2))
+
+
 # chord diagram
 circos.clear()
-fig <- chordDiagramFromMatrix(small_matrix)
+fig <- chordDiagramFromMatrix(small_matrix, grid.col = grid.cols)
 # 
 # # it is a bit hard to understand - need to come back if you want to label differently
 # circos.track(track.index = 1, panel.fun = function(x, y) {
@@ -231,6 +235,8 @@ fig <- chordDiagramFromMatrix(small_matrix)
 #         facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
 # }, bg.border = NA) # here set bg.border to NA is important
 
+# pdf("Shared_citation.pdf")
+# dev.off()
 
 ```
 

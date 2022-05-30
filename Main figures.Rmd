@@ -1,0 +1,699 @@
+---
+title: "Main text figures"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+output: 
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---
+
+    
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = TRUE, 
+tidy = TRUE, 
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+### Seutup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(plyr)
+library(here)
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(forcats)
+library(ggplot2)
+library(hrbrthemes) #for ggplot2
+library(bibliometrix)
+library(igraph)
+library(patchwork)
+library(RColorBrewer)
+library(wordcloud2)
+library(migest)
+library(circlize)
+# library(rotl) #for getting OTTIDs from OTL
+# library(phytools) #for plotting trees
+# library(timetree) #can create trees with branch lengths
+# library(ape)
+```
+
+``` {r, results = 'hide'}
+#manually extracted data
+xldata <- "./Data_extraction_postcrosschecking.xlsx"
+# xldata <- read_excel(here(Data_extraction_postcrosschecking.xlsx"))
+
+# #bibliometric data
+# bib <- convert2df("./bibliometric.bib", dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+```
+
+
+``` {r, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Within and between discipline research patterns 
+
+Fig.1 is the diagram showing the difference between inter- and trans-generational effects and Fig. 2 is the ROSES diagram which were not created on R. 
+
+## Figure 3 - Disciplines and year published {.tabset}
+
+### Fig. 3A - SR with Disciplines
+
+``` {r, results = 'hide'}
+
+count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
+percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
+percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
+percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
+
+brewer.pal(6, "Accent") # matching colours of disciplines from brewer used in other figs
+my.cols <- (c("#BEAED4","#FFFF99" ,"#386CB0","#7FC97F","#FDC086","#F0027F"))
+
+Fig3a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  geom_text(aes(label = percent), hjust = -0.2) +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  xlab("Discipline") + 
+  scale_fill_manual(values=my.cols) +
+  theme_classic() +
+  theme(legend.position = "none")
+
+Fig3a
+
+```
+
+### Fig. 3B - Year published
+
+``` {r}
+
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+Fig3b <- Publication_info_discipline %>% 
+  count(year, discipline_code) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(aes(, fill = discipline_code), width = 0.7) +
+  xlim(2009, 2021.5) +
+  ylim(0, 14.5) +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = n)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Year", y = "Article count", fill = "Discipline")+
+  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+
+
+
+Fig3b
+
+```
+
+
+### Fig. 3 - Panel
+
+``` {r}
+Fig3 <- Fig3a +  Fig3b + plot_annotation(tag_levels = "A")
+
+Fig3 
+```
+
+## Figure 4 - Inter vs Trans gen effects including mode of transmission and term use {.tabset}
+
+### Fig. 4A - Inter vs Trans
+
+``` {r}
+Merged_inter_vs_trans <- merge(Inter_vs_trans_info, Review_info)
+
+count_inter_vs_trans <- Merged_inter_vs_trans %>% count(inter_vs_trans_code, by = discipline_code ) %>% arrange(desc(n))
+percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
+
+percent_inter_vs_trans$percent <- round(percent_inter_vs_trans$percent, digits = 0)
+
+percent_inter_vs_trans <-percent_inter_vs_trans %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  ylim(0,80)+
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Inter- vs trans-inheritnace", fill = "Discipline")+
+  theme(legend.position = "none")
+
+Fig4a
+
+```
+
+### Fig.4B - Transmission mode 
+
+```{r}
+
+Merged_transmission_info <- merge(Transmission_info, Review_info)
+
+count_transmission <- Merged_transmission_info %>%  count(transmission_code, by = discipline_code) %>% arrange(desc(n))
+percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
+percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
+percent_transmission <-percent_transmission %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4b <- ggplot(percent_transmission, aes(x = transmission_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) +
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Transmission mode", fill = "Discipline") +
+  theme(legend.position = "none")
+
+Fig4b
+
+```
+
+### Fig. 4C - Match vs mismatch inter- vs trans- definition
+
+``` {r}
+count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
+percent_terminology <- count_terminology %>% mutate(percent = (n/sum(n))*100)
+percent_terminology$percent<-round(percent_terminology$percent, digits = 0)
+
+percent_terminology<- percent_terminology %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig4c <- ggplot(percent_terminology, aes(x = reorder(terminology_code, -percent), y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill =   discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Terminology use matches Fig. 1", fill = "Discipline")+
+  theme(legend.position = "none")
+
+
+Fig4c
+```
+
+### Fig. 4 - Panel
+
+``` {r}
+Fig4 <- (Fig4a / Fig4b /Fig4c) + plot_annotation(tag_levels = "A")
+
+Fig4 
+
+```
+
+
+
+``` {r}
+
+##Supplementary figure
+
+#Inter_vs_trans_transmision <- merge(Merged_inter_vs_trans, Transmission_info)
+# 
+# 
+# count_inter_vs_trans_transmission <- Inter_vs_trans_transmision %>% count(inter_vs_trans_code, by = transmission_code) %>% arrange(desc(n))
+# percent_inter_vs_trans_transmission <- count_inter_vs_trans_transmission %>% mutate(percent = (n/sum(n))*100)
+# percent_inter_vs_trans_transmission$percent <- round(percent_inter_vs_trans_transmission$percent, digits = 0)
+# 
+# percent_inter_vs_trans_transmission <-percent_inter_vs_trans_transmission %>%
+#   rename(
+#     transmission_code = by
+#   )
+# 
+# Fig5 <- ggplot(percent_inter_vs_trans_transmission, aes(x = inter_vs_trans_code, y = percent)) + 
+#   geom_col(aes(fill = transmission_code), width = 0.7) + 
+#   coord_flip() + 
+#   scale_y_continuous(name = "Percent (%)") +
+#   geom_text(position = position_stack(vjust = 0.5), aes(fill = transmission_code, label = percent)) +
+#   theme_classic() +
+#   scale_fill_brewer(palette = "Accent") +
+#   labs(x = "Inter- vs trans-inheritnace", fill = "Transmission mode")+
+#   theme(legend.position = "none")
+# 
+# Fig5
+# 
+# #TODO should we remove all of the unclear datapoints?
+```
+
+
+
+```{r}
+#supplementary figure
+
+### Descendant generations within and between disciplines
+# 
+# merged_descendant_generat <- merge(Descendant_generat_info, Review_info)
+# 
+# count_descendant_generat <- merged_descendant_generat %>% count(descendant_generat_code, by = discipline_code) %>% arrange(desc(n))
+# percent_descendant_generat <- count_descendant_generat %>% mutate(percent = (n/sum(n))*100)
+# 
+# percent_descendant_generat <- percent_descendant_generat %>% 
+#   rename (
+#     discipline_code = by
+#   )
+# 
+# ggplot(percent_descendant_generat, aes(x = descendant_generat_code, y = percent)) + 
+#   geom_col(aes(fill = transmission_code), width = 0.7) + 
+#   theme_light() +
+#   coord_flip() + 
+#   scale_y_continuous(name = "Percent (%)") +
+#   theme(legend.position = "bottom", axis.title.x = element_text(size = 10), axis.title.y = element_blank()) + 
+#   guides(fill=guide_legend(title="Discipline"))
+
+```
+
+## Figure 5 - Ancestor exposures {.tabset}
+
+### Fig. 5A - Timing of exposure
+**Note:** We excluded SRs that solely focused on environmental exposures that occured when the F0 generation was a fetus (i.e., pre-natal). However,  some SRs  included primary studies where the F0 generation was exposed pre-natally. This was therefore coded in our data.
+
+```{r}
+
+merged_exposure_timing <- merge(Exposure_timing_info, Review_info)
+
+count_exposure_timing <- merged_exposure_timing %>% count(exposure_timing_code, by = discipline_code) %>% arrange(desc(n))
+percent_exposure_timing <- count_exposure_timing %>% mutate(percent = (n/sum(n))*100)
+percent_exposure_timing$percent<-round(percent_exposure_timing$percent, digits = 0)
+
+percent_exposure_timing <-percent_exposure_timing %>%
+  rename (
+    discipline_code = by
+  )
+
+Fig5a<- ggplot(percent_exposure_timing, aes(x = exposure_timing_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Timing of F0 (ancestor) exposure", fill = "Discipline")+
+  theme(legend.position = "none")
+
+
+Fig5a
+```
+
+### Fig. 5B - Descendant generation within F0 timing
+
+```{r}
+# merged_exposure_timing_generat <- merge(Exposure_timing_info, Descendant_generat_info)
+# 
+# count_exposure_timing_generat <- merged_exposure_timing_generat %>% count(exposure_timing_code, by = descendant_generat_code) %>% arrange(desc(n))
+# percent_exposure_timing_generat <- count_exposure_timing_generat %>% mutate(percent = (n/sum(n))*100)
+# percent_exposure_timing_generat$percent<-round(percent_exposure_timing_generat$percent, digits = 0)
+# 
+# percent_exposure_timing_generat <-percent_exposure_timing_generat %>%
+#   rename (
+#     descendant_generat_code = by
+#   )
+# 
+# Fig5c<- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
+#   geom_col(aes(fill = descendant_generat_code), width = 0.7) + 
+#    coord_flip() + 
+#   scale_y_continuous(name = "Percent (%)") +
+#   geom_text(position = position_stack(vjust = 0.5), aes(fill = descendant_generat_code, label = percent)) +
+#   theme_classic() +
+#   scale_fill_brewer(palette = "Greys", direction = -1) +
+#   labs(x = "Timing of F0 (ancestor) exposure", fill = "Descendant generation")
+# 
+# Fig5c
+
+
+merged_exposure_timing_generat <- merge(Exposure_timing_info, Inter_vs_trans_info)
+count_trait_intervstrans <- merged_exposure_timing_generat %>% count(exposure_timing_code, by = inter_vs_trans_code) %>% arrange(desc(n))
+percent_exposure_timing_generat <- count_trait_intervstrans  %>% mutate(percent = (n/sum(n))*100)
+percent_exposure_timing_generat$percent<-round(percent_exposure_timing_generat$percent, digits = 0)
+
+percent_exposure_timing_generat <- percent_exposure_timing_generat %>%
+  rename(
+    inter_vs_trans_code = by
+           )
+
+
+Fig5b <- ggplot(percent_exposure_timing_generat, aes(x = exposure_timing_code, y = percent)) + 
+  geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  scale_fill_brewer(palette = "Greys", direction = -1) +
+  labs(x = "Timing of F0 (ancestral) exposure", fill = "Generational effect")
+
+Fig5b
+
+```
+
+
+### Fig. 5C - Type of environmental exposure
+
+```{r}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
+percent_F0_env$percent<-round(percent_F0_env$percent, digits = 0)
+
+ 
+percent_F0_env <-percent_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5c <- ggplot(percent_F0_env, aes(x = F0_env_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Type of environmental exposure", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+
+Fig5c
+```
+
+### Fig. 5D - Environmental effect direction
+
+```{r}
+
+merged_env_eff <- merge(Env_eff_diection_info, Review_info)
+
+count_env_eff <- merged_env_eff %>% count(env_eff_direction_code, by = discipline_code) %>% arrange(desc(n))
+percent_env_eff <- count_env_eff %>% mutate(percent = (n/sum(n))*100)
+percent_env_eff$percent<-round(percent_env_eff$percent, digits = 0)
+
+
+percent_env_eff <-percent_env_eff %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig5d <- ggplot(percent_env_eff, aes(x = env_eff_direction_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+    coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Environmental effect direction", fill = "Discipline") + 
+  theme(legend.position = "none")
+  
+Fig5d
+
+```
+
+
+### Fig. 5 - Panel
+
+```{r}
+Fig5 <- ((Fig5a + Fig5b) / (Fig5c + Fig5d)) + plot_annotation(tag_levels = "A")
+
+Fig5
+```
+
+## Figure 6 - Descendant information {.tabset}
+
+### Fig. 6A - Decendant traits
+
+```{r}
+
+merged_descendant_trait <- merge(Descendant_trait_info, Review_info)
+count_descendant_trait <- merged_descendant_trait %>% count(descendant_trait_code, by = discipline_code) %>% arrange(desc(n))
+percent_descendant_trait <- count_descendant_trait %>% mutate(percent = (n/sum(n))*100)
+percent_descendant_trait$percent<-round(percent_descendant_trait$percent, digits = 0)
+
+percent_descendant_trait <- percent_descendant_trait %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig6a<- ggplot(percent_descendant_trait, aes(x = descendant_trait_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+  coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Descendant traits", fill = "Discipline")+ 
+  theme(legend.position = "none")
+
+Fig6a
+```
+
+### Fig. 6B - Descendant sex
+
+```{r}
+
+merged_descendant_sex <- merge(Descendant_sex_info, Review_info)
+count_descendant_sex <- merged_descendant_sex %>% count(descendant_sex_code, by = discipline_code) %>% arrange(desc(n))
+percent_descendant_sex <- count_descendant_sex  %>% mutate(percent = (n/sum(n))*100)
+percent_descendant_sex$percent<-round(percent_descendant_sex$percent, digits = 0)
+
+percent_descendant_sex <- percent_descendant_sex %>%
+  rename(
+    discipline_code = by
+           )
+
+Fig6b <- ggplot(percent_descendant_sex, aes(x = descendant_sex_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = discipline_code, label = percent)) +
+  theme_classic() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(x = "Descendant sex", fill = "Discipline")+ 
+  theme(legend.position = "none")
+
+Fig6b
+
+```
+
+### Fig. 6C - Descendant trait grouped by inter- vs trans- 
+
+```{r}
+merged_trait_intervstrans <- merge(Descendant_trait_info, Inter_vs_trans_info)
+count_trait_intervstrans <- merged_trait_intervstrans %>% count(descendant_trait_code, by = inter_vs_trans_code) %>% arrange(desc(n))
+percent_trait_intervstrans <- count_trait_intervstrans  %>% mutate(percent = (n/sum(n))*100)
+percent_trait_intervstrans$percent<-round(percent_trait_intervstrans$percent, digits = 0)
+
+percent_trait_intervstrans <- percent_trait_intervstrans %>%
+  rename(
+    inter_vs_trans_code = by
+           )
+
+
+Fig6c <- ggplot(percent_trait_intervstrans, aes(x = descendant_trait_code, y = percent)) + 
+  geom_col(aes(fill = inter_vs_trans_code), width = 0.7) + 
+   coord_flip() + 
+  scale_y_continuous(name = "Percent (%)") +
+  geom_text(position = position_stack(vjust = 0.5), aes(fill = inter_vs_trans_code, label = percent)) +
+  theme_classic() +
+  theme(legend.position = "bottom") +
+  scale_fill_brewer(palette = "Greys", direction = -1) +
+  labs(x = "Descendant traits", fill = "Generational effect")
+
+Fig6c
+
+```
+
+### Fig. 6 - Panel
+
+```{r}
+Fig6 <- ((Fig6a + Fig6b)/(Fig6c)) + plot_annotation(tag_levels = "A")
+
+Fig6
+```
+
+
+# Bibliometric analysis
+
+## Figure 7 - Keyword matrix
+
+``` {r, message = FALSE, warning = FALSE, results = 'hide'}
+bib2 <- biblioAnalysis(bib, sep = ";")
+S <- summary(object = bib2, k = 50, pause = FALSE)
+```
+``` {r, message = FALSE, warning = FALSE}
+keywords <- S$MostRelKeywords
+words<-keywords[,1]
+freq<-as.numeric(keywords[,2])
+prob<-freq/sum(freq)
+
+Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
+
+Fig7
+```
+
+## Figure 8 - Country collaboration
+
+```{r, results = 'hide'}
+bib3 <- metaTagExtraction(bib, Field = "AU_CO", sep = ";") 
+NetMatrix <- biblioNetwork(bib3, analysis = "collaboration", 
+                           network = "countries", sep = ";")
+results <- biblioAnalysis(bib3, sep = ";")
+S2 <- summary(object = results, k=20 ,pause = FALSE) 
+MostProdCountries <- S2$MostProdCountries
+MostProdCountries$Articles <- as.numeric(MostProdCountries$Articles)
+countries <- MostProdCountries[1:8,'Country']
+countries <- trimws(countries)
+net_matrix <- as.matrix(NetMatrix)
+small_matrix <-net_matrix[countries, countries]
+diag(small_matrix) <- 0 #get rid of collaboration with same country
+
+
+circos.clear()
+Fig8 <- chordDiagramFromMatrix(small_matrix)
+
+Fig8
+```
+
+<!-- ## Species tree -->
+<!-- It can't assign OTT to a majority of species -->
+
+```{r}
+# 
+# Species_info$species_name<-as.character(Species_info$species_name)
+# 
+# #checking for species name synonyms
+# synons <- tnrs_match_names(unique(Species_info$species_name),  context_name = "Insects")
+# 
+# synonyms(synons) ## gives list of all synonyms
+# synons$ott_id ##gives unique ID number the corresponds to species names in rotl
+# synons #tells you how many matches there are
+# 
+# #making tree
+# length(synons$ott_id)
+# 
+# my.tree <- tol_induced_subtree(ott_ids = synons$ott_id, label_format= "name")
+# 
+# plot(my.tree, show.tip.label = T, cex = 0.8, no.margin = TRUE) #it's clearly assigning the incorrect taxa names
+# 
+# intersect(as.character(my.tree$tip.label), Species_info$species_name) ## checking which names are matching 
+# 
+# setdiff(Species_info$species_name, as.character(my.tree$tip.label)) ## checking which names are not matching 
+# 
+# in_tree <- is_in_tree(ott_id(synons)) #checking which species are being left off tree
+# in_tree #tells me which names are not in the tree
+```
+
+# CEESAT Assessment 
+
+### Blinding paper ID and wrangling data into long format
+
+Paper ID was blinded for the pilot but will not be blinded for the full study
+
+```{r}
+#blinding authors
+Assessment$id <- paste("ID", c(1:length(Assessment$id)), sep = "")
+#shortening column names
+names(Assessment) <- gsub("CEESAT_", "", names(Assessment), fixed = TRUE)
+#selecting only the columns with scores
+#selecting only the columns with scores
+Assessment_reduced <- select(Assessment, c("id", !ends_with("_comment")))
+#wrangling data into long format
+ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key=TRUE)
+```
+
+
+## Figure 9 - CEESAT outcomes {.tabset}
+
+### Fig. 9A - Average scores across SRs
+
+```{r}
+#calculating the % of scores within each questions 
+count_ceesat_score <- ceesat_long %>% count(score, by = question) 
+percent_ceesat_score <- count_ceesat_score %>% mutate(percent = (n/sum(n))*100)
+percent_ceesat_score <- percent_ceesat_score %>%
+  rename(
+    question = by
+  )
+percent_ceesat_score$question <- as.factor(percent_ceesat_score$question)
+percent_ceesat_score$question <- factor(percent_ceesat_score$question, levels(percent_ceesat_score$question)[length(percent_ceesat_score$question):1]) #reverse the order of questions
+percent_ceesat_score$score <- as.factor(percent_ceesat_score$score)
+percent_ceesat_score$score <- factor(percent_ceesat_score$score, levels(percent_ceesat_score$score)[c(2,3,1,4)]) #set the order of levels for assessment scores:
+
+Fig9a <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
+  geom_col(mapping = aes(x = question, y = percent, fill = score), width = 0.7,
+           position = "fill", color = "black") +
+  coord_flip(ylim = c(0, 1)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_fill_manual(values = c("yellow","green", "orange","red"), name = "Score:") +
+  theme(legend.position = "none", panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank()) + 
+  ylab("Percent (%)") + xlab("CEESAT Question")
+
+Fig9a
+``` 
+
+### Fig. 9B - Individual scores
+
+``` {r}
+
+Fig9b <- ggplot(data = ceesat_long, aes(y = id, x = question)) +
+  geom_tile(color="black", fill="white", size = 0.5) +
+  geom_point(aes(color = as.factor(score)), size = 3) +
+  scale_x_discrete(position = "top") +
+  guides(color = guide_legend(reverse = TRUE)) +
+  scale_color_manual(values = c("orange","yellow","green","red" ), name = "Score:") + 
+  theme_minimal() + 
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none",
+        legend.text = element_text(size = 12),
+        axis.text.y = element_text(size = 5, color = "black"),
+        axis.text.x = element_text(angle = 45, hjust=0)
+  ) +
+  ylab("Study ID") + 
+  xlab("CEESAT question") 
+
+Fig9b
+```
+
+### Fig. X - Panel
+
+```{r}
+Fig9 <- (Fig9a + Fig9b) + plot_annotation(tag_levels = "A")
+
+Fig9
+```
