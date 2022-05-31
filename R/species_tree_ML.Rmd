@@ -26,9 +26,6 @@ library(ggtreeExtra)
 
 ## R Markdown
 
-#things still to fix everywhere:
-"Rutowska et al_2020" should be "Rutkowska et al_2020"
-
 ```{r load data}
 
 # load manually extracted data

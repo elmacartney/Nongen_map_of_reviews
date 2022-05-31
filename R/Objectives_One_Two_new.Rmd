@@ -59,7 +59,7 @@ xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 # #bibliometric data
 # bib <- convert2df("./data/bibliometric.bib", dbsource = "scopus", format = "bibtex")
 # 
-#bib <- convert2df(here("data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
+# bib <- convert2df(here("data", "bibliometric.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 ``` {r, results = 'hide'}
@@ -80,13 +80,15 @@ list2env(list_all, .GlobalEnv)
 
 # Objective One - Between discipline patterns 
 
-## Figure 3 - Time trend
+## Figure 3  
+
+### Fig 3A - Time trend
 
 ``` {r}
 
 Publication_info_discipline <- merge(Publication_info, Review_info)
 
-Fig3 <- Publication_info_discipline %>% 
+Fig3a <- Publication_info_discipline %>% 
   count(year) %>%
   ggplot(aes(x = year, y = n)) +
   geom_col(aes(), width = 0.7) +
@@ -97,14 +99,14 @@ Fig3 <- Publication_info_discipline %>%
   labs(x = "Year", y = "Article count")+
   theme(legend.position = "none", axis.title.x = element_text(size = 10))
 
-Fig3
+Fig3a
 
 ```
 
-## Figure 4 - Species
+## Figure 4  
+Species
 
-
-## Figure 5 - Research patterns {.tabset}
+## Figure 5  {.tabset}
 
 ### Fig. 5A - Inter- vs trans- inheritance
 
@@ -279,37 +281,74 @@ Fig5 <- ((Fig5a | Fig5b | Fig5c | Fig5d) / (Fig5e | Fig5f | Fig5g | Fig5h)) + pl
 
 Fig5
 
-#TODO remove x axis label from a -d
 ```
 
 #Objective Two - Within discipline effects
 
-## Figure 6 - Disciplines {.Tabset}
+## Figure 6 {.tabset}
 
-### Fig. 6A - Proportion of disciplines
+### Fig. 6A - Percent SRs within disciplines
 
 ``` {r, results = 'hide'}
 
-count_discipline <-Review_info %>% count(discipline_code) %>% arrange(desc(n)) 
+count_discipline <-Review_info %>% count(discipline_code)
+# %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
 percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
+# brewer.pal(6, "Set2")
+my.cols <- (c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"))
+
 Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
-  geom_col(aes(), width = 0.7) + 
+  geom_col(aes(fill = discipline_code)) + 
   geom_text(aes(label = percent), vjust = -0.2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_y_continuous(name = "Percent (%)") +
   xlab("Discipline") + 
-  # scale_fill_manual(values=my.cols) +
-  theme_classic() 
+  scale_fill_manual(values=my.cols) +
+  theme_classic() +
+  theme(legend.position = "none")
 
 Fig6a
 
 ```
 
-### Fig. 6B - Class by discipline
+### Fig. 6B - Disciplines within taxa
 
-## Figure 7 - Discipline specific research patterns {.tabset}
+``` {r}
+Merged_taxa <- merge(Species_info, Review_info)
+
+count_taxa <- Merged_taxa %>% count(broad_taxa, by = discipline_code ) %>% arrange(desc(n))
+
+
+count_taxa <-count_taxa%>%
+  rename(
+    discipline_code = by
+  )
+
+Fig6b <- ggplot(count_taxa, aes(x = broad_taxa, y = n, fill = discipline_code)) +
+  geom_bar(position = "fill", stat = "identity") + 
+  theme_classic() +
+  coord_flip() +
+  labs(y = "Proportion", x = "Broad taxa", fill = "Discipline") +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = "none")
+
+Fig6b
+
+```
+
+### Fig. 6 - Panel
+
+```{r}
+Fig6 <- (Fig6a + Fig6b) + plot_annotation(tag_levels = "A")
+
+Fig6
+
+```
+
+## Figure 7 {.tabset}
 
 ### Fig. 7A - Inter- vs trans- inheritance
 
@@ -451,7 +490,6 @@ Fig7f <- ggplot(count_descendant_trait, aes(x = discipline_code, y = descendant_
 
 Fig7f
 ```
-
 ### Fig. 7E - Descendant sex
 
 ```{r}
