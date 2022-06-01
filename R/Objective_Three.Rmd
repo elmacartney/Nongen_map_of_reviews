@@ -85,25 +85,22 @@ list2env(list_all, .GlobalEnv)
 ```{r, eval = FALSE, message = FALSE, warning = FALSE, eval = FALSE}
 ##NOTE: this chunk does not run becouse there is no object "S"
 
-keywords <- S$MostRelKeywords
-words<-keywords[,1]
-freq<-as.numeric(keywords[,2])
-prob<-freq/sum(freq)
-
-Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
-
-Fig7
-
-#TODO put this in supplementary material
-```
+# keywords <- S$MostRelKeywords
+# words<-keywords[,1]
+# freq<-as.numeric(keywords[,2])
+# prob<-freq/sum(freq)
+# 
+# Fig7 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
+# 
+# Fig7
+# 
+# #TODO put this in supplementary material
+# ```
 
 ## Fig - connection via disapline
+```
 
-# this is good - collobraiton can be done
-# We need connection by co-citation or conneciton by coupling
-
-
-```{r, results = 'hide'}
+```{r}
 
 # Data
 Publication_info_discipline <- merge(Publication_info, Review_info)
@@ -229,13 +226,25 @@ small_matrix[lower.tri(small_matrix)] <- 0
 # you can look at this matrix
 small_matrix
 
-grid.cols <- setNames(rainbow(length(unlist(dimnames(small_matrix)))), union(rownames(small_matrix), colnames(small_matrix)))
+# my.cols <- (c(Col1 = "#66C2A5", Col1 = "#FC8D62", Col3 =  "#8DA0CB", Col4 = "#E78AC3", Col5 = "#A6D854", Col6 = "#FFD92F", Row1 = "#66C2A5", Row2 = "#FC8D62", Row3 =  "#8DA0CB", Row4 = "#E78AC3", Row5 = "#A6D854", Row6 = "#FFD92F"))
+
+#have to remove gaps and hyphen to allocate colours to match previous figures
+colnames(small_matrix)[3] <- "crossdisciplinary"
+colnames(small_matrix)[4] <- "ecoevo"
+rownames(small_matrix)[3] <- "crossdisciplinary"
+rownames(small_matrix)[4] <- "ecoevo"
+
+
+my.cols <- (c(agriculture = "#66C2A5", biomed = "#FC8D62", crossdisciplinary = "#8DA0CB", ecoevo = "#E78AC3", toxicology = "#A6D854"))
+            
+
+# grid.cols <- setNames(rainbow(length(unlist(dimnames(small_matrix)))), union(rownames(small_matrix), colnames(small_matrix)))
 
 par(mar = c(0, 0, 0, 0), mfrow = c(1, 1))
 
 # chord diagram
-circos.clear()
-fig <- chordDiagramFromMatrix(small_matrix, grid.col = grid.cols)
+circos.par()
+fig <- chordDiagramFromMatrix(small_matrix, grid.col = my.cols)
 # 
 # # it is a bit hard to understand - need to come back if you want to label differently
 # circos.track(track.index = 1, panel.fun = function(x, y) {
@@ -282,11 +291,16 @@ rownames(net_matrix2)[rownames(net_matrix2) == "Usa"] <- "USA"
 colnames(net_matrix2)[colnames(net_matrix2) == "United Kingdom"] <- "UK"
 rownames(net_matrix2)[rownames(net_matrix2) == "United Kingdom"] <- "UK"
 
-circos.clear()
-grid.col <- setNames(rainbow(length(unlist(dimnames(net_matrix2)))), union(rownames(net_matrix2), colnames(net_matrix2)))
-par(mar = c(0, 0, 0, 0), mfrow = c(1, 2))
+colnames(net_matrix2)[7] <- "Newzealand" 
+rownames(net_matrix2)[7] <- "Newzealand"
 
-fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = grid.col)
+circos.clear()
+my.cols2 <- c(USA = "#DCDCDC", Australia = "#000000", Netherlands = "#A9A9A9", UK = "#2F4F4F", Brazil = "#C0C0C0", Canada = "slategray", Newzealand = "gainsboro", France = "#778899", Germany = "#808080",Italy = "#696969", Argentina = "#DCDCDC", China = "#000000", Belgium = "#A9A9A9", Sweden = "#2F4F4F", Iran = "#C0C0C0", Mexico = "#778899", Poland = "#A9A9A9")
+
+# grid.col <- setNames(rainbow(length(unlist(dimnames(net_matrix2)))), union(rownames(net_matrix2), colnames(net_matrix2)))
+# par(mar = c(0, 0, 0, 0), mfrow = c(1, 2))
+
+fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = my.cols2)
 
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -320,18 +334,34 @@ pdf(file = "chord_diagrams.pdf", width = 8, height = 10)
 #layout(matrix(1:2, 1, 2))
 par(mfrow = c(2, 1), mar = c(0.5, 0.5, 0.9, 0.5), bg = rgb(1, 1, 1, 0.1) , adj = 0, cex = 1.1)
 
-## panel A
-circos.clear()
-circos.par("circle.margin" = c(0.1, 0.1, 0.1, 0.1))
-fig <- chordDiagramFromMatrix(small_matrix, grid.col = grid.cols)
-title("A", font.main = 1, cex.main = 1.2)
-#circos.par()
+# ## panel A
+# circos.clear()
+# circos.par("circle.margin" = c(0.1, 0.1, 0.1, 0.1))
+# fig <- chordDiagramFromMatrix(small_matrix, grid.col = grid.cols)
+# title("A", font.main = 1, cex.main = 1.2)
+# #circos.par()
+# 
+# ## panel B
+# circos.clear()
+# circos.par(start.degree = 90)
+# circos.par("circle.margin" = c(0.1, 0.1, 0.5, 0.1))
+# fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = grid.col)
+# #change direction of labels
+# circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+#   xlim = get.cell.meta.data("xlim")
+#   ylim = get.cell.meta.data("ylim")
+#   sector.name = get.cell.meta.data("sector.index")
+#   circos.text(mean(xlim), ylim[1] + .3, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+#   circos.axis(h = "top", labels.cex = 0.3, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
+# }, bg.border = NA)
+# title("B", font.main = 1, cex.main = 1.2)
+# 
+# dev.off()
 
-## panel B
 circos.clear()
 circos.par(start.degree = 90)
 circos.par("circle.margin" = c(0.1, 0.1, 0.5, 0.1))
-fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = grid.col)
+fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = my.cols2)
 #change direction of labels
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -340,10 +370,15 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   circos.text(mean(xlim), ylim[1] + .3, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
   circos.axis(h = "top", labels.cex = 0.3, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
 }, bg.border = NA)
+title("A", font.main = 1, cex.main = 1.2)
+
+circos.clear()
+circos.par("circle.margin" = c(0.1, 0.1, 0.1, 0.1))
+fig <- chordDiagramFromMatrix(small_matrix, grid.col = my.cols)
 title("B", font.main = 1, cex.main = 1.2)
 
-dev.off()
 
+dev.off()
 ```
 
 ```{r plot countries of first authors on a mpa}
