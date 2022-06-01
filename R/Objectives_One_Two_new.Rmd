@@ -318,8 +318,11 @@ Fig6a
 
 ``` {r}
 Merged_taxa <- merge(Species_info, Review_info)
+#creating a subset dataframe without repreated measures of taxa per species
+Merged_taxa2 <- Merged_taxa[c("id", "broad_taxa", "discipline_code")]
+Merged_taxa3 <- Merged_taxa2 %>% distinct(id, broad_taxa,.keep_all = TRUE)
 
-count_taxa <- Merged_taxa %>% count(broad_taxa, by = discipline_code ) %>% arrange(desc(n))
+count_taxa <- Merged_taxa3 %>% count(broad_taxa, by = discipline_code ) %>% arrange(desc(n))
 
 
 count_taxa <-count_taxa%>%
@@ -336,7 +339,6 @@ Fig6b <- ggplot(count_taxa, aes(x = broad_taxa, y = n, fill = discipline_code)) 
   theme(legend.position = "none")
 
 Fig6b
-
 ```
 
 ### Fig. 6 - Panel
@@ -362,13 +364,13 @@ count_inter_vs_trans <-count_inter_vs_trans %>%
     discipline_code = by
   )
 
-Fig7a <- ggplot(count_inter_vs_trans, aes(x = discipline_code, y = inter_vs_trans_code, fill = n)) +
+Fig7a <- ggplot(count_inter_vs_trans, aes(y = discipline_code, x = inter_vs_trans_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Inter- vs trans-inheritance", fill = "Count") + 
+  labs(y = "Discipline", x = "Inter- vs trans-inheritance", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7a
 ```
@@ -387,13 +389,13 @@ count_transmission <-count_transmission %>%
   )
 
 
-Fig7b <- ggplot(count_transmission, aes(x = discipline_code, y = transmission_code, fill = n)) +
+Fig7b <- ggplot(count_transmission, aes(y = discipline_code, x = transmission_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Transmission mode", fill = "Count") + 
+  labs(y = "Discipline", x = "Transmission mode", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7b
 
@@ -409,13 +411,13 @@ count_terminology<- count_terminology %>%
     discipline_code = by
   )
 
-Fig7c <- ggplot(count_terminology, aes(y = reorder(terminology_code, -n), discipline_code, fill = n)) +
+Fig7c <- ggplot(count_terminology, aes(x = reorder(terminology_code, -n), y = discipline_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Terminology use matches Fig. 1", fill = "Count") + 
+  labs(y = "Discipline", x = "Terminology use matches Fig. 1", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7c
 
@@ -433,13 +435,13 @@ count_F0_env <-count_F0_env %>%
     discipline_code = by
   )
 
-Fig7d <- ggplot(count_F0_env, aes(x = discipline_code, y = F0_env_code, fill = n)) +
+Fig7d <- ggplot(count_F0_env, aes(y = discipline_code, x = F0_env_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Type of environmental exposure", fill = "Count") + 
+  labs(y = "Discipline", x = "Type of environmental exposure", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7d
 ```
@@ -457,13 +459,13 @@ count_exposure_timing <- count_exposure_timing %>%
     discipline_code = by
   )
 
-Fig7e <- ggplot(count_exposure_timing, aes(x = discipline_code, y = exposure_timing_code, fill = n)) +
+Fig7e <- ggplot(count_exposure_timing, aes(y = discipline_code, x = exposure_timing_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Timing of F0 (ancestor) exposure", fill = "Count") + 
+  labs(y = "Discipline", x = "Timing of F0 (ancestor) exposure", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7e
 ```
@@ -480,16 +482,17 @@ count_descendant_trait <- count_descendant_trait %>%
     discipline_code = by
   )
 
-Fig7f <- ggplot(count_descendant_trait, aes(x = discipline_code, y = descendant_trait_code, fill = n)) +
+Fig7f <- ggplot(count_descendant_trait, aes(y = discipline_code, x = descendant_trait_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Descendant traits", fill = "Count") + 
+  labs(y = "Discipline", x = "Descendant traits", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7f
 ```
+
 ### Fig. 7E - Descendant sex
 
 ```{r}
@@ -502,13 +505,13 @@ count_descendant_sex <- count_descendant_sex %>%
     discipline_code = by
            )
 
-Fig7g <- ggplot(count_descendant_sex, aes(x = discipline_code, y = descendant_sex_code, fill = n)) +
+Fig7g <- ggplot(count_descendant_sex, aes(y = discipline_code, x = descendant_sex_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Descendant sex", fill = "Count") + 
+  labs(y = "Discipline", x = "Descendant sex", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7g
 ```
@@ -526,13 +529,13 @@ count_env_eff <-count_env_eff %>%
     discipline_code = by
   )
 
-Fig7h <- ggplot(count_env_eff, aes(x = discipline_code, y = env_eff_direction_code, fill = n)) +
+Fig7h <- ggplot(count_env_eff, aes(y = discipline_code, x = env_eff_direction_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(x = "Discipline", y = "Environmental effect direction", fill = "Count") + 
+  labs(y = "Discipline", x = "Environmental effect direction", fill = "Count") + 
   geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "gray80", high = "gray20")
+  scale_fill_gradient(low = "yellow", high = "red")
 
 Fig7h
 ```
