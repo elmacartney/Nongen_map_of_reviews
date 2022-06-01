@@ -46,6 +46,8 @@ library(stringdist)
 library(fuzzyjoin)
 library(ggthemes)
 library(viridis)
+library(cowplot)
+library(mapproj)
 ```
 
 ```{r, results = 'hide'}
@@ -322,7 +324,7 @@ par(mfrow = c(2, 1), mar = c(0.5, 0.5, 0.9, 0.5), bg = rgb(1, 1, 1, 0.1) , adj =
 circos.clear()
 circos.par("circle.margin" = c(0.1, 0.1, 0.1, 0.1))
 fig <- chordDiagramFromMatrix(small_matrix, grid.col = grid.cols)
-title("A. disciplines", font.main = 1, cex.main = 1.2)
+title("A", font.main = 1, cex.main = 1.2)
 #circos.par()
 
 ## panel B
@@ -338,7 +340,7 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   circos.text(mean(xlim), ylim[1] + .3, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
   circos.axis(h = "top", labels.cex = 0.3, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
 }, bg.border = NA)
-title("B. authors' countries", font.main = 1, cex.main = 1.2)
+title("B", font.main = 1, cex.main = 1.2)
 
 dev.off()
 
@@ -376,16 +378,20 @@ fullmap <- left_join(emptymap, firstcountrycounts, by = "region") #join with act
 fullmap$n <- fullmap$n.x + fullmap$n.y # make new column for fixed counts
 fullmap$n[is.na(fullmap$n)] <- 0 #change NA to 0 for regions with no counts
 
-fullmap %>% 
+Fig8 <- fullmap %>% 
   ggplot(aes(fill = n, map_id = region)) +
   geom_map(map = world_map) +
   expand_limits(x = world_map$long, y = world_map$lat) +
   coord_map("moll") +
   theme_map() + 
-  theme(legend.position="bottom") +
-  scale_fill_viridis(option = "mako", direction = -1, name = "Article count", 
-      guide = guide_colorbar(direction = "horizontal")) +
-  guides(fill = guide_colourbar(barwidth = unit(15, units = "mm"), barheight = unit(2, units = "mm")))
+  theme(legend.position="right") +
+  scale_fill_distiller(palette = "Spectral", direction = -1, name = "Count",
+      guide = guide_colorbar(direction = "vertical.")) +
+  guides(fill = guide_colourbar(barwidth = unit(15, units = "mm"), barheight = unit(20, units = "mm")))
+
+
+Fig8
+
 
 #alternative approach: https://stackoverflow.com/questions/22855197/how-do-you-get-geom-map-to-show-all-parts-of-a-map
 ```
