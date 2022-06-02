@@ -110,9 +110,7 @@ Species
 
 ### Fig. 5A - Inter- vs trans- inheritance
 
-
 ``` {r}
-
 count_inter_vs_trans <- count(Inter_vs_trans_info, inter_vs_trans_code)
 percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
 
@@ -130,29 +128,8 @@ Fig5a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent
 Fig5a
 ```
 
-### Fig. 5B - Transmission mode 
+### Fig. 5B - Terminology match vs mismatch
 
-```{r}
-
-count_transmission <- count(Transmission_info, transmission_code)
-percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
-
-percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
-
-Fig5b <- ggplot(percent_transmission, aes(x = reorder(transmission_code, -percent), y = percent)) + 
-  geom_col(aes(), width = 0.7) +
-  coord_flip() + 
-  labs(y = "Percent (%)") +
-  ylim(0,100) +
-  geom_text(aes(label = percent), hjust = -0.2)+
-  theme_classic() +
-  labs(x = "Transmission mode")
-
-Fig5b
-
-```
-
-### Fig. 5C - Terminology match vs mismatch
 ```{r}
 
 count_terminology <- count(Review_info, terminology_code)
@@ -160,7 +137,7 @@ percent_terminology <- count_terminology %>% mutate(percent = (n/sum(n))*100)
 
 percent_terminology$percent <- round(percent_terminology$percent, digits = 0)
 
-Fig5c <- ggplot(percent_terminology, aes(x =reorder(terminology_code, -percent), y = percent)) + 
+Fig5b <- ggplot(percent_terminology, aes(x =reorder(terminology_code, -percent), y = percent)) + 
   coord_flip() + 
   geom_col(aes(), width = 0.7) + 
   labs(y = "Percent (%)",x = "Terminology use matches Fig. 1" ) +
@@ -169,11 +146,11 @@ Fig5c <- ggplot(percent_terminology, aes(x =reorder(terminology_code, -percent),
   theme_classic()
 
 
-Fig5c
+Fig5b
 
 ```
 
-### Fig. 5D - Type of F0 exposure
+### Fig. 5C - Type of F0 exposure
 
 ```{r}
 
@@ -182,7 +159,7 @@ percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
 
 percent_F0_env$percent <- round(percent_F0_env$percent, digits = 0)
 
-Fig5d <- ggplot(percent_F0_env, aes(x = reorder(F0_env_code, -percent), y = percent)) + 
+Fig5c <- ggplot(percent_F0_env, aes(x = reorder(F0_env_code, -percent), y = percent)) + 
   geom_col(aes(), width = 0.7) +
   coord_flip() + 
   labs(y = "Percent (%)",x = "Type of environmental exposure" ) +
@@ -190,7 +167,29 @@ Fig5d <- ggplot(percent_F0_env, aes(x = reorder(F0_env_code, -percent), y = perc
   geom_text(aes(label = percent), hjust = -0.2)+
   theme_classic()
   
+Fig5c
+```
+
+### Fig. 5D - Transmission mode 
+
+```{r}
+
+count_transmission <- count(Transmission_info, transmission_code)
+percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
+
+percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
+
+Fig5d <- ggplot(percent_transmission, aes(x = reorder(transmission_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) +
+  coord_flip() + 
+  labs(y = "Percent (%)") +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic() +
+  labs(x = "Transmission mode")
+
 Fig5d
+
 ```
 
 ### Fig. 5E - Timing of F0 exposure
@@ -277,7 +276,7 @@ Fig5h
 ### Fig. 5 - Panel 
 
 ```{r}
-Fig5 <- ((Fig5a | Fig5b | Fig5c | Fig5d) / (Fig5e | Fig5f | Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
+Fig5 <- ((Fig5a | Fig5b) / (Fig5c | Fig5d) / (Fig5e | Fig5f) / (Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
 
 Fig5
 
@@ -295,9 +294,9 @@ count_discipline <-Review_info %>% count(discipline_code)
 # %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
-percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
+# percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
-# brewer.pal(6, "Set2")
+brewer.pal(6, "Set2")
 my.cols <- (c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"))
 
 Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
@@ -313,6 +312,8 @@ Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) +
 Fig6a
 
 ```
+
+
 
 ### Fig. 6B - Disciplines within taxa
 
@@ -330,7 +331,7 @@ count_taxa <-count_taxa%>%
     discipline_code = by
   )
 
-Fig6b <- ggplot(count_taxa, aes(x = broad_taxa, y = n, fill = discipline_code)) +
+Fig6b <- ggplot(count_taxa, aes(x = fct_rev(broad_taxa), y = n, fill = discipline_code)) +
   geom_bar(position = "fill", stat = "identity") + 
   theme_classic() +
   coord_flip() +
@@ -376,8 +377,55 @@ Fig7a <- ggplot(count_inter_vs_trans, aes(y = discipline_code, x = inter_vs_tran
 Fig7a
 ```
 
+### Fig. 7B - Terminology match vs mismatch
 
-### Fig. 7B - Transmission mode
+``` {r}
+count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
+
+count_terminology<- count_terminology %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7b <- ggplot(count_terminology, aes(x = reorder(terminology_code, -n), y = discipline_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Terminology use matches Fig. 1", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7b
+
+```
+
+### Fig. 7C - Type of F0 exposure
+
+```{r}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+ 
+count_F0_env <-count_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7c <- ggplot(count_F0_env, aes(y = discipline_code, x = F0_env_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Type of environmental exposure", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7c
+```
+
+
+### Fig. 7D - Transmission mode
 
 ```{r}
 Merged_transmission_info <- merge(Transmission_info, Review_info)
@@ -390,7 +438,7 @@ count_transmission <-count_transmission %>%
   )
 
 
-Fig7b <- ggplot(count_transmission, aes(y = discipline_code, x = transmission_code, fill = n)) +
+Fig7d <- ggplot(count_transmission, aes(y = discipline_code, x = transmission_code, fill = n)) +
   geom_raster() + 
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -399,55 +447,8 @@ Fig7b <- ggplot(count_transmission, aes(y = discipline_code, x = transmission_co
   scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
   guides(fill = "none")
 
-Fig7b
-
-```
-
-### Fig. 7C - Terminology match vs mismatch
-
-``` {r}
-count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
-
-count_terminology<- count_terminology %>%
-  rename(
-    discipline_code = by
-  )
-
-Fig7c <- ggplot(count_terminology, aes(x = reorder(terminology_code, -n), y = discipline_code, fill = n)) +
-  geom_raster() + 
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(y = "Discipline", x = "Terminology use matches Fig. 1", fill = "Count") + 
-  geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
-  guides(fill = "none")
-
-Fig7c
-
-```
-
-### Fig. 7D - Type of F0 exposure
-
-```{r}
-
-merged_F0_env <- merge(F0_env_info, Review_info)
-count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
- 
-count_F0_env <-count_F0_env %>%
-  rename(
-    discipline_code = by
-  )
-
-Fig7d <- ggplot(count_F0_env, aes(y = discipline_code, x = F0_env_code, fill = n)) +
-  geom_raster() + 
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(y = "Discipline", x = "Type of environmental exposure", fill = "Count") + 
-  geom_text(aes(label = n)) + 
-  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
-  guides(fill = "none")
-
 Fig7d
+
 ```
 
 ### Fig. 7E - Timing of F0 Exposure
@@ -499,7 +500,7 @@ Fig7f <- ggplot(count_descendant_trait, aes(y = discipline_code, x = descendant_
 Fig7f
 ```
 
-### Fig. 7E - Descendant sex
+### Fig. 7G - Descendant sex
 
 ```{r}
 
@@ -552,7 +553,7 @@ Fig7h
 
 ```{r}
 
-Fig7 <- ((Fig7a | Fig7b | Fig7c | Fig7d) / (Fig7e | Fig7f | Fig7g | Fig7h)) + plot_annotation(tag_levels = "A")
+Fig7 <- ((Fig7a | Fig7b) /(Fig7c | Fig7d) / (Fig7e | Fig7f) / (Fig7g | Fig7h)) + plot_annotation(tag_levels = "A")
 
 Fig7
 ```
