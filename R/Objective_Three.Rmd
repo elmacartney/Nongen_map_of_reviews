@@ -226,6 +226,22 @@ small_matrix[lower.tri(small_matrix)] <- 0
 # you can look at this matrix
 small_matrix
 
+#percent of shared citations with other disciplines
+#eco evo
+# (25 + 97 + 31) / (25 + 97 + 31 + 206)
+
+#cross-disciplinary
+# (39+2) / (39+2+8)
+
+#toxicology
+# (2+2+3 +1) / (2+2+3+1+42)
+
+#biomed
+# (39 + 97 + 2) / (39 + 97 + 2 + 616)
+
+#agriculture
+(25 + 2 + 25 + 3) / (25 + 2 + 25 + 3 + 48)
+
 # my.cols <- (c(Col1 = "#66C2A5", Col1 = "#FC8D62", Col3 =  "#8DA0CB", Col4 = "#E78AC3", Col5 = "#A6D854", Col6 = "#FFD92F", Row1 = "#66C2A5", Row2 = "#FC8D62", Row3 =  "#8DA0CB", Row4 = "#E78AC3", Row5 = "#A6D854", Row6 = "#FFD92F"))
 
 #have to remove gaps and hyphen to allocate colours to match previous figures
@@ -277,6 +293,12 @@ NetMatrix2 <- biblioNetwork(bib2, analysis = "collaboration",
 net_matrix2 <- as.matrix(NetMatrix2)
 #net_matrix2 <-net_matrix[rownames(NetMatrix2), countries]
 diag(net_matrix2) <- 0 #get rid of collaboration with same country
+
+
+net_matrix2
+
+#Australia collaborations with UK and NZ - both percents were the same
+ # 4/ (4+4+1+1+1)
 
 # getting rid of lower triangle (as this is duplication of info)
 net_matrix2[lower.tri(net_matrix2)] <- 0 
