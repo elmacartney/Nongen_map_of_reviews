@@ -323,7 +323,7 @@ Merged_taxa <- merge(Species_info, Review_info)
 Merged_taxa2 <- Merged_taxa[c("id", "broad_taxa", "discipline_code")]
 Merged_taxa3 <- Merged_taxa2 %>% distinct(id, broad_taxa,.keep_all = TRUE)
 
-count_taxa <- Merged_taxa3 %>% count(broad_taxa, by = discipline_code ) %>% arrange(desc(n))
+count_taxa <- Merged_taxa3 %>% count(broad_taxa, by = discipline_code) %>% arrange(desc(n))
 
 
 count_taxa <-count_taxa%>%
