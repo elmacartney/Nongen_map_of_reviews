@@ -297,7 +297,7 @@ sample_data4$broad_taxa<- as.factor(sample_data4$broad_taxa)
 sample_data4$n_logged <- log(sample_data4$n)
 
 
-cols <- c("yellow", "violet", "turquoise", "tomato", "thistle", "springgreen", "navy", "orange", "lightgoldenrod", "lightpink", "khaki", "lightslateblue", "red", "seagreen", "plum", "hotpink4", "moccasin", "olivedrab")
+cols <- c("yellow", "violet", "turquoise", "tomato", "thistle", "springgreen", "navy", "orange", "lightgoldenrod", "lightpink", "khaki", "lightslateblue", "red", "magenta3", "plum", "hotpink4","seagreen", "olivedrab")
 
 tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data4 + aes(col = broad_taxa)+ theme(legend.position = "bottom") + scale_colour_manual(values = cols, (title = "Broad taxa")) 
 

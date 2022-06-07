@@ -289,8 +289,9 @@ Fig5
 ### Fig. 6A - Percent SRs within disciplines
 
 ``` {r, results = 'hide'}
+Review_info$discipline_code<-as.factor(Review_info$discipline_code)
 
-count_discipline <-Review_info %>% count(discipline_code)
+count_discipline <- Review_info %>% count(discipline_code)
 # %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
@@ -331,7 +332,9 @@ count_taxa <-count_taxa%>%
     discipline_code = by
   )
 
-Fig6b <- ggplot(count_taxa, aes(x = fct_rev(broad_taxa), y = n, fill = discipline_code)) +
+count_taxa1 <- subset(count_taxa, broad_taxa != "unclear")
+
+Fig6b <- ggplot(count_taxa1, aes(x = fct_rev(broad_taxa), y = n, fill = discipline_code)) +
   geom_bar(position = "fill", stat = "identity") + 
   theme_classic() +
   coord_flip() +
