@@ -29,24 +29,24 @@ rm(list = ls())
 
 knitr::opts_chunk$set(echo = TRUE)
 
-library(readxl)
-library(plyr)
-library(here)
-library(tibble)
-library(dplyr)
-library(tidyverse)
-library(stringr)
-library(knitr)
-library(forcats)
-library(ggplot2)
-library(hrbrthemes) #for ggplot2
-library(bibliometrix)
-library(igraph)
-library(patchwork)
-library(RColorBrewer)
-library(wordcloud2)
-library(migest)
-library(circlize)
+pacman::p_load(readxl,
+               plyr,
+               here,
+               tibble,
+               dplyr,
+               tidyverse,
+               stringr,
+               knitr,
+               forcats,
+               ggplot2,
+               hrbrthemes,
+               bibliometrix,
+               patchwork,
+               migest,
+               circlize)
+               
+# library(wordcloud2)
+#library(igraph)
 ```
 
 ``` {r, results = 'hide'}
@@ -54,19 +54,18 @@ library(circlize)
 xldata <- "./data/Data_extraction_postcrosschecking.xlsx"
 
 # xldata <- read_excel(here("data", "Data_extraction_postcrosschecking.xlsx"))
-#note that here packeage doen't work with data wrangling code below
+#note that here package doen't work with data wrangling code below
 
 # #bibliometric data
 # bib <- convert2df("./data/bibliometric.bib", dbsource = "scopus", format = "bibtex")
-# 
-# bib <- convert2df(here("data", "bibliometric.bib"), dbsource = "scopus", format = "bibtex")
+
+bib <- convert2df(here("data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
 ```
 
 ``` {r, results = 'hide'}
 #Splitting list of tabs into separate dataframes
 excel_sheets(path = xldata)
 tab_names <- excel_sheets(path = xldata)
-
 
 #creating a list of dataframes per tab
 list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
@@ -78,7 +77,7 @@ names(list_all) <- tab_names
 list2env(list_all, .GlobalEnv)
 ```
 
-# Objective One - Between discipline patterns 
+# Objective One - Across discipline patterns 
 
 ## Figure 3  
 
@@ -292,10 +291,8 @@ Fig5
 Review_info$discipline_code<-as.factor(Review_info$discipline_code)
 
 count_discipline <- Review_info %>% count(discipline_code)
-# %>% arrange(desc(n)) 
 percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
 percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
-# percent_discipline$discipline_code <- factor(percent_discipline$discipline_code, level = percent_discipline$discipline_code[order(percent_discipline$n, decreasing = TRUE)])
 
 brewer.pal(6, "Set2")
 my.cols <- (c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"))
@@ -313,8 +310,6 @@ Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) +
 Fig6a
 
 ```
-
-
 
 ### Fig. 6B - Disciplines within taxa
 

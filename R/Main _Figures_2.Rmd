@@ -1,0 +1,1029 @@
+---
+title: "Main Figures_New"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+output:
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+
+    
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = TRUE,
+tidy = TRUE,
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+### Setup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+pacman::p_load(readxl,
+               plyr,
+               here,
+               tibble,
+               dplyr,
+               tidyverse,
+               stringr,
+               knitr,
+               forcats,
+               ggplot2,
+               hrbrthemes,
+               bibliometrix,
+               patchwork,
+               migest,
+               circlize,
+               rotl,
+               ape,
+               ggnewscale,
+               ggtree,
+               ggtreeExtra,
+               igraph,
+               stringi,
+               tidystringdist,
+               stringdist,
+               fuzzyjoin,
+               # ggthemes,
+               viridis,
+               cowplot,
+               mapproj)
+
+#install ggtreeExtra
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install("ggtreeExtra")
+               
+# library(wordcloud2)
+
+```
+
+``` {r load files, results = 'hide'}
+
+getwd()
+#manually extracted data
+xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
+
+# xldata <- read_excel(here("Data", "Data_extraction_postcrosschecking.xlsx"))
+#note that here package doen't work with data wrangling code below
+
+# #bibliometric data
+# bib <- convert2df("./Data/bibliometric2.bib", dbsource = "scopus", format = "bibtex")
+
+bib <- convert2df(here("Data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
+
+# mytree <- read.tree(file = "./Data/species_tree.tre") #if you need to read the tree
+```
+
+``` {r slitting sheets, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Objective One - Across discipline patterns 
+
+## Figure 3  - Time trend
+
+``` {r fig3}
+
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+Fig3 <- Publication_info_discipline %>% 
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(aes(), width = 0.7) +
+  xlim(2009, 2021.5) +
+  ylim(0, 14.5) +
+  geom_text(aes(label = n),vjust = -0.2) +
+  theme_classic() +
+  labs(x = "Year", y = "Article count")+
+  theme(legend.position = "none", axis.title.x = element_text(size = 10))
+
+Fig3
+
+```
+
+## Figure 4  - Species tree
+
+``` {r fig4, results = 'hide', echo = FALSE}
+#Making the tree
+
+# length(unique(Species_info$species_name)) #354
+# unique(Species_info$species_name) #needs cleaning
+#get rid of the underscores
+Species_info$species_name <- gsub("_"," ", Species_info$species_name)
+# Make a table of how many words each name has:
+table((lengths(gregexpr("\\W+", Species_info$species_name)) + 1)) #20 records with >2 words species names (subspecies etc.)
+ 
+#taxa <- tnrs_match_names(unique(Species_info$species_name)) #fails due to non-recognizable names
+
+# Fix obviously incompatible names (subspecies, name variants):
+Species_info$species_name[Species_info$species_name == "Pinus elliottii Engelm"] <- "Pinus elliottii"
+Species_info$species_name[Species_info$species_name == "Chlamydotis undulata undulata"] <- "Chlamydotis undulata"
+Species_info$species_name[Species_info$species_name == "Apis mellifera capensis"] <- "Apis mellifera"
+Species_info$species_name[Species_info$species_name == "Capra aegagrus hircus"] <- "Capra hircus"
+Species_info$species_name[Species_info$species_name == "Sus scrofa domesticus"] <- "Sus scrofa"
+Species_info$species_name[Species_info$species_name == "Sus domesticus"] <- "Sus scrofa"
+Species_info$species_name[Species_info$species_name == "Equus ferus caballus"] <- "Equus ferus"
+Species_info$species_name[Species_info$species_name == "Coturnix coturnix japonica"] <- "Coturnix japonica"
+Species_info$species_name[Species_info$species_name == "Chlorocebus aethiops sabaeus"] <- "Chlorocebus sabaeus"
+Species_info$species_name[Species_info$species_name == "Gallus gallus domesticus"] <- "Gallus gallus"
+Species_info$species_name[Species_info$species_name == "Parus caeruleus"] <- "Cyanistes caeruleus"
+Species_info$species_name[Species_info$species_name == "Poecilopsis gracilis"] <- "Poeciliopsis catemaco"
+Species_info$species_name[Species_info$species_name == "Campanulastrum americanum"] <- "Campanula americana"
+Species_info$species_name[Species_info$species_name == "Carpodacus mexicanus"] <- "Haemorhous mexicanus"
+Species_info$species_name[Species_info$species_name == "Caryedon palaestinicus"] <- "Caryedon serratus"
+Species_info$species_name[Species_info$species_name == "Galinsoga ciliata"] <- "Galinsoga quadriradiata"
+Species_info$species_name[Species_info$species_name == "Hydroides diramphus"] <- "Hydroides dirampha"
+Species_info$species_name[Species_info$species_name == "Lymantria dispa"] <- "Lymantria dispar"
+Species_info$species_name[Species_info$species_name == "Mimulus guttatus"] <- "Erythranthe guttata"
+Species_info$species_name[Species_info$species_name == "Lymantria dispa"] <- "Lymantria dispar"
+Species_info$species_name[Species_info$species_name == "Oryza indica"] <- "Oryza sativa"
+Species_info$species_name[Species_info$species_name == "Physella acuta"] <- "Physa acuta"
+Species_info$species_name[Species_info$species_name == "Pinus caribaea"] <- "Pinus cubensis" #reverse later
+Species_info$species_name[Species_info$species_name == "Racesina luteola"] <- "Cerasina luteola" #reverse later
+Species_info$species_name[Species_info$species_name == "Chrysanthemum nankingense"] <- "Chrysanthemum boreale" #reverse later
+Species_info$species_name[Species_info$species_name == "Cyprinodon variegatus"] <- "Cyprinodon" #reverse later
+
+Species_info$species_name[Species_info$species_name == "Mus domesticus"] <- "Mus musculus"
+
+Species_info <- Species_info[Species_info$species_name != "NA", ]
+
+table(Species_info$species_name, useNA = "always") #no NA
+length(unique(Species_info$species_name)) #344
+
+taxa <- tnrs_match_names(unique(Species_info$species_name))
+table(taxa$approximate_match) ##11 approximate matches
+table(taxa$flags) # flags 8 names with problems (hidden, hybrid, incertae_sedis_inherited, infraspecific, infraspecific) - will need fixing
+
+# mytree <- tol_induced_subtree(ott_ids = taxa$ott_id, label_format= "name") #this will fail with: Error: HTTP failure: 400
+#[/v3/tree_of_life/induced_subtree] Error: node_id 'ott768010' was not found!list(ott1014334 = "pruned_ott_id", ott3899190 = "pruned_ott_id", ott3904118 = "pruned_ott_id", ott4279984 = "pruned_ott_id", ott5147008 = "pruned_ott_id", ott768010 = "pruned_ott_id")
+ 
+taxa[taxa[["ott_id"]] == "768010", ] #Peringia ulvae - "unplaced_inherited"
+Species_info$species_name[Species_info$species_name == "Peringia ulvae"] <- "Peringia"
+Species_info$species_name[Species_info$species_name == "Peringia"] <- "Hydrobia acuta"
+taxa[taxa[["ott_id"]] == "1014334", ] #Euoniticellus intermedius - "incertae_sedis_inherited"
+Species_info$species_name[Species_info$species_name == "Euoniticellus intermedius"] <- "Euoniticellus"
+taxa[taxa[["ott_id"]] == "328990", ] # Euoniticellus - still "incertae_sedis", replace with "Anoplodrepanus""
+Species_info$species_name[Species_info$species_name == "Euoniticellus"] <- "Anoplodrepanus reconditus"
+
+taxa[taxa[["ott_id"]] == "3899190", ] #Chrysanthemum x morifolium - "hybrid"
+Species_info$species_name[Species_info$species_name == "Chrysanthemum morifolium"] <- "Chrysanthemum indicum"
+
+taxa[taxa[["ott_id"]] == "3904118", ] #Fragaria x ananassa - "hybrid" (Fragaria chiloensis x Fragaria virginiana) 
+Species_info$species_name[Species_info$species_name == "Fragaria ananassa"] <- "Fragaria chiloensis"
+
+taxa[taxa[["ott_id"]] == "4279984", ] #Poecilopsis gracilis - "hidden, sibling_higher"
+#"Poecilopsis gracilis" -> Poecilopsis (genus-rank name) fix:
+Species_info$species_name[Species_info$species_name == "Poecilopsis gracilis"] <- "Poecilopsis catemaco"
+
+taxa[taxa[["ott_id"]] == "5147008", ] #Populus x beijingensis  - "hybrid": P. beijingensis (P. nigra var. italica × P. cathayana)
+Species_info$species_name[Species_info$species_name == "Populus beijingensis"] <- "Populus cathayana"
+
+#"Ludwigia hexapetala" gets recognised as a subspecies Ludwigia_grandiflora_subsp._hexapetala
+Species_info$species_name[Species_info$species_name == "Ludwigia hexapetala"] <- "Ludwigia grandiflora"
+
+## re-run raxa matching and tree retrieval:
+taxa <- tnrs_match_names(unique(Species_info$species_name)) #runs fine
+table(taxa$approximate_match) #12 approximate matches
+table(taxa$flags) # flags 2 names with problems (incertae_sedis_inherited) - will need fixing
+mytree <- tol_induced_subtree(ott_ids = taxa$ott_id, label_format= "name") #this now works fine
+
+## Tree tip labels need some cleaning:
+mytree$tip.label <- gsub("\\(.*", "", mytree$tip.label) #remove comments
+mytree$tip.label <- gsub("_"," ", mytree$tip.label) #get rid of the underscores
+mytree$tip.label <- trimws(mytree$tip.label) #getting rid of the trailing whitespace
+
+## Reverse substitutions of species names in the tree tip labels:
+mytree$tip.label[mytree$tip.label == "Hydrobia acuta"] <- "Peringia ulvae"
+mytree$tip.label[mytree$tip.label == "Anoplodrepanus reconditus"] <- "Euoniticellus intermedius"
+mytree$tip.label[mytree$tip.label == "Chrysanthemum indicum"] <- "Chrysanthemum morifolium"
+mytree$tip.label[mytree$tip.label == "Fragaria chiloensis"] <- "Fragaria ananassa" 
+mytree$tip.label[mytree$tip.label == "Poecilopsis catemaco"] <- "Poecilopsis gracilis"
+mytree$tip.label[mytree$tip.label == "Populus cathayana"] <- "Populus beijingensis"
+mytree$tip.label[mytree$tip.label == "Ludwigia grandiflora"] <- "Ludwigia hexapetala"
+mytree$tip.label[mytree$tip.label == "Pinus cubensis"] <- "Pinus caribaea" 
+mytree$tip.label[mytree$tip.label == "Cerasina luteola"] <- "Racesina luteola"
+mytree$tip.label[mytree$tip.label == "Chrysanthemum boreale"] <- "Chrysanthemum nankingense"
+mytree$tip.label[mytree$tip.label == "Cyprinodon"] <- "Cyprinodon variegatus"
+
+## Other substitutions of species names made in the tree tip labels:
+mytree$tip.label[mytree$tip.label == "Taraxacum adiantifrons"] <- "Taraxacum hemicyclum"
+mytree$tip.label[mytree$tip.label == "Trichogramma bezdencovii"] <- "Trichogramma telengai"
+mytree$tip.label[mytree$tip.label == "Pan"] <- "Pan troglodytes"
+mytree$tip.label[mytree$tip.label == "Vulpes lagopus"] <- "Alopex lagopus"
+mytree$tip.label[mytree$tip.label == "Pelophylax lessonae"] <- "Rana lessonae"
+mytree$tip.label[mytree$tip.label == "Diodella teres"] <- "Diodia teres" 
+mytree$tip.label[mytree$tip.label == "Solidago canadensis"] <- "Solidago altissima"
+mytree$tip.label[mytree$tip.label == "Radix balthica"] <- "Ampullaceana balthica"
+mytree$tip.label[mytree$tip.label == "Magallana gigas"] <- "Crassostrea gigas"
+mytree$tip.label[mytree$tip.label == "Derocephalus angusticollis"] <- "Telostylinus angusticollis" 
+mytree$tip.label[mytree$tip.label == "Carinascincus metallicus"] <- "Niveoscincus metallicus" 
+mytree$tip.label[mytree$tip.label == "Pecari tajacu"] <- "Dicotyles tajacu" 
+mytree$tip.label[mytree$tip.label == "Palaemon pugio"] <- "Palaemonetes pugio" 
+
+## Reverse substitutions of species names in the species list:
+Species_info$species_name[Species_info$species_name == "Hydrobia acuta"] <- "Peringia ulvae"
+Species_info$species_name[Species_info$species_name == "Anoplodrepanus reconditus"] <- "Euoniticellus intermedius"
+Species_info$species_name[Species_info$species_name == "Chrysanthemum indicum"] <- "Chrysanthemum morifolium"
+Species_info$species_name[Species_info$species_name == "Fragaria chiloensis"] <- "Fragaria ananassa" 
+Species_info$species_name[Species_info$species_name == "Poecilopsis catemaco"] <- "Poecilopsis gracilis"
+Species_info$species_name[Species_info$species_name == "Populus cathayana"] <- "Populus beijingensis"
+Species_info$species_name[Species_info$species_name == "Ludwigia grandiflora"] <- "Ludwigia hexapetala"
+Species_info$species_name[Species_info$species_name == "Pinus cubensis"] <- "Pinus caribaea" 
+Species_info$species_name[Species_info$species_name == "Cerasina luteola"] <- "Racesina luteola" 
+Species_info$species_name[Species_info$species_name == "Chrysanthemum boreale"] <- "Chrysanthemum nankingense" 
+Species_info$species_name[Species_info$species_name == "Cyprinodon"] <- "Cyprinodon variegatus"
+
+#Fix more names in the species list:
+Species_info$species_name[Species_info$species_name == "Strongylocentrotus franciscanus"] <- "Mesocentrotus franciscanus"
+Species_info$species_name[Species_info$species_name == "Mytilus chilensis"] <- "Mytilus edulis"
+Species_info$species_name[Species_info$species_name == "Populus pseudo-simonii"] <- "Populus pseudosimonii"
+Species_info$species_name[Species_info$species_name == "Bythotrephes longima"] <- "Bythotrephes longimanus"
+Species_info$species_name[Species_info$species_name == "Biomphalaria galbrata"] <- "Biomphalaria glabrata"
+Species_info$species_name[Species_info$species_name == "Niveoscincus ocellatus"] <- "Carinascincus ocellatus"
+Species_info$species_name[Species_info$species_name == "Polygonum dropiper"] <- "Persicaria hydropiper"
+Species_info$species_name[Species_info$species_name == "Polygonum persicaria"] <- "Persicaria glabra"
+Species_info$species_name[Species_info$species_name == "Priapichthys festae"] <- "Pseudopoecilia festae"
+
+sort(intersect(as.character(mytree$tip.label), unique(Species_info$species_name))) ## 335 names are matching - all fixed 
+sort(setdiff(unique(Species_info$species_name), as.character(mytree$tip.label))) ## names not matching - not in tip.label
+sort(setdiff(as.character(mytree$tip.label), unique(Species_info$species_name))) ## names not matching - not in species_name
+
+# plot(mytree, show.tip.label = T, cex = 0.8, no.margin = TRUE)
+# str(mytree) #335 tips
+
+# write.tree(mytree, file = "species_tree.tre") #save the tree 
+# 
+# write.csv(Species_info, file = "Species_info.csv")
+```
+
+```{r plot tree}
+
+sample_data <- count(Species_info, species_name)
+sample_data <- as.data.frame(sample_data)
+sample_data2 <-mutate(sample_data, tip.label = species_name)
+mytree$tip.label <- strip_ott_ids(mytree$tip.label, remove_underscores = TRUE)
+# summary(sample_data2$tip.label)
+# sample_data2$count <- as.numeric(sample_data2$count)
+sample_data3 <- left_join(sample_data2, Species_info[,c("species_name","broad_taxa")], by = "species_name")
+sample_data4 <- distinct(sample_data3, species_name, .keep_all = TRUE)
+# is.na(sample_data4)
+sample_data4$species_name<- as.factor(sample_data4$species_name)
+sample_data4$tip.label <- as.factor(sample_data4$tip.label)
+sample_data4$broad_taxa<- as.factor(sample_data4$broad_taxa)
+
+#logging n
+sample_data4$n_logged <- log(sample_data4$n)
+
+
+cols <- c("yellow", "violet", "turquoise", "tomato", "thistle", "springgreen", "navy", "orange", "lightgoldenrod", "lightpink", "khaki", "lightslateblue", "red", "magenta3", "plum", "hotpink4","seagreen", "olivedrab")
+
+tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data4 + aes(col = broad_taxa)+ theme(legend.position = "bottom") + scale_colour_manual(values = cols, (title = "Broad taxa")) 
+
+tree3 <- tree2 + new_scale_fill() + geom_fruit(geom = geom_bar, mapping = aes(x = log(n), col = "gray30"), stat = "identity", col = "gray30", orientation = "y", axis.params = list(axis = "x",text.angle = -45, hjust = 0, text.size = 3), grid.params = list(alpha = 0.35),offset = 0.085, pwidth = 0.55, alpha = 0.8) + guides(fill ="none") 
+
+tree3
+
+# count(sample_data4, broad_taxa)
+# count(sample_data4, species_name)
+
+## will add silhouettes to most common species manually
+```
+
+## Figure 5 - Between discipline patterns {.tabset}
+
+### Fig. 5A - Inter- vs trans- inheritance
+
+``` {r fig5a}
+count_inter_vs_trans <- count(Inter_vs_trans_info, inter_vs_trans_code)
+percent_inter_vs_trans <- count_inter_vs_trans %>% mutate(percent = (n/sum(n))*100)
+
+percent_inter_vs_trans$percent <- round(percent_inter_vs_trans$percent, digits = 0)
+
+Fig5a <- ggplot(percent_inter_vs_trans, aes(x = inter_vs_trans_code, y = percent)) +
+  geom_col(aes(), width = 0.7) +
+  coord_flip() + 
+  labs(y = "Percent (%)") +
+  ylim(0,100)+
+  geom_text(aes(label = percent), hjust = -0.2) +
+  theme_classic() +
+  labs(x = "Inter- vs trans-inheritnace")
+
+Fig5a
+```
+
+### Fig. 5B - Terminology match vs mismatch
+
+```{r fig5b}
+
+count_terminology <- count(Review_info, terminology_code)
+percent_terminology <- count_terminology %>% mutate(percent = (n/sum(n))*100)
+
+percent_terminology$percent <- round(percent_terminology$percent, digits = 0)
+
+Fig5b <- ggplot(percent_terminology, aes(x =reorder(terminology_code, -percent), y = percent)) + 
+  coord_flip() + 
+  geom_col(aes(), width = 0.7) + 
+  labs(y = "Percent (%)",x = "Terminology use matches Fig. 1" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+
+
+Fig5b
+
+```
+
+### Fig. 5C - Type of F0 exposure
+
+```{r fig5c}
+
+count_F0_env <- count(F0_env_info, F0_env_code)
+percent_F0_env <- count_F0_env %>% mutate(percent = (n/sum(n))*100)
+
+percent_F0_env$percent <- round(percent_F0_env$percent, digits = 0)
+
+Fig5c <- ggplot(percent_F0_env, aes(x = reorder(F0_env_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) +
+  coord_flip() + 
+  labs(y = "Percent (%)",x = "Type of environmental exposure" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+  
+Fig5c
+```
+
+### Fig. 5D - Transmission mode 
+
+```{r fig5d}
+
+count_transmission <- count(Transmission_info, transmission_code)
+percent_transmission <- count_transmission %>% mutate(percent = (n/sum(n))*100)
+
+percent_transmission$percent <- round(percent_transmission$percent, digits = 0)
+
+Fig5d <- ggplot(percent_transmission, aes(x = reorder(transmission_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) +
+  coord_flip() + 
+  labs(y = "Percent (%)") +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic() +
+  labs(x = "Transmission mode")
+
+Fig5d
+
+```
+
+### Fig. 5E - Timing of F0 exposure
+
+```{r fig5e}
+
+count_exposure_timing <- count(Exposure_timing_info, exposure_timing_code)
+percent_exposure_timing <- count_exposure_timing %>% mutate(percent = (n/sum(n))*100)
+
+percent_exposure_timing$percent <- round(percent_exposure_timing$percent, digits = 0)
+
+Fig5e<- ggplot(percent_exposure_timing, aes(x = reorder(exposure_timing_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) + 
+   coord_flip() + 
+  labs(y = "Percent (%)",x = "Timing of F0 (ancestor) exposure" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+
+Fig5e
+```
+
+### Fig. 5F - Descendant trait
+
+```{r fig5f}
+count_descendant_trait <- count(Descendant_trait_info, descendant_trait_code)
+percent_descendant_trait <- count_descendant_trait%>% mutate(percent = (n/sum(n))*100)
+percent_descendant_trait$percent <- round(percent_descendant_trait$percent, digits = 0)
+
+
+Fig5f<- ggplot(percent_descendant_trait, aes(x = reorder(descendant_trait_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) + 
+  coord_flip() + 
+  labs(y = "Percent (%)",x = "Descendant traits" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+
+Fig5f
+```
+
+### Fig. 5G - Descendant sex
+
+```{r fig5g}
+
+count_descendant_sex <- count(Descendant_sex_info, descendant_sex_code)
+percent_descendant_sex <- count_descendant_sex%>% mutate(percent = (n/sum(n))*100)
+percent_descendant_sex$percent <- round(percent_descendant_sex$percent, digits = 0)
+
+
+Fig5g <- ggplot(percent_descendant_sex, aes(x = reorder(descendant_sex_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) + 
+  coord_flip() + 
+  labs(y = "Percent (%)",x = "Descendant sex" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+
+Fig5g
+
+```
+
+### Fig. 5H - Environmental effect direction 
+
+```{r fig5h}
+
+count_env_eff <- count(Env_eff_diection_info, env_eff_direction_code)
+percent_env_eff <- count_env_eff%>% mutate(percent = (n/sum(n))*100)
+percent_env_eff$percent <- round(percent_env_eff$percent, digits = 0)
+
+
+Fig5h <- ggplot(percent_env_eff, aes(x = reorder(env_eff_direction_code, -percent), y = percent)) + 
+  geom_col(aes(), width = 0.7) + 
+  coord_flip() +
+  labs(y = "Percent (%)",x = "Environmental effect direction" ) +
+  ylim(0,100) +
+  geom_text(aes(label = percent), hjust = -0.2)+
+  theme_classic()
+  
+Fig5h
+
+```
+
+### Fig. 5 - Panel 
+
+```{r fig5panel}
+Fig5 <- ((Fig5a | Fig5b) / (Fig5c | Fig5d) / (Fig5e | Fig5f) / (Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
+
+Fig5
+
+```
+
+# Objective Two
+
+## Figure 6 - Disciplines and taxa {.tabset}
+
+### Fig. 6A - Percent SRs within disciplines
+
+``` {r fig6a, results = 'hide'}
+Review_info$discipline_code<-as.factor(Review_info$discipline_code)
+
+count_discipline <- Review_info %>% count(discipline_code)
+percent_discipline <- count_discipline %>% mutate(percent = (n/sum(n))*100)
+percent_discipline$percent <- round(percent_discipline$percent, digits = 0)
+
+# brewer.pal(6, "Set2")
+my.cols <- (c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"))
+
+Fig6a <- ggplot(percent_discipline, aes(x = discipline_code, y = percent)) + 
+  geom_col(aes(fill = discipline_code)) + 
+  geom_text(aes(label = percent), vjust = -0.2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(name = "Percent (%)") +
+  xlab("Discipline") + 
+  scale_fill_manual(values=my.cols) +
+  theme_classic() +
+  theme(legend.position = "none")
+
+Fig6a
+
+```
+
+### Fig. 6B - Disciplines within taxa
+
+``` {r fig6b}
+Merged_taxa <- merge(Species_info, Review_info)
+#creating a subset dataframe without repreated measures of taxa per species
+Merged_taxa2 <- Merged_taxa[c("id", "broad_taxa", "discipline_code")]
+Merged_taxa3 <- Merged_taxa2 %>% distinct(id, broad_taxa,.keep_all = TRUE)
+
+count_taxa <- Merged_taxa3 %>% count(broad_taxa, by = discipline_code) %>% arrange(desc(n))
+
+
+count_taxa <-count_taxa%>%
+  rename(
+    discipline_code = by
+  )
+
+count_taxa1 <- subset(count_taxa, broad_taxa != "unclear")
+
+Fig6b <- ggplot(count_taxa1, aes(x = fct_rev(broad_taxa), y = n, fill = discipline_code)) +
+  geom_bar(position = "fill", stat = "identity") + 
+  theme_classic() +
+  coord_flip() +
+  labs(y = "Proportion", x = "Broad taxa", fill = "Discipline") +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = "none")
+
+Fig6b
+```
+
+### Fig. 6 - Panel
+
+```{r fig6panel}
+Fig6 <- (Fig6a + Fig6b) + plot_annotation(tag_levels = "A")
+
+Fig6
+
+```
+
+## Figure 7 - Between discipline research patterns {.tabset}
+
+### Fig. 7A - Inter- vs trans- inheritance
+
+``` {r fig7a}
+Merged_inter_vs_trans <- merge(Inter_vs_trans_info, Review_info)
+
+count_inter_vs_trans <- Merged_inter_vs_trans %>% count(inter_vs_trans_code, by = discipline_code ) %>% arrange(desc(n))
+
+count_inter_vs_trans <-count_inter_vs_trans %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7a <- ggplot(count_inter_vs_trans, aes(y = discipline_code, x = inter_vs_trans_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Inter- vs trans-inheritance", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7a
+```
+
+### Fig. 7B - Terminology match vs mismatch
+
+``` {r fig7b}
+count_terminology <- Review_info %>% count(terminology_code, by = discipline_code) %>% arrange(desc(n))
+
+count_terminology<- count_terminology %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7b <- ggplot(count_terminology, aes(x = reorder(terminology_code, -n), y = discipline_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Terminology use matches Fig. 1", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7b
+
+```
+
+### Fig. 7C - Type of F0 exposure
+
+```{r fig7c}
+
+merged_F0_env <- merge(F0_env_info, Review_info)
+count_F0_env<- merged_F0_env %>% count(F0_env_code, by = discipline_code ) %>% arrange(desc(n))
+ 
+count_F0_env <-count_F0_env %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7c <- ggplot(count_F0_env, aes(y = discipline_code, x = F0_env_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Type of environmental exposure", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7c
+```
+
+### Fig. 7D - Transmission mode
+
+```{r fig7d}
+Merged_transmission_info <- merge(Transmission_info, Review_info)
+
+count_transmission <- Merged_transmission_info %>%  count(transmission_code, by = discipline_code) %>% arrange(desc(n))
+
+count_transmission <-count_transmission %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7d <- ggplot(count_transmission, aes(y = discipline_code, x = transmission_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Transmission mode", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7d
+
+```
+
+### Fig. 7E - Timing of F0 Exposure
+
+```{r fig7e}
+
+merged_exposure_timing <- merge(Exposure_timing_info, Review_info)
+
+count_exposure_timing <- merged_exposure_timing %>% count(exposure_timing_code, by = discipline_code) %>% arrange(desc(n))
+
+count_exposure_timing <- count_exposure_timing %>%
+  rename (
+    discipline_code = by
+  )
+
+Fig7e <- ggplot(count_exposure_timing, aes(y = discipline_code, x = exposure_timing_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Timing of F0 (ancestor) exposure", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7e
+```
+
+### Fig. 7F - Descendant trait
+
+```{r fig7f}
+
+merged_descendant_trait <- merge(Descendant_trait_info, Review_info)
+count_descendant_trait <- merged_descendant_trait %>% count(descendant_trait_code, by = discipline_code) %>% arrange(desc(n))
+
+count_descendant_trait <- count_descendant_trait %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7f <- ggplot(count_descendant_trait, aes(y = discipline_code, x = descendant_trait_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Descendant traits", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7f
+```
+
+### Fig. 7G - Descendant sex
+
+```{r fig7g}
+
+merged_descendant_sex <- merge(Descendant_sex_info, Review_info)
+count_descendant_sex <- merged_descendant_sex %>% count(descendant_sex_code, by = discipline_code) %>% arrange(desc(n))
+
+count_descendant_sex <- count_descendant_sex %>%
+  rename(
+    discipline_code = by
+           )
+
+Fig7g <- ggplot(count_descendant_sex, aes(y = discipline_code, x = descendant_sex_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Descendant sex", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7g
+```
+
+### Fig. 7H - Environmental effect direction 
+
+```{r fig7h}
+
+merged_env_eff <- merge(Env_eff_diection_info, Review_info)
+
+count_env_eff <- merged_env_eff %>% count(env_eff_direction_code, by = discipline_code) %>% arrange(desc(n))
+
+count_env_eff <-count_env_eff %>%
+  rename(
+    discipline_code = by
+  )
+
+Fig7h <- ggplot(count_env_eff, aes(y = discipline_code, x = env_eff_direction_code, fill = n)) +
+  geom_raster() + 
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(y = "Discipline", x = "Environmental effect direction", fill = "Count") + 
+  geom_text(aes(label = n)) + 
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
+  guides(fill = "none")
+
+Fig7h
+```
+
+### Fig. 7 - Panel
+
+```{r fig7panel}
+
+Fig7 <- ((Fig7a | Fig7b) /(Fig7c | Fig7d) / (Fig7e | Fig7f) / (Fig7g | Fig7h)) + plot_annotation(tag_levels = "A")
+
+Fig7
+```
+
+# Objective Three
+
+## Figure 8 - Countries {.tabset}
+
+### Fig. 8A  - Map
+
+```{r fig8a, echo = FALSE, results = 'hide'}
+## Figure X - Country of first author  affiliation - map
+#https://www.riinu.me/2022/02/world-map-ggplot2/
+#table(bib2$AU1_CO) #column with countries of first authors
+
+bib2 <- metaTagExtraction(bib, Field = "AU1_CO", sep = ";") 
+bib2 <- metaTagExtraction(bib2, Field = "AU_CO", sep = ";") 
+
+#save counts in a data frame
+bib2 %>% group_by(AU1_CO) %>% count() %>% filter(!is.na(AU1_CO)) -> firstcountrycounts
+
+#load map data
+world_map <- map_data("world") %>% 
+  filter(! long > 180) #remove countries with longitude >180 to make equal projection-like map without artifacts
+#table(world_map$region) #note that United Kingdom is UK here
+
+# Format country names to match regions on the world map
+firstcountrycounts$region <- str_to_title(firstcountrycounts$AU1_CO)
+firstcountrycounts$region[firstcountrycounts$region == "Usa"] <- "USA" #Fix "Usa" to "USA" :
+firstcountrycounts$region[firstcountrycounts$region == "United Kingdom"] <- "UK" #fix to "UK"
+#(firstcountrycounts$region) %in% world_map$region #check matching
+
+## colour all regions on the map:
+emptymap <- tibble(region = unique(world_map$region), n = rep(0,length(unique(world_map$region)))) #create table with all counts as 0
+fullmap <- left_join(emptymap, firstcountrycounts, by = "region") #join with actual counts table
+fullmap$n <- fullmap$n.x + fullmap$n.y # make new column for fixed counts
+fullmap$n[is.na(fullmap$n)] <- 0 #change NA to 0 for regions with no counts
+
+Fig8a <- fullmap %>% 
+  ggplot(aes(fill = n, map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  theme_map(line_size = 0.5) + 
+  theme(legend.position="right") +
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F",
+ limits = c(1, 12),
+      guide = guide_colorbar(direction = "vertical.")) +
+  guides(fill = guide_colourbar(barwidth = unit(15, units = "mm"), barheight = unit(20, units = "mm")))
+
+Fig8a
+```
+
+### Fig. 8B - Country collaborations
+
+```{r fig8b, echo = FALSE, results = 'hide'}
+
+NetMatrix2 <- biblioNetwork(bib2, analysis = "collaboration", 
+                           network = "countries", sep = ";")
+
+net_matrix2 <- as.matrix(NetMatrix2)
+#net_matrix2 <-net_matrix[rownames(NetMatrix2), countries]
+diag(net_matrix2) <- 0 #get rid of collaboration with same country
+
+# net_matrix2
+
+# getting rid of lower triangle (as this is duplication of info)
+net_matrix2[lower.tri(net_matrix2)] <- 0 
+#colnames(net_matrix2) - change to title case:
+colnames(net_matrix2) <- str_to_title(colnames(net_matrix2))
+#rownames(net_matrix2) - change to title case:
+rownames(net_matrix2) <- str_to_title(rownames(net_matrix2))
+#Fix "Usa" to "USA" :
+colnames(net_matrix2)[colnames(net_matrix2) == "Usa"] <- "USA"
+rownames(net_matrix2)[rownames(net_matrix2) == "Usa"] <- "USA"
+#change "UNITED KINGDOM" to "UK" for easier plotting:
+colnames(net_matrix2)[colnames(net_matrix2) == "United Kingdom"] <- "UK"
+rownames(net_matrix2)[rownames(net_matrix2) == "United Kingdom"] <- "UK"
+
+colnames(net_matrix2)[7] <- "Newzealand" 
+rownames(net_matrix2)[7] <- "Newzealand"
+
+circos.clear()
+my.cols2 <- c(USA = "#DCDCDC", Australia = "#000000", Netherlands = "#A9A9A9", UK = "#2F4F4F", Brazil = "#C0C0C0", Canada = "slategray", Newzealand = "gainsboro", France = "#778899", Germany = "#808080",Italy = "#696969", Argentina = "#DCDCDC", China = "#000000", Belgium = "#A9A9A9", Sweden = "#2F4F4F", Iran = "#C0C0C0", Mexico = "#778899", Poland = "#A9A9A9")
+
+
+Fig8b <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = my.cols2)
+
+circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+  xlim = get.cell.meta.data("xlim")
+  ylim = get.cell.meta.data("ylim")
+  sector.name = get.cell.meta.data("sector.index")
+  circos.text(mean(xlim), ylim[1] + .1, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+  circos.axis(h = "top", labels.cex = 0.5, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
+}, bg.border = NA)
+
+
+Fig8b
+```
+
+### Panel
+Saving panel as a PDF
+
+```{r fig8panel, eval = FALSE}
+pdf(file = "Countries.pdf", width = 8, height = 10)
+
+# layout(matrix(1:2, 1, 2))
+par(mfrow = c(2, 1), mar = c(0.5, 0.5, 0.9, 0.5), bg = rgb(1, 1, 1, 0.1) , adj = 0, cex = 1.1)
+
+fullmap %>% 
+  ggplot(aes(fill = n, map_id = region)) +
+  geom_map(map = world_map) +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  theme_map(line_size = 0.5) + 
+  theme(legend.position="right") +
+  scale_fill_gradient(low = "#FEE08B", high = "#D53E4F",
+ limits = c(1, 12),
+      guide = guide_colorbar(direction = "vertical.")) +
+  guides(fill = guide_colourbar(barwidth = unit(15, units = "mm"), barheight = unit(20, units = "mm"))) +
+  ggtitle("A")
+         
+         
+circos.clear()
+circos.par(start.degree = 90)
+circos.par("circle.margin" = c(0.1, 0.1, 0.5, 0.1))
+fig1 <- chordDiagram(net_matrix2, annotationTrack = "grid", preAllocateTracks = 1, grid.col = my.cols2)
+#change direction of labels
+circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+  xlim = get.cell.meta.data("xlim")
+  ylim = get.cell.meta.data("ylim")
+  sector.name = get.cell.meta.data("sector.index")
+  circos.text(mean(xlim), ylim[1] + .3, sector.name, facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5))
+  circos.axis(h = "top", labels.cex = 0.3, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
+}, bg.border = NA)
+title("B", font.main = 1, cex.main = 1.2)
+
+dev.off()
+```
+
+## Figure 9 - Collaborations
+
+```{r fig9}
+# Data
+Publication_info_discipline <- merge(Publication_info, Review_info)
+
+# matching with 1st author and title
+# mapping data
+Fields <- Publication_info_discipline %>%
+  mutate(title = tolower(unlist(lapply(data.frame(t(str_split_fixed(title, " ", n = 15)[,1:14])), 
+                                       function(x) str_c(x, collapse  = " ")))),
+         ntitle = paste(tolower(str_split_fixed(id, "\\_", n = 2)[,1]), title, sep = " "),
+         ntitle = trimws(ntitle)) %>% 
+  select(ntitle, discipline_code)
+
+# bib data
+Bib_names <- bib %>% rownames_to_column(., var = "mat_names") %>% 
+  mutate(TI2 = tolower(unlist(lapply(data.frame(t(str_split_fixed(TI, " ", n = 15)[,1:14])), 
+                                     function(x) str_c(x, collapse  = " ")))),
+         # stri_trans_general = getting rid of special letters
+         name2 = stri_trans_general(tolower(str_split_fixed(SR, " ", n = 2)[,1]), "latin-ascii"),
+         TI2 = paste(name2, TI2, sep= " "),
+         TI2 = trimws(TI2)) %>% 
+  select(TI2, mat_names)
+ 
+#stringdist(Bib_names$TI2, Fields$ntitle[1], method = 'osa')
+pos <- lapply(Bib_names$TI2, function(x) stringdist(Fields$ntitle, x))
+pos2<- map_dbl(pos, which.min)
+
+# these are looking good - both have the perfect matches (at least at a glance)
+Bib_names$TI2
+Fields$ntitle[pos2]
+
+# now we can merge two datasets 
+Bib_names$discipline_code <- Fields$discipline_code[pos2]
+
+# Creating matrix for bibliometric coupling
+NetMatrix <- biblioNetwork(bib, analysis = "coupling", network = "references", sep = ";")
+
+# forcing into a nromal matrix
+net_matrix <- as.matrix(NetMatrix)
+diag(net_matrix) <- 0 #get rid of counts for the same papers
+
+# replacing names with discipline_code
+rownames(net_matrix) <- Bib_names$discipline_code
+colnames(net_matrix) <- Bib_names$discipline_code
+
+# reducing matrix according to discipline_code
+rect_matrix<- t(rowsum(t(net_matrix), group = colnames(net_matrix), na.rm = T))
+small_matrix <- rowsum(rect_matrix, group = rownames(rect_matrix))
+
+# getting rid of lower triangle (as this is duplication of info)
+small_matrix[lower.tri(small_matrix)] <- 0 
+
+
+# small_matrix - for getting percents
+#percent of shared citations with other disciplines
+#eco evo
+# (25 + 97 + 31) / (25 + 97 + 31 + 206)
+
+#cross-disciplinary
+# (39+2) / (39+2+8)
+
+#toxicology
+# (2+2+3 +1) / (2+2+3+1+42)
+
+#biomed
+# (39 + 97 + 2) / (39 + 97 + 2 + 616)
+
+#agriculture
+(25 + 2 + 25 + 3) / (25 + 2 + 25 + 3 + 48)
+
+#have to remove gaps and hyphen to allocate colours to match previous figures
+colnames(small_matrix)[3] <- "crossdisciplinary"
+colnames(small_matrix)[4] <- "ecoevo"
+rownames(small_matrix)[3] <- "crossdisciplinary"
+rownames(small_matrix)[4] <- "ecoevo"
+
+
+my.cols <- (c(agriculture = "#66C2A5", biomed = "#FC8D62", crossdisciplinary = "#8DA0CB", ecoevo = "#E78AC3", toxicology = "#A6D854"))
+            
+par(mar = c(0, 0, 0, 0), mfrow = c(1, 1))
+
+# chord diagram
+circos.par()
+Fig9 <- chordDiagramFromMatrix(small_matrix, grid.col = my.cols)
+Fig9
+
+```
+
+# Objective Four
+
+```{r ceesat}
+#blinding authors
+Assessment$id <- paste("ID", c(1:length(Assessment$id)), sep = "")
+#shortening column names
+names(Assessment) <- gsub("CEESAT_", "", names(Assessment), fixed = TRUE)
+#selecting only the columns with scores
+#selecting only the columns with scores
+Assessment_reduced <- select(Assessment, c("id", !ends_with("_comment")))
+#wrangling data into long format
+ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key=TRUE)
+```
+
+
+## Figure 10 
+
+```{r fig10}
+#calculating the % of scores within each questions 
+count_ceesat_score <- ceesat_long %>% count(score, by = question) 
+percent_ceesat_score <- count_ceesat_score %>% mutate(percent = (n/sum(n))*100)
+percent_ceesat_score <- percent_ceesat_score %>%
+  rename(
+    question = by
+  )
+percent_ceesat_score$question <- as.factor(percent_ceesat_score$question)
+percent_ceesat_score$question <- factor(percent_ceesat_score$question, levels(percent_ceesat_score$question)[length(percent_ceesat_score$question):1]) #reverse the order of questions
+percent_ceesat_score$score <- as.factor(percent_ceesat_score$score)
+percent_ceesat_score$score <- factor(percent_ceesat_score$score, levels(percent_ceesat_score$score)[c(2,3,1,4)]) #set the order of levels for assessment scores:
+
+Fig10 <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
+  geom_col(mapping = aes(x = question, y = percent, fill = score), width = 0.7,
+           position = "fill", color = "black") +
+  coord_flip(ylim = c(0, 1)) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_fill_manual(values = c("yellow","green", "orange","red"), name = "Score:") +
+  theme(legend.position = "none", panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank()) + 
+  ylab("Proportion") + xlab("CEESAT Question")
+
+Fig10
+``` 
