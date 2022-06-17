@@ -1,0 +1,150 @@
+---
+title: "Appendix S4"
+author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
+date: "17/06/2022"
+output:
+    rmdformats::readthedown:
+      code_folding: hide
+      code_download: true
+      toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+
+    
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+cache = TRUE,
+tidy = TRUE,
+echo = TRUE
+)
+
+rm(list = ls())
+```
+
+### Setup and data organisation
+
+```{r setup, results = 'hide'}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+pacman::p_load(readxl,
+               plyr,
+               here,
+               tibble,
+               dplyr,
+               tidyverse,
+               stringr,
+               knitr,
+               forcats,
+               ggplot2,
+               hrbrthemes,
+               bibliometrix,
+               patchwork,
+               migest,
+               circlize,
+               rotl,
+               ape,
+               ggnewscale,
+               ggtree,
+               ggtreeExtra,
+               igraph,
+               stringi,
+               tidystringdist,
+               stringdist,
+               fuzzyjoin,
+               # ggthemes,
+               viridis,
+               cowplot,
+               mapproj,
+               wordcloud2)
+
+#install ggtreeExtra
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install("ggtreeExtra")
+
+```
+
+``` {r load files, results = 'hide'}
+
+#manually extracted data
+xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
+
+bib <- convert2df(here("data","bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
+
+```
+
+``` {r slitting sheets, results = 'hide'}
+#Splitting list of tabs into separate dataframes
+excel_sheets(path = xldata)
+tab_names <- excel_sheets(path = xldata)
+
+#creating a list of dataframes per tab
+list_all <- lapply(tab_names, function(x) read_excel(path = xldata, sheet = x))
+
+#assigning tab names to each dataframe
+names(list_all) <- tab_names
+
+#get dataframes out of list
+list2env(list_all, .GlobalEnv)
+```
+
+# Fig. S2 - Filial generations within and between disciplines
+
+```{r}
+merged_descendant_generat <- merge(Descendant_generat_info, Review_info)
+
+count_descendant_generat <- merged_descendant_generat %>% count(descendant_generat_code, by = discipline_code) %>% arrange(desc(n))
+percent_descendant_generat <- count_descendant_generat %>% mutate(percent = (n/sum(n))*100)
+
+percent_descendant_generat <- percent_descendant_generat %>%
+  rename (
+    discipline_code = by
+  )
+
+
+percent_descendant_generat <- subset(percent_descendant_generat, descendant_generat_code != "NA")
+
+my.cols <- (c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F"))
+
+percent_descendant_generat$descendant_generat_code <- factor(percent_descendant_generat$descendant_generat_code ,levels = c("F1", "F2", "F3", "F4", "F5", "F6", "F200"))
+
+FigS2 <- ggplot(percent_descendant_generat, aes(x = descendant_generat_code, y = percent)) +
+  geom_col(aes(fill = discipline_code), width = 0.7) +
+  theme_light() +
+  coord_flip() +
+  scale_y_continuous(name = "Percent (%)") +
+  theme(legend.position = "bottom", axis.title.x = element_text(size = 10), axis.title.y = element_blank()) +
+  guides(fill=guide_legend(title="Discipline")) + 
+  scale_fill_manual(values=my.cols)
+
+FigS2
+
+```
+
+*Fig. S2* Bar chart showing percent of SRs within and between generations that included primary studies of ancestral environmental effects on descendant filial generations.
+
+# Fig. S3 - Wordcould across disciplines
+
+
+``` {r, message = FALSE, warning = FALSE, results = 'hide'}
+bib2 <- biblioAnalysis(bib, sep = ";")
+S <- summary(object = bib2, k = 50, pause = FALSE)
+```
+
+``` {r, message = FALSE, warning = FALSE}
+keywords <- S$MostRelKeywords
+words<-keywords[,1]
+freq<-as.numeric(keywords[,2])
+prob<-freq/sum(freq)
+
+FigS3 <- wordcloud2(data.frame(words, prob), shuffle = TRUE, size = 0.5, color = 'random-dark')
+
+FigS3
+```
+
+*Fig. S3* Word cloud of the most common key words across disciplines
+# Fig. S5 - CEESAT individual scores
