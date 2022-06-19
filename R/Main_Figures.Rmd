@@ -69,8 +69,6 @@ pacman::p_load(readxl,
 ```
 
 ``` {r load files, results = 'hide'}
-
-getwd()
 #manually extracted data
 xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
 
@@ -85,7 +83,8 @@ bib <- convert2df(here("Data", "bibliometric2.bib"), dbsource = "scopus", format
 # mytree <- read.tree(file = "./Data/species_tree.tre") #if you need to read the tree
 ```
 
-``` {r slitting sheets, results = 'hide'}
+``` {r splitting sheets, results = 'hide'}
+
 #Splitting list of tabs into separate dataframes
 excel_sheets(path = xldata)
 tab_names <- excel_sheets(path = xldata)
@@ -345,11 +344,11 @@ percent_terminology$percent <- round(percent_terminology$percent, digits = 0)
 Fig5b <- ggplot(percent_terminology, aes(x =reorder(terminology_code, -percent), y = percent)) + 
   coord_flip() + 
   geom_col(aes(), width = 0.7) + 
-  labs(y = "Percent (%)",x = "Terminology use matches Fig. 1" ) +
+  labs(y = "Percent (%)",x = "Terminology use matches \n Fig. 1") +
   ylim(0,100) +
   geom_text(aes(label = percent), hjust = -0.2)+
   theme_classic()
-
+  
 
 Fig5b
 
@@ -367,7 +366,7 @@ percent_F0_env$percent <- round(percent_F0_env$percent, digits = 0)
 Fig5c <- ggplot(percent_F0_env, aes(x = reorder(F0_env_code, -percent), y = percent)) + 
   geom_col(aes(), width = 0.7) +
   coord_flip() + 
-  labs(y = "Percent (%)",x = "Type of environmental exposure" ) +
+  labs(y = "Percent (%)",x = "Type of environmental \n exposure" ) +
   ylim(0,100) +
   geom_text(aes(label = percent), hjust = -0.2)+
   theme_classic()
@@ -409,7 +408,7 @@ percent_exposure_timing$percent <- round(percent_exposure_timing$percent, digits
 Fig5e<- ggplot(percent_exposure_timing, aes(x = reorder(exposure_timing_code, -percent), y = percent)) + 
   geom_col(aes(), width = 0.7) + 
    coord_flip() + 
-  labs(y = "Percent (%)",x = "Timing of F0 (ancestor) exposure" ) +
+  labs(y = "Percent (%)",x = "Timing of F0 (ancestor) \n exposure" ) +
   ylim(0,100) +
   geom_text(aes(label = percent), hjust = -0.2)+
   theme_classic()
@@ -469,7 +468,7 @@ percent_env_eff$percent <- round(percent_env_eff$percent, digits = 0)
 Fig5h <- ggplot(percent_env_eff, aes(x = reorder(env_eff_direction_code, -percent), y = percent)) + 
   geom_col(aes(), width = 0.7) + 
   coord_flip() +
-  labs(y = "Percent (%)",x = "Environmental effect direction" ) +
+  labs(y = "Percent (%)",x = "Environmental effect \n direction" ) +
   ylim(0,100) +
   geom_text(aes(label = percent), hjust = -0.2)+
   theme_classic()
@@ -576,7 +575,7 @@ Fig7a <- ggplot(count_inter_vs_trans, aes(y = discipline_code, x = inter_vs_tran
   labs(y = "Discipline", x = "Inter- vs trans-inheritance", fill = "Count") + 
   geom_text(aes(label = n)) + 
   scale_fill_gradient(low = "#FEE08B", high = "#D53E4F") +
-  guides(fill = "none")
+  guides(fill = "none") 
 
 Fig7a
 ```

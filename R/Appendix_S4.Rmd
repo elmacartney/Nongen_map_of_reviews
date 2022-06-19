@@ -73,7 +73,7 @@ pacman::p_load(readxl,
 #manually extracted data
 xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
 
-bib <- convert2df(here("data","bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
+bib <- convert2df(here("Data","bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
 
 ```
 
