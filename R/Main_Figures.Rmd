@@ -292,9 +292,8 @@ sample_data4$species_name<- as.factor(sample_data4$species_name)
 sample_data4$tip.label <- as.factor(sample_data4$tip.label)
 sample_data4$broad_taxa<- as.factor(sample_data4$broad_taxa)
 
-#logging n
-# sample_data4$n_logged <- log10(sample_data4$n)
-
+# count_taxa <- count(sample_data4, broad_taxa)
+# percent_taxa <- count_taxa%>% mutate(percent = (n/sum(n))*100)
 
 cols <- c("yellow", "violet", "turquoise", "tomato", "thistle", "springgreen", "navy", "orange", "lightgoldenrod", "lightpink", "khaki", "lightslateblue", "red", "magenta3", "plum", "hotpink4","seagreen", "olivedrab")
 
