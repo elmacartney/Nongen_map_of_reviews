@@ -964,7 +964,7 @@ small_matrix[lower.tri(small_matrix)] <- 0
 # (39 + 97 + 2) / (39 + 97 + 2 + 616)
 
 #agriculture
-(25 + 2 + 25 + 3) / (25 + 2 + 25 + 3 + 48)
+# (25 + 2 + 25 + 3) / (25 + 2 + 25 + 3 + 48)
 
 #have to remove gaps and hyphen to allocate colours to match previous figures
 colnames(small_matrix)[3] <- "crossdisciplinary"
