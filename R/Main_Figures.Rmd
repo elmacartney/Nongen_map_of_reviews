@@ -114,6 +114,7 @@ Fig3 <- Publication_info_discipline %>%
 
 Fig3
 
+#exported PDF as 5x7 inch
 ```
 
 ## Figure 4  - Species tree
@@ -472,10 +473,12 @@ Fig5h
 
 ### Fig. 5 - Panel 
 
-```{r fig5panel, fig. dim(8,16)}
+```{r fig5panel,  fig.width=15, fig.height=20}
 Fig5 <- ((Fig5a | Fig5b) / (Fig5c | Fig5d) / (Fig5e | Fig5f) / (Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
 
 Fig5
+
+#exported as PDF 20x15 inch
 
 ```
 
@@ -544,6 +547,8 @@ Fig6b
 Fig6 <- (Fig6a + Fig6b) + plot_annotation(tag_levels = "A")
 
 Fig6
+
+#exported PDF as 5 x 10 inch
 
 ```
 
@@ -745,11 +750,13 @@ Fig7h
 
 ### Fig. 7 - Panel
 
-```{r fig7panel, fig. dim(8,16)}
+```{r fig7panel, fig.width=15, fig.height=20}
 
 Fig7 <- ((Fig7a | Fig7b) /(Fig7c | Fig7d) / (Fig7e | Fig7f) / (Fig7g | Fig7h)) + plot_annotation(tag_levels = "A")
 
 Fig7
+
+#Exported PDF as 20 x 15 inch
 ```
 
 # Objective Three
@@ -846,6 +853,8 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
 
 
 Fig8b
+
+#TODO may need to change shade of grey for USA
 ```
 
 ### Panel
@@ -889,7 +898,7 @@ dev.off()
 
 ## Figure 9 - Collaborations
 
-```{r fig9, results='hide', eval = FALSE}
+```{r fig9, results='hide'}
 # Data
 Publication_info_discipline <- merge(Publication_info, Review_info)
 
@@ -973,7 +982,10 @@ par(mar = c(0, 0, 0, 0), mfrow = c(1, 1))
 # chord diagram
 circos.par()
 Fig9 <- chordDiagramFromMatrix(small_matrix, grid.col = my.cols)
-# Fig9
+Fig9
+
+#TODO manually add spaces and hyphens in discipline names
+#Exported pdf as 7 x 4 inches
 
 ```
 
@@ -1016,4 +1028,6 @@ Fig10 <- ggplot(data = percent_ceesat_score, x = question, y = percent) +
   ylab("Proportion") + xlab("CEESAT Question")
 
 Fig10
+
+#Exported as PDF 5 x 7 inches
 ``` 
