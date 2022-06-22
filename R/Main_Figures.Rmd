@@ -1,5 +1,5 @@
 ---
-title: "Main Figures_New"
+title: "Main Figures"
 author: "Erin Macartney, Szymek Drobniak, Shinichi Nakagawa, Malgorzata Lagisz"
 output:
     rmdformats::readthedown:
@@ -69,22 +69,17 @@ pacman::p_load(readxl,
 ```
 
 ``` {r load files, results = 'hide'}
+
+setwd("..")
 #manually extracted data
 xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
+#note that using here function does work for datawrangling below
 
-# xldata <- read_excel(here("Data", "Data_extraction_postcrosschecking.xlsx"))
-#note that here package doen't work with data wrangling code below
+bib <- convert2df(here("Data","bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
 
-# #bibliometric data
-# bib <- convert2df("./Data/bibliometric2.bib", dbsource = "scopus", format = "bibtex")
-
-bib <- convert2df(here("Data", "bibliometric2.bib"), dbsource = "scopus", format = "bibtex")
-
-# mytree <- read.tree(file = "./Data/species_tree.tre") #if you need to read the tree
 ```
 
-``` {r splitting sheets, results = 'hide'}
-
+``` {r slitting sheets, results = 'hide'}
 #Splitting list of tabs into separate dataframes
 excel_sheets(path = xldata)
 tab_names <- excel_sheets(path = xldata)
@@ -478,7 +473,7 @@ Fig5h
 
 ### Fig. 5 - Panel 
 
-```{r fig5panel}
+```{r fig5panel, fig. dim(8,16)}
 Fig5 <- ((Fig5a | Fig5b) / (Fig5c | Fig5d) / (Fig5e | Fig5f) / (Fig5g | Fig5h)) + plot_annotation(tag_levels = "A")
 
 Fig5
@@ -751,7 +746,7 @@ Fig7h
 
 ### Fig. 7 - Panel
 
-```{r fig7panel}
+```{r fig7panel, fig. dim(8,16)}
 
 Fig7 <- ((Fig7a | Fig7b) /(Fig7c | Fig7d) / (Fig7e | Fig7f) / (Fig7g | Fig7h)) + plot_annotation(tag_levels = "A")
 
@@ -890,13 +885,12 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   circos.axis(h = "top", labels.cex = 0.3, major.tick.percentage = 0.2, sector.index = sector.name, track.index = 2)
 }, bg.border = NA)
 title("B", font.main = 1, cex.main = 1.2)
-
 dev.off()
 ```
 
 ## Figure 9 - Collaborations
 
-```{r fig9}
+```{r fig9, results='hide', eval = FALSE}
 # Data
 Publication_info_discipline <- merge(Publication_info, Review_info)
 
@@ -980,7 +974,7 @@ par(mar = c(0, 0, 0, 0), mfrow = c(1, 1))
 # chord diagram
 circos.par()
 Fig9 <- chordDiagramFromMatrix(small_matrix, grid.col = my.cols)
-Fig9
+# Fig9
 
 ```
 
@@ -997,7 +991,6 @@ Assessment_reduced <- select(Assessment, c("id", !ends_with("_comment")))
 #wrangling data into long format
 ceesat_long <- gather(Assessment_reduced, question, score, Q1.1:Q8.1, factor_key=TRUE)
 ```
-
 
 ## Figure 10 
 
