@@ -70,7 +70,6 @@ pacman::p_load(readxl,
 
 ``` {r load files, results = 'hide'}
 
-setwd("..")
 #manually extracted data
 xldata <- "./Data/Data_extraction_postcrosschecking.xlsx"
 #note that using here function does work for datawrangling below

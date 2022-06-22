@@ -148,7 +148,7 @@ FigS3
 
 **Fig. S3** Word cloud of the most common key words across disciplines
 
-# Fig. S5 - CEESAT individual scores
+# Fig. S4- CEESAT individual scores
 
 ```{r}
 #blinding authors
