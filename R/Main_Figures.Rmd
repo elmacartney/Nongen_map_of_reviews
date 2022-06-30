@@ -292,11 +292,21 @@ sample_data4$broad_taxa<- as.factor(sample_data4$broad_taxa)
 
 cols <- c("yellow", "violet", "turquoise", "tomato", "thistle", "springgreen", "navy", "orange", "lightgoldenrod", "lightpink", "khaki", "lightslateblue", "red", "magenta3", "plum", "hotpink4","seagreen", "olivedrab")
 
-tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data4 + aes(col = broad_taxa)+ theme(legend.position = "bottom") + scale_colour_manual(values = cols, (title = "Broad taxa"))
+tree2 <- ggtree(mytree, layout = "circular", lwd = 0.75) %<+% sample_data4 +
+  aes(col = broad_taxa)+ theme(legend.position = "bottom") +
+  scale_colour_manual(values = cols, (title = "Broad taxa"))
 
-tree3 <- tree2 + new_scale_fill() + geom_fruit(geom = geom_bar, mapping = aes(x = log10(n), col = "gray30"), stat = "identity", col = "gray30", orientation = "y", axis.params = list(axis = "x",text.angle = -45, hjust = 0, text.size = 3), grid.params = list(alpha = 0.35),offset = 0.085, pwidth = 0.55, alpha = 0.8) + guides(fill ="none")
+tree3 <- tree2 +
+  new_scale_fill() +
+  geom_fruit(geom = geom_bar, mapping = aes(x = log10(n+0.5), col = "gray30"),
+             stat = "identity", fill = "gray60", col = NA, orientation = "y",
+             axis.params = list(axis = "x", text.angle = -45, hjust = 0, text.size = 3), 
+             grid.params = list(alpha = 0.35),
+             offset = 0.085, pwidth = 0.55, alpha = 0.8) +
+  geom_tiplab(size = 0.8) +
+  guides(fill ="none")
 
-tree3
+#ggsave(tree3, filename = 'treeplot_temp.pdf', device = 'pdf', scale = 0.8)
 
 # count(sample_data4, broad_taxa)
 # count(sample_data4, species_name)
