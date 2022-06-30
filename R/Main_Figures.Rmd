@@ -60,9 +60,9 @@ pacman::p_load(readxl,
                mapproj)
 
 #install ggtreeExtra
-# if (!require("BiocManager", quietly = TRUE))
-#     install.packages("BiocManager")
-# BiocManager::install("ggtreeExtra")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("ggtreeExtra")
                
 # library(wordcloud2)
 
