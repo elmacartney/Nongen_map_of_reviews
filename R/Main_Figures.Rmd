@@ -303,7 +303,7 @@ tree3 <- tree2 +
              axis.params = list(axis = "x", text.angle = -45, hjust = 0, text.size = 3), 
              grid.params = list(alpha = 0.35),
              offset = 0.085, pwidth = 0.55, alpha = 0.8) +
-  geom_tiplab(size = 0.8) +
+  #geom_tiplab(size = 0.8) +
   guides(fill ="none")
 
 #ggsave(tree3, filename = 'treeplot_temp.pdf', device = 'pdf', scale = 0.8)
